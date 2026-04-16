@@ -1,0 +1,559 @@
+\writeSectionFrame{\presentationTitle}{Das Strategie-Muster}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Strategie
+ 		\item Alternativer deutscher Name: Policy
+ 		\item Englischer Name: Strategy
+ 		\item Gruppe: Verhaltensmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Strategie}
+	\begin{block}{Zweck}
+ 		Definiere eine Familie von Algorithmen, kapsele jeden einzelnen und mache sie austauschbar. Der Algorithmus kann unabhängig von den nutzenden Klienten variiert werden.
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Klassendiagramm}
+\begin{tikzpicture}[scale=0.6, transform shape]
+    \umlclass{Context}{
+        -strategy: Strategy
+    }{
+        +Context(Strategy)\\
+        +setStrategy(Strategy)\\
+        +executeStrategy(): void\\
+    }
+
+    \umlclass[y=-3.5]{Strategy}{}{
+        +execute(): void
+    }
+
+    \umlclass[x=-4, y=-6]{ConcreteStrategyA}{}{
+        +execute(): void
+    }
+
+    \umlclass[x=4, y=-6]{ConcreteStrategyB}{}{
+        +execute(): void
+    }
+
+    \umlinherit{ConcreteStrategyA}{Strategy}
+    \umlinherit{ConcreteStrategyB}{Strategy}
+    \umlaggreg{Context}{Strategy}
+\end{tikzpicture}
+\end{frame}
+
+\note{
+	Strategie definiert eine einheitliche Schnittstelle zu allen unterstützten Algorithmen.
+	Kontext benutzt diese Schnittstelle um einen konkreten Algorithmus aufzurufen. KonkreteStrategie
+	implementiert den Algorithmus mit Hilfe der Strategie-Schnittstelle. Kontext wird mit einem 
+	KonkreteStrategie-Objekt konfiguriert. Es behält eine Referenz zu einem Strategie-Objekt und 
+	kann eine Schnittstelle zur Verfügung stellen, um der Strategie Daten zu übergeben. Kontext 
+	kann natürlich auch Referenzen auf mehrere Strategieobjekte haben. Nach dem Erzeugen des 
+	Kontextes und eventuell einer Strategie (der Kontext selbst kann die Strategie aber auch erzeugen)
+	interagiert der Klient nur noch mit dem Kontext. 
+}
+
+\begin{frame}{Klassendiagramm - Beispiel}
+\begin{tikzpicture}[scale=0.6, transform shape]
+    \umlclass{TransportService}{
+        -strategy: TransportStrategy
+    }{
+        +TransportService(TransportStrategy) \\
+        +setStrategy(TransportStrategy)\\
+        +calculateTransportCost(distance: double): double\\
+    }
+
+    % Strategie-Interface
+    \umlclass[y=-3]{TransportStrategy}{}{
+        +calculateCost(distance: double): double
+    }
+
+    % Konkrete Strategien
+    \umlclass[x=-4, y=-6]{CarTransportStrategy}{}{
+        +calculateCost(distance: double): double
+    }
+
+    \umlclass[x=4, y=-6]{TrainTransportStrategy}{}{
+        +calculateCost(distance: double): double
+    }
+
+    \umlclass[x=0, y=-9]{AirplaneTransportStrategy}{}{
+        +calculateCost(distance: double): double
+    }
+
+    % Beziehungen
+    \umlinherit{CarTransportStrategy}{TransportStrategy}
+    \umlinherit{TrainTransportStrategy}{TransportStrategy}
+    \umlinherit{AirplaneTransportStrategy}{TransportStrategy}
+    \umlaggreg{TransportService}{TransportStrategy}
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Strategie}
+	\begin{exampleblock}{TransportStrategy}
+\begin{lstlisting}
+public interface TransportStrategy {
+    double calculateCost(double distance);
+}
+\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Strategie}
+	\begin{exampleblock}{CarTransportStrategy}
+ 		\begin{lstlisting}
+public class CarTransportStrategy implements TransportStrategy {
+	private static final double COSTS_PER_KM = 0.5;
+	
+    @Override
+    public double calculateCost(double distance) {
+        return distance * COSTS_PER_KM;
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Strategie}
+	\begin{exampleblock}{TrainTransportStrategy}
+ 		\begin{lstlisting}
+public class TrainTransportStrategy implements TransportStrategy {
+	private static final double COSTS_PER_KM = 0.5;
+	private static final double BAHN_CARD_RABATT = 15.0;
+	
+    @Override
+    public double calculateCost(double distance) {
+    	double costs = distance * COSTS_PER_KM - 
+            BAHN_CARD_RABATT;
+    	if (costs < 0) {
+    		return 0;
+    	}
+        return costs;
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Strategie}
+	\begin{exampleblock}{AirplaneTransportStrategy}
+ 		\begin{lstlisting}
+public class AirplaneTransportStrategy 
+        implements TransportStrategy {
+	private static final double COSTS_PER_KM = 2.5;
+	private static final double CO2_COMPENSATION = 100.0;
+	
+    @Override
+    public double calculateCost(double distance) {
+        return COSTS_PER_KM * distance + CO2_COMPENSATION;
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{TransportService}
+ 		\begin{lstlisting}
+public class TransportService {
+	private TransportStrategy strategy;
+
+	public TransportService(TransportStrategy strategy) {
+		this.strategy = strategy;
+	}
+
+	public void setStrategy(TransportStrategy strategy) {
+		this.strategy = strategy;
+	}
+
+	public double calculateTransportCost(double distance) {
+		return strategy.calculateCost(distance);
+	}
+}
+
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{AutomaticTransportService}
+ 		\begin{lstlisting}
+public class AutomaticTransportService {
+	private static final int MAX_DISTANCE_FOR_CAR = 50;
+	private static final int MAX_DISTANCE_FOR_TRAIN = 200;
+	
+	public String calculateTransportCost(double distance) {
+		if (distance < MAX_DISTANCE_FOR_CAR) {
+			double costs = new CarTransportStrategy().
+                calculateCost(distance);
+			return "Auto: " + costs + " Euro";
+		} else if (distance < MAX_DISTANCE_FOR_TRAIN) {
+			// ...
+		} else {
+			// ...
+		}
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klient}
+	\begin{exampleblock}{TransportDialog}
+ 		\begin{lstlisting}
+private void calculateCar() {
+    System.out.println("Entfernung in Kilometer eingeben: ");
+    double distance = scanner.nextInt();
+    TransportService service = new TransportService(
+        new CarTransportStrategy());
+    double cost = service.calculateTransportCost(distance);
+    System.out.println("Reisekosten: " + cost + " Euro");
+}    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/strategie1.jpg}
+\note{
+    Als nächstes sehen wir uns Strategie am Beispiel von Sortieralgorithmen an. 
+}
+
+\begin{frame}{Wir möchten sortieren}
+	\begin{itemize}
+ 		\item BubbleSort
+ 		\item InsertionSort
+ 		\item QuickSort
+ 		\item SelectionSort
+ 		\item HeapSort
+ 		\item MergeSort
+ 		\item usw.
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Klassendiagramm - Sortieren}
+\begin{tikzpicture}[scale=0.6, transform shape]
+    \umlclass{SortContext}{
+        -strategy: SortStrategy
+    }{
+        +SortContext(SortStrategy)
+        +sort(data: List): void
+    }
+
+    % Strategie-Interface
+    \umlclass[y=-3]{SortStrategy}{}{
+        +sort(data: List): void
+    }
+
+    % Konkrete Strategien
+    \umlclass[x=-4, y=-6]{BubbleSortStrategy}{}{
+        +sort(data: List): void
+    }
+
+    \umlclass[x=2, y=-6]{QuickSortStrategy}{}{
+        +sort(data: List): void
+    }
+
+     \umlclass[x=8, y=-6]{InsertionSortStrategy}{}{
+        +sort(data: List): void
+    }
+
+    % Beziehungen
+    \umlinherit{BubbleSortStrategy}{SortStrategy}
+    \umlinherit{QuickSortStrategy}{SortStrategy}
+    \umlinherit{InsertionSortStrategy}{SortStrategy}
+    \umlaggreg{SortStrategy}{SortContext}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Strategie}
+	\begin{exampleblock}{SortStrategy}
+\begin{lstlisting}
+public interface SortStrategy {
+	public void sort(int[] toSort);
+}
+\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Strategie}
+	\begin{exampleblock}{BubbleSort}
+ 		\begin{lstlisting}
+public class BubbleSort implements SortStrategy {
+	@Override
+	public void sort(int[] toSort) {
+		for (int i = 1; i < toSort.length; i++) {
+			for (int j = 0; j < toSort.length - i; j++) {
+				if (toSort[j] > toSort[j + 1]) {
+					int temp = toSort[j];
+					toSort[j] = toSort[j + 1];
+					toSort[j + 1] = temp;
+				}
+			}
+		}
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{SortContext}
+ 		\begin{lstlisting}
+public class SortContext {
+	private static final int STRATEGY_COUNT = 3;
+	private SortStrategy[] strategies;
+	private int[] toSort;
+	
+	public SortContext(int[] toSort) {
+		strategies = new SortStrategy[STRATEGY_COUNT];
+		strategies[0] = new QuickSort();
+		strategies[1] = new InsertionSort();
+		strategies[2] = new BubbleSort();
+		
+		this.toSort = toSort;
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{SortContext}
+ 		\begin{lstlisting}
+public TimeMeasurement[] sort() {
+    TimeMeasurement[] measurements = new 
+        TimeMeasurement[STRATEGY_COUNT];
+    
+    for (int i = 0; i < STRATEGY_COUNT; i++) {
+        SortStrategy sortStrategy = strategies[i];
+        
+        int[] copyOfArray = Arrays.copyOf(toSort, 
+            toSort.length);
+        final long start = System.currentTimeMillis();
+        sortStrategy.sort(copyOfArray);
+        final long end = System.currentTimeMillis();
+        measurements[i] = new TimeMeasurement(start, end, 
+            sortingStrategy);
+    }
+    
+    return measurements;
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klient}
+	\begin{exampleblock}{SortDialog}
+ 		\begin{lstlisting}
+private int[] toSort;
+private SortContext sortContext;
+
+public SortDialog() {
+    toSort = new int[VALUE_COUNT];
+    fillArray();
+}
+
+public void start() {
+    sortContext = new SortContext(toSort);
+    TimeMeasurement[] timeMeasurements = sortingContext.sort();
+    
+    for (TimeMeasurement timeMeasurement: timeMeasurements) {
+        System.out.println(timeMeasurement.toString());
+    }
+}	    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/strategie2.jpg}
+\note{
+    In einem weiteren Beispiel möchten wir unterschiedliche Strategien zur Speicherung von Daten verwenden. Und zwar werden verschiedene Implementierungen einer Queue verwendet. Eine Implementierung nutzt ein Array. Diese soll nur für eine bestimmte Datenmenge verwendet werden. Eine Implementierung nutzt ein Set. Sie soll nur verwendet werden, wenn doppelte Werte nicht erlaubt sein sollen. Und für alles andere wird eine Implementierung mit List eingesetzt. 
+}
+
+\begin{frame}{Klassendiagramm - Speichersysteme}
+\begin{tikzpicture}[scale=0.6, transform shape]
+    \umlclass[y=1]{QueueContext}{
+        -queue: Queue
+    }{
+    }
+
+    % Strategie-Interface
+    \umlclass[y=-2.5]{Queue}{}{
+        addNumber(int number) \\
+        getNumber(int index):int \\
+    	popNumber():int \\
+    	peekNumber():int \\
+    	size():int \\
+    }
+
+    % Konkrete Strategien
+    \umlclass[x=-4, y=-6]{ArrayQueue}{}{
+        +sort(data: List): void
+    }
+
+    \umlclass[x=2, y=-6]{ListQueue}{}{
+        +sort(data: List): void
+    }
+
+     \umlclass[x=8, y=-6]{SetQueue}{}{
+        +sort(data: List): void
+    }
+
+    % Beziehungen
+    \umlinherit{BubbleSortStrategy}{Queue}
+    \umlinherit{ArrayQueue}{Queue}
+    \umlinherit{SetQueue}{Queue}
+    \umlinherit{ListQueue}{Queue}
+    \umlaggreg{QueueContext}{Queue}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Strategie}
+	\begin{exampleblock}{Queue}
+ 		\begin{lstlisting}
+public interface Queue {
+	void addNumber(int number);
+	int getNumber(int index);
+	int popNumber();
+	int peekNumber();
+	int size();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Strategie}
+	\begin{exampleblock}{ArrayQueue}
+ 		\begin{lstlisting}
+public class ArrayQueue implements Queue {
+	private Integer[] numbers;
+	private int count;
+	
+	public ArrayQueue() {
+		numbers = new Integer[SIZE];
+		count = 0;
+	}
+	
+	@Override
+	public void addNumber(int number) {
+		if (count < numbers.length) {
+			numbers[count] = number;
+			count++;
+		} else {
+			throw new ArrayFullException();
+		}
+	}   
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{QueueContext}
+        \begin{lstlisting}
+public class QueueContext {
+	private Queue queue;
+	
+	public QueueContext(boolean duplicatesAllowed, int count) {
+		if (!duplicatesAllowed) {
+			queue = new SetQueue();
+			System.out.println("Eine SetQueue wurde erzeugt");
+		} else if (count <= 5) {
+			queue = new ArrayQueue();
+			System.out.println("Eine ArrayQueue wurde erzeugt");
+		} else {
+			queue = new ListQueue();
+			System.out.println("Eine ListQueue wurde erzeugt");
+		}
+	}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{QueueContext}
+        \begin{lstlisting}
+public int peekNumber() {
+    return queue.peekNumber();
+}
+
+public int popNumber() {
+    return queue.popNumber();
+}
+
+@Override
+public String toString() {
+    return queue.toString();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{QueueContext}
+        \begin{lstlisting}
+public void addNumber(int number) {
+    try {
+        queue.addNumber(number);
+    } catch (ArrayFullException ex) {
+        Queue arrayQueue = queue;
+        System.out.println("Wir schalten um auf ...");
+        queue = new ListQueue();
+        
+        for (int i = 0; i < arrayQueue.size(); i++) {
+            int oldNumber = arrayQueue.getNumber(i);
+            queue.addNumber(oldNumber);
+        }
+        
+        queue.addNumber(number);
+    }
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klient}
+	\begin{exampleblock}{QueueDialog}
+        \begin{lstlisting}
+private void addValue() {
+    System.out.println("Bitte eine Zahl eingeben: ");
+    int number = scanner.nextInt();
+    queueContext.addNumber(number);
+}
+
+private void createNewQueue() {
+    System.out.println("Wie viele Zahlen sollen eingegeben " +
+        " werden?");
+    int count = scanner.nextInt();
+    System.out.println("Sollen doppelte Werte erlaubt sein? " + 
+        true/false");
+    boolean duplicatesAllowed = scanner.nextBoolean();
+    queueContext = new QueueContext(duplicatesAllowed, count);
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klient}
+	\begin{exampleblock}{QueueDialog}
+        \begin{lstlisting}
+private int chooseFunction() {
+    switch (menuItem) {
+    case NEW_QUEUE: createNewQueue();
+    break;
+    case ADD: addValue();
+    break;
+    case PEEK: System.out.println("Erster Wert: " + 
+        queueContext.peekNumber());
+    break;
+    case POP: System.out.println("Entfernt: " +     
+        queueContext.popNumber());
+    break;
+    case SHOW: System.out.println(queueContext.toString());
+    break;
+    }
+    
+    return function;
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

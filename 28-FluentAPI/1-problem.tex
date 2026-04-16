@@ -1,0 +1,78 @@
+\writeSectionFrame{\presentationTitle}{Fluent API}
+\begin{frame}{Was ist eine Fluent API?}
+	\begin{itemize}
+		\item Eine Programmierschnittstelle mit flüssiger, lesbarer Syntax
+		\item Methoden liefern meist das Objekt selbst oder ein Folgeobjekt zurück
+		\item Ermöglicht Methodenverkettung (method chaining)
+		\item Fokus liegt auf Lesbarkeit und Ausdrucksstärke
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Motivation}
+	\begin{itemize}
+		\item Klassische APIs sind oft:
+		\begin{itemize}
+			\item schwer lesbar
+			\item technisch, aber nicht semantisch
+		\end{itemize}
+		\item Fluent APIs sollen sich eher wie eine Domänensprache anfühlen
+		\item Code soll sich lesen lassen wie ein Satz
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Klassische API}
+	\begin{lstlisting}[language=Java]
+Query q = new Query();
+q.setTable("users");
+q.addCondition("age > 18");
+q.setLimit(10);
+	\end{lstlisting}
+	
+	\pause
+	\begin{itemize}
+		\item Technisch korrekt
+		\item Reihenfolge und Bedeutung nur implizit
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Fluent API}
+	\begin{lstlisting}[language=Java]
+Query q = Query
+	.from("users")
+	.where("age > 18")
+	.limit(10);
+	\end{lstlisting}
+	
+	\pause
+	\begin{itemize}
+		\item Lesbar von oben nach unten
+		\item Reihenfolge wird Teil der Bedeutung
+		\item Intention klar erkennbar
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Technische Grundlage}
+	\begin{itemize}
+		\item Methoden geben:
+		\begin{itemize}
+			\item \texttt{this} zurück oder
+			\item ein anderes Objekt derselben API
+		\end{itemize}
+		\item Kein neues Sprachfeature
+		\item Nutzt:
+		\begin{itemize}
+			\item Rückgabewerte
+			\item Interfaces
+			\item Immutable Objekte (häufig)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Typische Einsatzgebiete}
+	\begin{itemize}
+		\item Builder (\texttt{StringBuilder}, \texttt{HttpRequest})
+		\item Datenbankabfragen (JPA Criteria, jOOQ)
+		\item Konfigurationen
+		\item Test-Frameworks (z.B. AssertJ oder ArchUnit)
+	\end{itemize}
+\end{frame}

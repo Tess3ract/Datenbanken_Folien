@@ -1,0 +1,38 @@
+\writeSectionFrame{\presentationTitle}{UML-Sequenzdiagramm}
+\begin{frame}{Das Sequenzdiagramm}
+	\begin{block}{beantwortet die Frage}
+		Wie läuft die Kommunikation in meinem System ab?
+	\end{block}
+\end{frame}
+
+\note{
+	Sequenzdiagramme dienen dem Nachrichtenfluss zwischen Objekten. Sie zeigen den zeitlichen Ablauf der Nachrichten, beinhalten jedoch keine Informationen über Beziehungen der Objekte. In der Analyse können Sequenzdiagramme 
+	eingesetzt werden, um Nachrichtenflüsse der zu analysierenden Geschäftsprozesse abzubilden. Sequenzdiagramme können sehr hilfreich bei der Verfeinerung von Anwendungsfällen sein.
+}
+
+\begin{frame}{Zwei Dimensionen}
+	\begin{center}
+	  \includegraphics[scale=0.3]{\BILDERPFAD/sequenz1.png}
+	\end{center}
+\end{frame}
+\note{
+	 Das Sequenzdiagramm besitzt zwei Dimensionen. Die Vertikale repräsentiert die Zeit und auf der Horizontalen werden die Objekte eingetragen.
+}
+
+\begin{frame}{Objekte}
+	\begin{center}
+	  \includegraphics[scale=0.35]{\BILDERPFAD/sequenz2.png}
+	\end{center}
+\end{frame}
+\note{
+	 Jedes Objekt wird dargestellt durch ein Objektsymbol und eine vertikale gestrichelte Linie  (Objektlinie). Wenn ein Objekt keinen speziellen Namen im Diagramm benötigt, wird nur der Klassenname zusammen mit einem Doppelpunkt aufgeschrieben, sonst steht der Objektname noch davor. Die gestrichelte Linie repräsentiert die Lebenszeit eines Objekts. Kommunikationspartner müssen nicht zwangsläufig Objekte sein, sondern können auch Attribute, Operationen, Teile einer Klasse usw. sein. Aber es darf keine anonymen Lebenslinien geben; ein Kommunikationspartner muss immer angegeben werden. Der dicke Balken gibt an, dass die Methode gerade abläuft und am Ende wird zurückgesprungen. Aber nicht nur Methoden können ausgeführt werden, sondern es darf sich um beliebiges Verhalten handeln. 
+}
+
+\begin{frame}{Synchrone Nachrichten}
+	\begin{center}
+	  \includegraphics[scale=0.4]{\BILDERPFAD/sequenz3.png}
+	\end{center}
+\end{frame}
+\note{
+	 Werden synchrone Nachrichten versendet, wartet die Sender, bis das angestoßene Verhalten beim Empfänger beendet wurde. Er erhält daraufhin eine Antwortnachricht vom Empfänger. Implizit steckt in der  Antwort immer die Information, dass die Abarbeitung abgeschlossen ist, aber natürlich dürfen auch weitere Antwortdaten mitgegeben werden. Bei der Syntax von Nachrichten ist zu beachten, dass hinter dem Namen kein leeres Klammernpaar steht. Aber Parameter können natürlich übergeben werden. 
+}

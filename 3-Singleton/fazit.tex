@@ -1,0 +1,334 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Einsatz von Singleton in der realen Welt}
+	\begin{block}{Java Standardbibliothek}
+ 		java.lang.Runtime
+ 	\end{block}
+\end{frame}
+\note{
+    Diese Klasse folgt dem Singleton-Muster. Die Methode Runtime.getRuntime() gibt die einzige Instanz der Runtime-Klasse zurück. Dies ist notwendig, da es nur ein Laufzeitsystem gibt, das Anwendungen in der JVM ausführen muss.
+}
+
+\begin{frame}{Einsatz von Singleton in der realen Welt}
+	\begin{block}{Java Standardbibliothek}
+ 		java.awt.Desktop
+ 	\end{block}
+\end{frame}
+
+\note{
+    Diese Klasse ermöglicht es, die Desktop-Umgebung eines Systems zu verwenden, um Dateien oder URLs zu öffnen. Die Methode Desktop.getDesktop() gibt eine Singleton-Instanz zurück.
+}
+
+
+\begin{frame}{Einsatz von Singleton in der realen Welt}
+	\begin{block}{Java Standardbibliothek}
+        java.util.logging.LogManager
+ 	\end{block}
+\end{frame}
+
+\note{
+    Diese Klasse verwaltet die globale Log-Konfiguration und verwendet ein Singleton-Muster, um sicherzustellen, dass nur eine Instanz der LogManager existiert.
+}
+
+\begin{frame}{Einsatz von Singleton in der realen Welt}
+	\begin{block}{Java Standardbibliothek}
+        Hibernate
+ 	\end{block}
+\end{frame}
+
+\note{
+    In Hibernate wird das SessionFactory-Objekt als Singleton verwendet. Es ist teuer in der Erstellung, da es die Datenbankverbindungen initialisiert und die Metadaten konfiguriert. Daher wird nur eine Instanz pro Anwendung verwendet, um die Leistung zu optimieren.
+}
+
+\begin{frame}{Einsatz von Singleton in der realen Welt}
+	\begin{block}{Java Standardbibliothek}
+        Spring Framework
+ 	\end{block}
+\end{frame}
+\note{
+    In Spring ist der Standard-Scope für Beans ein Singleton. Das bedeutet, dass es nur eine Instanz einer Bean pro Spring IOC Container gibt. Dies wird oft verwendet, um Zustandslosigkeit und Effizienz zu gewährleisten, indem teure Objekte (wie z.B. Datenbankverbindungen oder Konfigurationsobjekte) wiederverwendet werden.
+}
+
+\begin{frame}{Einsatz von Singleton in der realen Welt}
+	\begin{block}{Android}
+        Application-Klasse
+ 	\end{block}
+\end{frame}
+\note{
+    In Android gibt es eine spezielle Klasse namens Application, die während der gesamten Laufzeit einer App nur einmal erstellt wird. Entwickler können von dieser Klasse erben, um globale Anwendungszustände zu verwalten.
+}
+
+\begin{frame}{Weitere Überlegungen und Alternativen}
+	\begin{itemize}
+ 		\item Globale Variablen
+ 		\item Statische Klasse
+ 		\item Vererbung
+ 		\item Einzigartigkeit
+ 	\end{itemize}
+\end{frame}
+
+\note{
+ 	Grundsätzlich ist ein Singleton eine Art globaler Variable, die sowieso vermieden werden sollten, vor allem wenn sie veränderlich sind. Das heißt nicht, dass man niemals Singleton benutzen sollte, aber es gibt effizientere Wege, den Code zu organisieren. 
+}
+
+\begin{frame}[fragile]{Vererbung}
+	\begin{exampleblock}{Configuration.java}
+		\begin{lstlisting}
+public final class ConfigurationSingleton {
+	private static final String CONFIGURATION_FILE = 
+        "configuration.properties";
+	private Map<String, String> configurationMap;
+	private static ConfigurationSingleton configuration;		    
+
+	public static ConfigurationSingleton getInstance() {
+		if (configuration == null) {
+			configuration = new ConfigurationSingleton();
+		}
+		return configuration;
+	}
+ }
+		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Grundsätzlich kann ein Singleton zusammen mit Vererbung
+ 	verwendet werden, aber dann darf der Konstruktor nicht mehr private sein, sondern müsste
+ 	protected sein. Von Vererbung bei Singletons wird eher abgeraten. Daher sollte
+ 	Vererbung bei Singletons mit final direkt verboten werden. Es ist aber generell 
+ 	sinnvoll Vererbung so oft wie möglich zu verbieten.
+}
+
+\frameWithImageOnly{\BILDERPFAD/fazit2.jpg}
+\note{
+	Die tatsächliche Einzigartigkeit eines Singletons ist sehr stark abhängig von der
+	verwendeten Programmiersprache. Auch bei der Verwendung von Transaktionen, WebServices,
+	Queueing-Systemen u.ä. ist Vorsicht mit der einfachen Implementierung geboten. Dann
+	empfiehlt es sich, nach Frameworks zu suchen wie z.B. Spring.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{exampleblock}{Vorteile}
+ 		Kontrollierter Zugriff auf eine einzige Instanz
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Das Singleton-Muster stellt sicher, dass nur eine Instanz einer Klasse existiert. Dies kann hilfreich sein, wenn genau ein Objekt benötigt wird, um einen bestimmten Zustand oder eine bestimmte Ressource zu verwalten (z. B. eine Datenbankverbindung oder einen Konfigurationsmanager).
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{exampleblock}{Vorteile}
+ 		Globaler Zugriffspunkt
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Das Singleton-Muster stellt sicher, dass eine Klasse nicht ungewollt mehrfach instanziiert wird. Dies ist besonders wichtig in Anwendungen, in denen mehrere Instanzen zu inkonsistentem Verhalten oder Ressourcenproblemen führen könnten.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{exampleblock}{Vorteile}
+ 		Speicherersparnis
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Da nur eine Instanz der Klasse existiert, kann der Speicherverbrauch reduziert werden, insbesondere wenn die Erstellung und Verwaltung von Instanzen ressourcenintensiv ist.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{exampleblock}{Vorteile}
+ 		Performanzvorteil durch einmalige Instantiierung
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Auch auf die Laufzeit kann sich der Singleton positiv auswirken, da ein Objekt nur ein einziges Mal erzeugt wird. Das ist besonders nützlich bei Objekten, deren Erzeugung teuer ist. 
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{exampleblock}{Vorteile}
+ 		Einfachere Zustandsverwaltung
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Durch die Verwendung eines Singletons kann eine zentrale Instanz den Zustand verwalten, der für die gesamte Anwendung gilt, was die Konsistenz sicherstellen kann.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Wird manchmal als schlechtes Design betrachtet
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Singletons sind besser als globale Variablen, werden aber dennoch als schlechtes Design betrachtet, wenn sie übermäßig genutzt werden. Singletons werden manchmal sogar gar nicht als Entwurfsmuster betrachtet. Der übermäßige Gebrauch von Singleton gilt gemeinhin als Code Smell und ist ein Hinweis auf einen schlechten Entwickler. Die Entscheidung für Singletons sollte ganz bewusst getroffen werden und auch die Nachteile müssen im Auge behalten werden. Singleton sollte unter keinen Umständen als Alibi-Entwurfsmuster verwendet werden.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Schwer testbar
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Singletons können Unit-Tests erschweren, da sie oft statische Methoden verwenden, um die Instanz zu erhalten. Dies führt zu einer engen Kopplung, die das Mocking von Abhängigkeiten und das Testen von Komponenten in Isolation erschwert.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Verdeckte Abhängigkeiten
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Da Singletons oft global zugänglich sind, können sie zu versteckten Abhängigkeiten führen, die nicht durch die Methodensignaturen sichtbar sind. Das macht den Code schwieriger zu verstehen und zu warten.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Probleme bei Multithreading
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Wenn ein Singleton zustandsbehaftet ist (d. h. es speichert Zustand), kann es zu Problemen in nebenläufigen Umgebungen führen, da mehrere Threads gleichzeitig auf dieselbe Instanz zugreifen können. Dies kann zu unerwartetem Verhalten und Problemen bei der Synchronisation führen.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Eingeschränkte Flexibilität
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Da nur eine Instanz erlaubt ist, schränkt das Singleton-Muster die Flexibilität ein. Wenn sich die Anforderungen ändern und mehrere Instanzen erforderlich sind, kann dies zu einer umfangreichen Überarbeitung des Codes führen. Man sollte sich bei der Einführung eines Singelton also wirklich sicher sein, dass auch in Zukunft nur ein einziges Objekt benötigt wird. 
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Enge Kopplung und Verletzung des Single Responsibility Principle
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Singletons können dazu neigen, viele Verantwortlichkeiten zu übernehmen, da sie leicht zugänglich sind und in vielen Kontexten verwendet werden. Dies kann zu enger Kopplung und einer Verletzung des Single Responsibility Principle führen, was die Wartbarkeit des Codes beeinträchtigt.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Probleme bei Serialisierung
+ 	\end{alertblock}
+\end{frame}
+\note{
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Widerspricht der Idee von verteilten Systemen
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Bei verteilten Systemen kann es zu verschiedenen Problemen kommen, weil Singleton eigentlich für monolithische Systeme entwickelt wurden. In einem verteilten System kann es mehrere Kopien einer Anwendung geben, die auf verschiedenen Servern laufen. Wenn jede Anwendung eine eigene Singleton-Instanz erstellt, gibt es plötzlich mehrere Instanzen statt nur einer. Dies widerspricht dem Singleton-Prinzip und kann zu Inkonsistenzen führen, da unterschiedliche Instanzen möglicherweise unterschiedliche Zustände haben. Dies erfordert eine Synchronisierung. Singletons sind per Definition begrenzt auf eine Instanz. In einem verteilten System könnte eine einzige Instanz zu einem Flaschenhals werden, besonders wenn sie eine zentrale Rolle spielt oder häufig angefragt wird. Das führt zu Engpässen und verringert die Skalierbarkeit des Systems, da alle Knoten auf die Singleton-Instanz zugreifen müssen. In verteilten Systemen ist Hochverfügbarkeit ein zentrales Ziel. Wenn die Singleton-Instanz auf einem einzigen Knoten läuft und dieser Knoten ausfällt, könnte die gesamte Anwendung oder ein kritischer Teil der Anwendung unzugänglich werden. Die Implementierung eines echten verteilten Singleton-Musters, das robust, konsistent und performant ist, kann extrem komplex sein und erfordert ein tiefes Verständnis von verteilten Systemen. Deswegen sollte Singleton in verteilten Systemen nicht benutzt werden.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Garbage-Collection
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Es könnte passieren, dass ein Singleton-Objekt vom Garbage-Collector entsorgt wird, wenn es keine Referenz mehr darauf gibt. Dadurch werden zwar nicht mehrere Objekte erzeugt, aber es ist möglich, dass vorher geänderte Werte weg sind. 
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Potentielle Speicherverschwendung
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Wenn ein Singleton große Mengen an Speicher oder Ressourcen beansprucht, bleibt dieser Speicher während der gesamten Lebensdauer der Anwendung reserviert, auch wenn er möglicherweise nicht mehr benötigt wird. Dies kann zu erhöhtem Speicherverbrauch und potenziellen Speicherlecks führen.
+}
+
+\begin{frame}{Vor und Nachteile}
+	\begin{alertblock}{Nachteile}
+ 		Gefahr einer \glqq Gottklasse\grqq
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Der übermäßige Gebrauch von Singletons kann dazu führen, dass sich Gottklassen entwickeln, d.h. Singeltons können dazu verführen, die Regeln von gutem objektorientiertem Design zu brechen. 
+}
+
+\begin{frame}{Vorsicht bei der Verwendung!}
+	\begin{alertblock}{Bei Anfängern beliebtes Muster, ABER}
+        Auf den ersten Blick einfach, aber man muss vieles bedenken
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Alternativen}
+	\begin{itemize}
+ 		\item Dependency-Injection-Container wie Spring
+ 		\item Objekte als Parameter an eine Methode übergeben
+ 		\item In Java: Enums
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Enums als Alternative}
+	\begin{exampleblock}{ConfigurationEnum.java}
+		\begin{lstlisting}
+public enum ConfigurationEnum {
+	HEIGHT("80"), WIDTH("100"), COLOR("red");
+	
+	private String value;
+	
+	private ConfigurationEnum(String value) {
+		this.value = value;
+	}
+	
+	public String getValue() {
+		return value;
+	}
+}
+		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	In Java kann der Enum in bestimmten Situationen als brauchbare Alternative zum Singleton herhalten. Enums sind automatisch threadsicher und serialisierbar. 
+}
+
+%\begin{frame}{Beziehungen mit anderen Mustern}
+%	\begin{itemize}
+% 		\item Abstrakte Fabrik und Fabrikmethode
+% 	\end{itemize}
+%\end{frame}
+
+%\note{
+%	Das Singleton-Muster kann in Verbindung mit Fabrikmethode oder Abstrakter Fabrik verwendet werden, um sicherzustellen, dass nur eine Instanz einer bestimmten Klasse erstellt wird. Eine Factory-Methode kann beispielsweise die Instanz des Singletons bereitstellen, anstatt eine neue zu erstellen. Auch kann die abstrakte Fabrik als Singelton implementiert werden.
+%}
+
+%\begin{frame}{Beziehungen mit anderen Mustern}
+%	\begin{itemize}
+% 		\item Abstrakte Fabrik und Fabrikmethode
+%        \item Erbauer
+% 	\end{itemize}
+%\end{frame}
+
+%\note{
+%	Der Builder kann zusammen mit einem Singleton verwendet werden, wenn ein Singleton komplexe Initialisierungen oder Konfigurationen benötigt. Der Builder kann verwendet werden, um die Singleton-Instanz zu konfigurieren, bevor sie endgültig erstellt wird.
+%}
+
+%\begin{frame}{Beziehungen mit anderen Mustern}
+%	\begin{itemize}
+% 		\item Abstrakte Fabrik und Fabrikmethode
+%        \item Erbauer
+%        \item Kommando
+% 	\end{itemize}
+%\end{frame}
+
+%\note{
+%	Ein Singleton kann als zentraler Punkt für die Verwaltung und Ausführung von Command-Objekten verwendet werden. Beispielsweise kann ein Singleton Command-Manager verwendet werden, um alle Befehle in einer Anwendung zu koordinieren und auszuführen.
+%}
+
+%\begin{frame}{Beziehungen mit anderen Mustern}
+%	\begin{itemize}
+% 		\item Abstrakte Fabrik und Fabrikmethode
+%        \item Erbauer
+%        \item Kommando
+%        \item Multiton
+% 	\end{itemize}
+%\end{frame}
+
+%\note{
+%	Der Multiton ist eine Sonderform des Singletons und lässt die Erzeugung mehrerer Objekte zu, verwaltet also einen Objekt-Pool. Der Objektpool kann wiederum selbst als Singleton implementiert werden.
+%}

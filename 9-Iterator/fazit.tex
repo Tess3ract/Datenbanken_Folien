@@ -1,0 +1,130 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendbarkeit}
+	\begin{itemize}
+ 		\item Datenstrukturen auf verschiedene Arten durchlaufen
+ 		\item Datenstrukturen nach verschiedenen Bedingungen durchlaufen
+ 		\item Bäume durchlaufen
+ 		\item Durchlaufen von Ergebnissen von WebServices
+ 		\item Durchlaufen von Ergebnismengen aus Datenbankabfragen
+ 	\end{itemize}
+\end{frame}
+\note{
+	Das schicke am Iteratormuster ist, dass die Datenmenge nicht lokal vorliegen muss.
+	Ein Iterator kann genauso gut eine oder sogar mehrere entfernte Datenmengen durchlaufen.
+	Und der Klient bekommt davon nichts mit. Er weiß nicht, dass die Datenmenge vielleicht
+	verteilt oder nur ein Strom aus einem Netzwerk ist. Somit könnte ein Klient auch einfach
+	und dynamisch auf unterschiedliche Datenquellen umgeschaltet werden. So könnte ein Test
+	vielleicht mit lokalen Daten arbeiten, während der Produktivbetrieb Daten von einem
+	WebService erhält. 
+}
+
+\realworld{Java Collections Framework}{Iterieren durch Datenmengen}
+\note{
+    Das Iterator-Muster ist ein grundlegendes Konzept im Java Collections Framework. Es wird verwendet, um über die Elemente von Collections wie ArrayList, HashSet und HashMap zu iterieren.
+}
+
+\realworld{Java Streams API}{Verarbeitung von Datenströmen}
+\note{
+    Die Java Streams API (ab Java 8) nutzt das Iterator-Muster unter der Haube, um Datenströme zu verarbeiten. Obwohl die API abstrakter ist und Funktionen wie Filterung, Mapping und Reduzierung unterstützt, basiert ihre Implementierung auf dem Konzept der Iteration.
+}
+
+\realworld{Apache Commons Collections}{Iterieren durch Datenmengen}
+\note{
+    Die Apache Commons Collections Bibliothek bietet zusätzliche Collection-Klassen und -Funktionen für Java. Diese Bibliothek verwendet das Iterator-Muster für die Erweiterung der Standard-Collections-Klasse.
+}
+
+\realworld{JavaFX}{ObservableList und ObservableMap}
+\note{
+    ObservableList und ObservableMap ermöglichen die Beobachtung von Änderungen an Listen und Maps und verwenden Iteratoren, um auf die enthaltenen Elemente zuzugreifen.
+}
+
+\realworld{JPA (Java Persistence API)}{Durchlaufen von Ergebnissen von Datenbankabfragen}
+\note{
+    JPA verwendet Iteratoren für das Durchlaufen von Ergebnissen von Datenbankabfragen: javax.persistence.Query: Die Methode getResultList() gibt eine Liste von Ergebnissen zurück, die durch einen Iterator durchlaufen werden kann.
+}
+
+\vorteil{Kapselung der Iteration}
+\note{
+    Der Iterator kapselt die Iteration über eine Sammlung und schützt die interne Struktur der Sammlung. Das bedeutet, dass der Code, der die Sammlung verwendet, nicht wissen muss, wie die Sammlung intern organisiert ist.
+}
+
+\vorteil{Vereinfachter Zugriff}
+\note{
+    Der Iterator bietet eine einfache Schnittstelle, um durch die Elemente einer Sammlung zu iterieren, ohne dass spezielle Zugriffslogik geschrieben werden muss.
+}
+
+\vorteil{Unabhängigkeit von der Sammlung}
+\note{
+    Der gleiche Iterator kann verwendet werden, um verschiedene Arten von Sammlungen zu durchlaufen. Dies fördert die Wiederverwendbarkeit und Flexibilität.
+}
+
+\vorteil{Ermöglichung mehrfacher gleichzeitiger Iterationen}
+\note{
+    Verschiedene Iteratoren können gleichzeitig durch dieselbe Sammlung iterieren, ohne sich gegenseitig zu beeinflussen.
+}
+
+\vorteil{Unterstützung für verschiedene Iterationstypen}
+\note{
+    Iteratoren können anpassbar sein und unterschiedliche Iterationsstrategien unterstützen, wie z. B. Vorwärts- oder Rückwärtsiteration, bedingte Iteration usw.
+}
+
+\vorteil{Erleichterung von komplexen Iterationen}
+\note{
+    Für komplexe Iterationslogiken oder spezielle Anforderungen (z. B. Filterung, Modifikation der Sammlung während der Iteration) können angepasste Iteratoren erstellt werden.
+}
+
+\vorteil{Open-Closed-Prinzip}
+\note{
+    Neue Iteratoren können hinzugefügt werden ohne den bestehenden Code ändern zu müssen.
+}
+
+\vorteil{Single-Responsibililty-Prinzip}
+\note{
+    Jeder Iterator hat eine klar definierte Iterationsaufgabe und auch nur diese eine Verantwortlichkeit.
+}
+
+\nachteil{Komplexität bei der Implementierung}
+\note{
+	Die Implementierung des Iterator-Musters kann zusätzliche Komplexität in den Code einführen, insbesondere wenn viele verschiedene Iteratoren benötigt werden.
+}
+
+\nachteil{Zusätzlicher Overhead}
+\note{
+	Die Verwendung von Iteratoren kann zusätzlichen Overhead erzeugen, sowohl in Bezug auf Speicher als auch auf Performance, da für jede Sammlung ein Iterator-Objekt erstellt werden muss.
+}
+
+\nachteil{Potenzial für Missbrauch}
+\note{
+	Für einfache Iterationen sollten keine eigenen Iteratoren implementiert werden. Wenn die Programmiersprache schon Iteratoren anbietet, sollte diese so weit wie möglich verwendet werden. 
+}
+
+\nachteil{Gefahr inkonsistenter Zustände}
+\note{
+	Ein Iterator kann durch seine Methoden (wie next() oder hasNext()) dazu führen, dass der Zustand der Sammlung während der Iteration nicht konsistent bleibt, wenn die Sammlung verändert wird. Es ist wichtig, Iteratoren korrekt zu implementieren, um Probleme wie ConcurrentModificationException zu vermeiden.
+}
+
+\nachteil{Zusätzliche Schnittstellen}
+\note{
+	Das Muster führt zusätzliche Schnittstellen und Klassen ein, die die Komplexität des Systems erhöhen können. Dies kann den Code schwerer verständlich und wartbar machen.
+}
+
+\nachteil{Gefahr versteckter Logik}
+\note{
+	Da der Iterator die Logik der Iteration kapselt, kann es schwierig sein, zu erkennen, wie genau die Iteration funktioniert, was die Fehlersuche und das Debuggen erschweren kann. Deswegen sollte man auch darauf achten, dass wirklich nur die Iterationslogik enthalten ist und nicht noch zusätzliche Logik, die mit der Iteration nichts zu tun hat. 
+}
+
+%\begin{frame}{Ergänzende Muster}
+%	\begin{itemize}
+% 		\item Kompositum
+% 		\item Memento
+% 		\item Fabrikmethode
+% 		\item Besucher
+% 	\end{itemize}
+%\end{frame}
+%\note{
+%	Iteratoren können verwendet werden, um durch Strukturen zu laufen, die mithilfe des Kompositum-Musters
+%	aufgebaut wurden. Für das Speichern der aktuellen Position kann das Mementomuster verwendet werden, wenn
+%	ein einfacher int nicht ausreicht. Die Fabrikmethode kann verwendet werden, um verschiedene Arten von
+%	Iteratoren zu erzeugen. Und das Besuchermuster kann eingesetzt werden, um komplexe Datenstrukturen 
+%	zu durchlaufen und Aktionen darauf auszuführen, auch wenn es sich um unterschiedliche Klassen handelt.
+%}

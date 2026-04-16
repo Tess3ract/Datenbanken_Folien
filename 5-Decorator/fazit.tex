@@ -1,0 +1,101 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Einsetzen wenn ...}
+	\begin{itemize}
+        \item Wenn Aspekte eines Objekts beschrieben werden sollen
+        \item Wenn Erweiterung durch Vererbung unpraktisch ist
+ 		\item Verantwortlichkeiten dynamisch und transparent zu individuellen Objekten hinzugefügt werden sollen
+ 		\item Verantwortlichkeiten wieder widerrufen werden können
+ 		\item Funktionalität zur Laufzeit austauschbar sein soll
+ 	\end{itemize}
+\end{frame}
+
+\note{
+    Der große Unterschied zu Vererbung ist, dass Vererbung neue Klassen definiert, während es hier um Aspekte oder Facetten eines Objekts geht, die nicht alle Objekte haben. Und dann lohnt Vererbung nicht, weil die Klassenhierarchie zu sehr ausufern würde. Erweiterung durch Vererbung wäre also unpraktisch. Der Dekorator ermöglicht es auch, Verantwortlichkeiten dynamisch und transparent zu individuellen Objekten hinzuzufügen, ohne andere Objekte zu beeinflussen. Ein Mechanismus zum Widerrufen der Verantwortlichkeiten ist denkbar. In vielen Softwaresystemen können die Benutzer zur Laufzeit Entscheidungen treffen, die Objekte und ihr Verhalten beeinflussen. Und an dieser Stelle hilft der Dekorierer wegen seiner Flexibilität enorm, denn statt neue Objekte zu erzeugen, erweitern wir die bestehenden einfach. Man lässt die eigentlichen Klassen also
+	bei ihrer orginalen Funktionalität und rüstet sie dann entsprechend auf.  
+}
+
+\vorteil{Hohe Flexibilität (Klassen während Laufzeit um neues Verhalten erweitern)}
+\note{
+	Das Decorator-Muster bietet eine hohe Flexibiltät, weil sich Klassen zur Laufzeit dynamisch um neues Verhalten erweitern lassen. Dekoratoren können zur Laufzeit dynamisch hinzugefügt und entfernt werden, was eine hohe Flexibilität bei der Objektzusammensetzung ermöglicht.
+}
+
+\vorteil{Keine ausufernde Klassenhierarchie mehr}
+\note{
+    Es gibt keine unübersichtlichen Klassenhierarchien, was die Lesbarkeit erhöht. 
+}
+
+\vorteil{Feinkörnige Erweiterung}
+\note{
+    Im Gegensatz zur Vererbung, bei der eine Klasse die gesamte Funktionalität der Elternklasse erbt, ermöglicht das Decorator-Muster eine feinkörnige, schrittweise Erweiterung. Man kann genau die Funktionalität hinzufügen, die benötigt wird, ohne überflüssige Funktionalitäten zu erben. 
+}
+
+\vorteil{Performanz-Steigerung möglich}
+\note{
+	Die Funktionalität wird auf unterschiedliche Decoratorklassen aufgeteilt, was die Performance	der Anwendung steigern kann, denn man kann gezieht die Funktionen aufrufen und initiieren, die man gerade benötigt.
+}
+
+\vorteil{Kann in Verwendung mit Legacy-Code nützlich sein}
+\note{
+	Bei einer alten Codebasis kann das Dekoratormuster eventuell helfen, um neue Funktionalität einzubauen ohne die alten Klassen anfassen zu müssen. 
+}
+
+\vorteil{Single Responsibility}
+\note{
+    Das Decorator-Muster fördert die Einhaltung des Single Responsibility Principles, da jede Klasse (Dekorator) eine klar definierte Aufgabe hat, beispielsweise das Hinzufügen einer spezifischen Funktionalität.
+}
+
+\vorteil{Open-Closed-Prinzip}
+\note{
+    Das Decorator-Muster ermöglicht es, die Funktionalität von Objekten zu erweitern, ohne deren Code zu ändern.
+}
+
+\nachteil{Höhere Komplexität der Software}
+\note{
+    Das Verwenden vieler dekorativer Schichten kann den Code komplizierter und schwerer verständlich machen, besonders wenn viele Dekoratoren nacheinander angewendet werden. Dies kann die Nachverfolgbarkeit und das Debuggen erschweren.
+}
+
+\nachteil{Viele kleine Objekte}
+\note{
+    Das Decorator-Muster führt oft zur Schaffung vieler kleiner Objekte, da für jede zusätzliche Funktionalität ein neuer Dekorator erzeugt wird. Dies kann die Speicherverwaltung und die Leistung beeinträchtigen, insbesondere in ressourcenbeschränkten Umgebungen.
+}
+
+\nachteil{Hoher Overhead}
+\note{
+    Die zusätzliche Indirektion durch die Dekoratoren kann zu einem Performance-Overhead führen, insbesondere wenn die Dekoratoren auf feinkörnige Operationen angewendet werden.
+}
+
+\nachteil{Erhöhte Komplexität bei der Instanziierung}
+\note{
+    Das Erstellen und Zusammensetzen der dekorierten Objekte kann komplexer werden, besonders wenn man dynamisch zur Laufzeit viele verschiedene Kombinationen erstellen muss.
+}
+
+\nachteil{Zugänglichkeit von Basisklassenmethoden}
+\note{
+    Manche Methoden der Basisklasse können in den Dekoratoren verloren gehen oder nicht mehr direkt zugänglich sein, wenn sie nicht explizit weitergereicht werden. Das kann zu unerwartetem Verhalten führen.
+}
+
+\nachteil{equals()-Methode}
+\note{
+    Auch die Implementierung einer korrekten equals()-Methode kann sich als schwieriger
+	 gestalten: Ist ein Kaffee mit Milch und Zucker das gleiche wie ein Kaffee mit Zucker und Milch?
+}
+
+\nachteil{Das Liskov-Substitutionsprinzip kann gebrochen werden}
+\note{
+    Der Einhaltung des Open-Closed-Prinzips wird leider manchmal das Liskov-Substitutionsprinzip geopfert, denn in den vielen Fällen wird die Vererbungsbeziehung zwischen dem Dekorator und dem eigentlichen Objekt keine korrekte ist-ein-Beziehung sein.
+}
+
+\nachteil{Problematisch bei Änderungen der Anforderungen}
+\note{
+    Im Allgemeinen benötigt das Dekorierer-Muster stabile Anforderungen, denn was geschieht, wenn die Aufrufe nicht mehr hintereinander ausgeführt werden sollen, sondern nach einer Änderung der Anforderung auf eine andere Art und Weise? Man hat eine recht hohe Abhängigkeit von dem Muster und seiner Arbeitsweise.
+}
+
+\begin{frame}{Fazit}
+	\begin{exampleblock}{Einsetzen wenn}
+ 		eine flexible und erweiterbare Architektur benötigt wird, um die Funktionalität von Objekten dynamisch zu verändern. 
+ 	\end{exampleblock}
+    \pause
+    \begin{alertblock}{Einsetzen mit Bedacht, denn}
+ 		die damit verbundene Komplexität muss handbar bleiben und es muss vermieden werden, dass der Code unnötig kompliziert wird.
+ 	\end{alertblock}
+\end{frame}

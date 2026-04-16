@@ -1,0 +1,83 @@
+\writeSectionFrame{\presentationTitle}{Das Null-Object-Pattern}
+\begin{frame}{Lösung: Null Object Pattern}
+    \begin{block}{Grundidee}
+        Statt \texttt{null} wird ein spezielles Objekt verwendet, das nichts tut
+        oder eine Null-Fall-Aktion ausführt.
+    \end{block}
+    \pause
+    \begin{itemize}
+        \item Kein null mehr $\rightarrow$ keine Nullprüfungen nötig
+        \item Einheitliches Verhalten
+        \item Einfach testbar und wartbar
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Basisinterface}
+	\begin{exampleblock}{Weapon.java}
+		\begin{lstlisting}
+public interface Weapon {
+    void attack();
+}
+	\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Weapon + Null Object}
+	\begin{exampleblock}{Sword.java}
+		\begin{lstlisting}
+public class Sword implements Weapon {
+    @Override
+    public void attack() {
+        System.out.println("Schwertangriff!");
+    }
+}
+		\end{lstlisting}
+	\end{exampleblock}
+	
+	\begin{exampleblock}{NullWeapon.java}
+		\begin{lstlisting}
+public class NullWeapon implements Weapon {
+    @Override
+    public void attack() {
+        // tut nichts
+    }
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Player mit Null Object}
+	\begin{exampleblock}{Player.java}
+		\begin{lstlisting}
+public class Player {
+    private final Weapon weapon;
+
+    public Player(Weapon weapon) {
+        if (weapon == null) {
+        	this.weapon = new NullWeapon();
+        } else {
+        	this.weapon = weapon;
+        }
+    }
+
+    public void attack() {
+        weapon.attack(); // nie null
+    }
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Null Object mit Alternativ-Aktion}
+	\begin{exampleblock}{UnarmedWeapon.java}
+		\begin{lstlisting}
+public class UnarmedWeapon implements Weapon {
+    @Override
+    public void attack() {
+        System.out.println("...");
+    }
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+

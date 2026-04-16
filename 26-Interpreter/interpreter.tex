@@ -1,0 +1,445 @@
+\writeSectionFrame{\presentationTitle}{Interpreter}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Interpreter
+ 		\item Englischer Name: Interpreter
+ 		\item Gruppe: Verhaltensmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+          % Interpreter Pattern Classes
+          \umlclass[x=0, y=6]{Client}{}{}
+          \umlclass[x=0, y=3]{AbstractExpression}{}{}
+          \umlclass[x=6, y=0]{TerminalExpression}{\textit{interpret(context)}}{}
+          \umlclass[x=6, y=3]{NonTerminalExpression}{\textit{interpret(context)}}{}
+          \umlclass[x=6, y=6]{Context}{}{}
+          
+          % Relationships
+          
+          \umlinherit{TerminalExpression}{AbstractExpression}
+          \umlinherit{NonTerminalExpression}{AbstractExpression}
+          \umluniassoc{Client}{Context}
+          \umluniassoc{Client}{AbstractExpression}
+        \end{tikzpicture}
+\end{frame}
+\note{
+	Das Interpreter-Muster beschreibt den Aufbau einer Grammatik, damit sie von einem Interpreter
+	ausgewertet werden kann. Außerdem muss der Ausdruck geparst werden. Der Parser ist jedoch nicht
+	Teil des Musters. Es geht bei dem Muster darum, einen abstrakten Syntax-Baum zu repräsentieren
+	und diesen zu interpretieren.
+}
+
+\begin{frame}{Abstrakter Syntax-Baum (AST)}
+	\begin{center}
+ 		\includegraphics[scale=0.2]{\BILDERPFAD/interpreter1.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}{Beispiele}
+	\begin{itemize}
+ 		\item Römische Zahlen umrechnen
+ 		\item Buchtexte durchsuchen
+ 		\item SQL-Simulation
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Römische Zahlen umrechnen - Sprache}
+	\begin{itemize}
+ 		\item M => 1000
+ 		\item C => 100
+ 		\item CD => 400
+ 		\item D => 500
+ 		\item CM => 900
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Römische Zahlen umrechnen - Sprache}
+	\begin{itemize}
+ 		\item X => 10
+ 		\item XL => 40
+ 		\item L => 50
+ 		\item XC = 90
+ 		\item I => 1
+ 		\item IV => 4
+ 		\item V = 5
+ 		\item IX = 9
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Klassendiagramm römische Zahlen}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+          % Interpreter Pattern Classes
+          \umlclass[x=0, y=6]{RomanNumberParser}{}{}
+          \umlclass[x=0, y=3]{Expression}{}{}
+          \umlclass[x=6, y=-2]{ThousandExpression}{
+            }{}
+          \umlclass[x=6, y=3]{HundredExpression}{
+          }{}
+
+          \umlclass[x=0, y=0]{TenExpression}{
+          }{}
+
+          \umlclass[x=6, y=1]{OneExpression}{
+          }{}
+          \umlclass[x=6, y=6]{RomanNumberContext}{}{}
+          
+          % Relationships
+          
+          \umlinherit{ThousandExpression}{Expression}
+          \umlinherit{HundredExpression}{Expression}
+          \umlinherit{TenExpression}{Expression}
+          \umlinherit{OneExpression}{Expression}
+          \umluniassoc{RomanNumberParser}{RomanNumberContext}
+          \umluniassoc{RomanNumberParser}{Expression}
+        \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Expression}
+	\begin{exampleblock}{Expression.java}
+ 		\begin{lstlisting}
+public abstract class Expression {
+	public abstract String one();
+	public abstract String four();
+	public abstract String five();
+	public abstract String nine();
+	public abstract int multiplicator();
+
+	public abstract boolean isStarting(String value);
+}
+
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Expression}
+	\begin{exampleblock}{Expression.java}
+ 		\begin{lstlisting}
+public void interpret(RomanNumbersContext romanNumbersContext) {
+    String romanNumber = romanNumbersContext.getRomanNumber();
+    
+    if (romanNumber.length() > 0) {
+        romanNumber = romanNumbersContext.getRomanNumber();
+        while (isStarting(romanNumber)) {
+            if (romanNumber.startsWith(nine())) {
+                romanNumbersContext.add(9 * multiplicator());
+                romanNumbersContext.removeFirstTwoRomanDigits();
+            } else if (romanNumber.startsWith(four())) {
+                // ...
+            } else if (romanNumber.startsWith(five())) {
+               // ...
+            } else if (romanNumber.startsWith(one())) {
+                // ...
+            }
+            romanNumber = romanNumbersContext.getRomanNumber();
+        }
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{TerminalExpression}
+	\begin{exampleblock}{HundredExpression.java}
+ 		\begin{lstlisting}
+public class HundredExpression extends Expression {
+	@Override
+	public String one() {
+		return "C";
+	}
+
+	@Override
+	public int multiplicator() {
+		return 100;
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{TerminalExpression}
+	\begin{exampleblock}{HundredExpression.java}
+ 		\begin{lstlisting}
+@Override
+public boolean isStarting(String value) {
+    if (value.startsWith("C")) {
+        return true;
+    }
+    
+    if (value.startsWith("CD")) {
+        return true;
+    } 
+    // ...
+    
+    return false;
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Context}
+	\begin{exampleblock}{RomanNumbersContext.java}
+ 		\begin{lstlisting}
+public class RomanNumbersContext {
+	private String romanNumber;
+	private int decimal;
+	
+	public RomanNumbersContext(String romanNumber) {
+		this.romanNumber = romanNumber;
+	}
+	
+	public void removeFirstRomanDigit() {
+		romanNumber = romanNumber.substring(1);
+	}
+	
+	public void removeFirstTwoRomanDigits() {
+		romanNumber = romanNumber.substring(2);
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Context}
+	\begin{exampleblock}{RomanNumbersContext.java}
+ 		\begin{lstlisting}
+public void add(int number) {
+    decimal = decimal + number;
+}
+
+public int getDecimal() {
+    return decimal;
+}
+
+public String getRomanNumber() {
+    return romanNumber;
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/interpreter2.jpg}
+\note{
+    Als nächstes implementieren wir eine Suche für ein Bibliothekssystem.
+}
+
+\begin{frame}{Buchsuche - Sprache}
+	\begin{itemize}
+ 		\item AND => Literal1 vorhanden und Literal2 vorhanden
+ 		\item OR => Literal1 vorhanden oder Literal2 vorhanden
+ 		\item Literal => String-Ausdruck
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Klassendiagramm Buchsuche}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+          % Interpreter Pattern Classes
+          \umlclass[x=0, y=6]{BookSearch}{}{}
+          \umlclass[x=0, y=3]{BookExpression}{}{}
+          \umlclass[x=6, y=0]{AndExpression}{
+            }{}
+          \umlclass[x=6, y=3]{OrExpression}{
+          }{}
+
+          \umlclass[x=0, y=0]{TerminalExpression}{
+          }{}
+
+          \umlclass[x=6, y=6]{BookContentSearchContext}{}{}
+          
+          % Relationships
+          
+          \umlinherit{AndExpression}{BookExpression}
+          \umlinherit{OrExpression}{BookExpression}
+          \umlinherit{TerminalExpression}{BookExpression}
+          \umluniassoc{BookSearch}{BookContentSearchContext}
+          \umluniassoc{RomanNumberParser}{Expression}
+        \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{AST Buchsuche}
+	\begin{center}
+ 		\includegraphics[scale=0.35]{\BILDERPFAD/interpreter3.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Expression}
+	\begin{exampleblock}{BookExpression.java}
+ 		\begin{lstlisting}
+public interface BookExpression {
+	List<Book> interpret();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{NonTerminalExpression}
+	\begin{exampleblock}{OrExpression.java}
+ 		\begin{lstlisting}
+public class OrExpression implements Expression {
+	private Expression expression1;
+	private Expression expression2;
+
+	@Override
+	public List<Book> interpret(BookContentSearchContext 
+            interpreterBookContext) {
+		List<Book> books = expression1.interpret(
+            interpreterBookContext);
+		books.addAll(expression2.interpret(
+            interpreterBookContext));
+		
+		return books;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{TerminalExpression}
+	\begin{exampleblock}{TerminalExpression.java}
+ 		\begin{lstlisting}
+public class TerminalExpression implements Expression {
+	private String searchTerm;
+
+	@Override
+	public List<Book> interpret(BookContentSearchContext 
+            interpreterBookContext) {
+		List<Book> foundBooks = new ArrayList<>();
+		List<Book> books = interpreterBookContext.getBooks();
+		
+		for (Book book: books)  {
+			String content = book.getContent();
+			if (content.contains(searchTerm)) {
+				foundBooks.add(book);
+			}
+		}
+		
+		return foundBooks;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/interpreter4.jpg}
+\note{
+    Als letztes Beispiel entwickeln wir eine kleine Simulation der Abfragesprache SQL. 
+}
+
+\begin{frame}{Klassendiagramm Sql-Simulation}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+          % Interpreter Pattern Classes
+          \umlclass[x=0, y=6]{SqlMain}{}{}
+          \umlclass[x=0, y=3]{SQLExpression}{}{}
+          \umlclass[x=6, y=-2]{NumericValue}{
+            }{}
+          \umlclass[x=6, y=3]{AndExpression}{
+          }{}
+
+          \umlclass[x=10, y=5]{IsPositiveExpression}{
+          }{}          
+
+          \umlclass[x=0, y=0]{BetweenExpression}{
+          }{}
+
+          \umlclass[x=6, y=1]{MaxExpression}{
+          }{}
+          \umlclass[x=6, y=6]{SqlTableContext}{}{}
+          
+          % Relationships
+          
+          \umlinherit{NumericValue}{SQLExpression}
+          \umlinherit{AndExpression}{SQLExpression}
+          \umlinherit{BetweenExpression}{SQLExpression}
+          \umlinherit{MaxExpression}{SQLExpression}
+          \umlinherit{IsPositiveExpression}{SQLExpression}
+          \umluniassoc{SqlMain}{SqlTableContext}
+          \umluniassoc{SqlMain}{SQLExpression}
+        \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{AST Sql-Simulation}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/interpreter5.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Expression}
+	\begin{exampleblock}{SqlExpression.java}
+ 		\begin{lstlisting}
+public interface SqlExpression {
+	List<NumericValue> interpret(SqlTableContext sqlTableContext);
+}
+
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{NonTerminalExpression}
+	\begin{exampleblock}{LessThanExpression.java}
+ 		\begin{lstlisting}
+public class LessThanExpression implements SqlExpression {
+	private SqlExpression expression;
+	
+	@Override
+	public List<NumericValue> interpret(SqlTableContext 
+            sqlTableContext) {
+		List<NumericValue> values = sqlTableContext.getValues();
+		List<NumericValue> result = new ArrayList<>();
+		NumericValue compareValue = expression.
+            interpret(sqlTableContext).get(0);
+		
+		for (int i = 0; i < values.size(); i++) {
+			// ...
+		}
+		
+		return result;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{NonTerminalExpression}
+	\begin{exampleblock}{BetweenExpression.java}
+ 		\begin{lstlisting}
+public class BetweenExpression implements SqlExpression {
+	private SqlExpression expression1;
+	private SqlExpression expression2;
+
+	@Override
+	public List<NumericValue> interpret(SqlTableContext 
+            sqlTableContext) {
+		List<NumericValue> values = sqlTableContext.getValues();
+		List<NumericValue> result = new ArrayList<>();
+		
+		for (int i = 1; i < values.size(); i++) {
+			// ...
+		}
+
+		return result;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{TerminalExpression}
+	\begin{exampleblock}{NumericValue.java}
+ 		\begin{lstlisting}
+public class NumericValue implements SqlExpression {
+	private int value;
+	
+	public int getValue() {
+		return value;
+	}
+
+	@Override
+	public List<NumericValue> interpret(SqlTableContext 
+            sqlTableContext) {
+		List<NumericValue> results = new ArrayList<>();
+		results.add(this);
+		return results;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

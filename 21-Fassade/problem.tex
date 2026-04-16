@@ -1,0 +1,36 @@
+\writeSectionFrame{\presentationTitle}{Das Problem}
+\begin{frame}{Untersysteme}
+	\begin{center}
+ 		\includegraphics[scale=0.2]{\BILDERPFAD/problem1.png}
+ 	\end{center}
+\end{frame}
+\note{
+	Wir haben irgendeine Art von Untersystem, das aus vielen Klassen besteht. Nun haben wir eine Klasse,
+	die auf viele Klassen dieses Untersystems zugreift. Man muss Objekte von all diesen Klassen
+	initialisieren, Abhängigkeiten im Auge behalten, Methoden in der korrekten Reihenfolge ausführen usw.
+}
+
+\begin{frame}{Fremdbibliotheken}
+	\begin{center}
+ 		\includegraphics[scale=0.3]{\BILDERPFAD/problem2.png}
+ 	\end{center}
+\end{frame}
+\note{
+	Wir können auf eine Fremdbibliothek zugreifen und diese möchten wir eventuell irgendwann auch
+	wieder austauschen. Wenn es aber jetzt viele Abhängigkeiten zu einzelnen Klassen gibt, ist
+	ein Austausch nahezu unmöglich.
+}
+
+\begin{frame}{Firmenübernahme}
+	\begin{center}
+ 		\includegraphics[scale=0.24]{\BILDERPFAD/problem3.png}
+ 	\end{center}
+\end{frame}
+\note{
+	Oder ein anderes Szenario. Unsere Firma Schleckermann übernimmt die Konkurrenzfirma
+	BestellFix. Beide Unternehmen haben eine Webseite und eine dahinter liegende Backend-Software.
+	Wir möchten die Software von BestellFix aus organisatorischen Gründen erst einmal beibehalten,
+	weil die Umstellung der über 3000 Filialen einige Jahre dauern wird, aber für den Kunde soll
+	es nur noch Schleckermann geben, d.h. es soll auch nur noch eine Webseite geben. Aber unsere
+	Webanwendung ist absolut abhängig von unserem eigenen System.
+}

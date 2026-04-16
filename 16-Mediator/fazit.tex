@@ -1,0 +1,111 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendungsfälle}
+	\begin{itemize}
+ 		\item Objekte, die miteinander in enger Verbindung stehen
+ 		\item Objekte können fachlichen Gruppen zugeordnet werden
+ 		\item Verbindungsart ist gut dokumentiert und bekannt
+ 		\item Dennoch komplexer Kommunikationsfluss
+ 		\item Wiederverwendbare Objekte
+ 		\item Kommunikationsverhalten würde Objekte aufblähen
+ 	\end{itemize}
+\end{frame}
+
+\realworld{Chat-Anwendungen}{Koordination der  Kommunikation zwischen mehreren Teilnehmern}
+\note{
+    Chat-Anwendungen verwenden häufig das Mediator-Muster, um die Kommunikation zwischen mehreren Teilnehmern zu koordinieren. Ein zentraler Server oder eine zentrale Komponente übernimmt die Vermittlung der Nachrichten zwischen den Clients.
+}
+
+\realworld{Java RMI}{Kommunikation zwischen entfernten Objekten}
+\note{
+    Java RMI ermöglicht die Kommunikation zwischen entfernten Objekten. Der RMI-Registry-Dienst kann als Mediator betrachtet werden, der Server-Objekte registriert und Clients den Zugriff auf diese Objekte vermittelt.
+}
+
+\realworld{Java Message Service (JMS)}{Vermittler zwischen verschiedenen Komponenten oder Anwendungen}
+\note{
+    JMS ist eine Java-API zur Nachrichtenaustausch-Kommunikation in verteilten Systemen. Es implementiert das Mediator-Muster, indem es als Vermittler zwischen verschiedenen Komponenten oder Anwendungen agiert, die Nachrichten austauschen möchten. Ein JMS-Broker fungiert als Mediator, der die Nachrichtenweiterleitung zwischen den Produzenten und Konsumenten organisiert.
+}
+
+\realworld{Spring Framework}{ApplicationContext als zentraler Container}
+\note{
+    Das Spring Framework nutzt das Mediator-Muster über seinen ApplicationContext, der als zentraler Container für die Bean-Verwaltung fungiert. Anstatt dass Beans direkt miteinander kommunizieren, verwaltet der ApplicationContext die Interaktionen und Abhängigkeiten zwischen den Beans.
+}
+
+\realworld{Grafische Oberflächen }{Koordinierung von Komponenten}
+\note{
+    In einem Dialogfenster koordiniert der Dialog als Mediator die verschiedenen GUI-Elemente. Wenn eine Schaltfläche geklickt wird, kann der Mediator (der Dialog) andere Komponenten darüber informieren oder ihre Zustände ändern, ohne dass die Schaltfläche direkt auf die anderen Komponenten zugreift.
+}
+
+\begin{frame}{Grafische Oberflächen}
+	\begin{center}
+ 		\includegraphics[scale=0.3]{\BILDERPFAD/fazit1.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Das Prinzip können wir in grafischen Oberflächen beobachten. Es gibt eine Vielzahl
+	von Objekten, die irgendwie koordiniert werden müssen. In jedem Fenster läuft
+	die Koordinierung anders ab. So haben wir eine Klasse, die die grafische
+	Oberfläche koordiniert, ohne dass wir Unterklassen von den Komponentenklassen
+	bilden müssen. Die Geschätslogik ist also nicht wild verstreut, sondern wird
+	an einer Stelle gesammelt.
+}
+
+\vorteil{Verringerung der Komplexität}
+\note{
+    Das Mediator-Muster reduziert die Anzahl der direkten Abhängigkeiten zwischen den Klassen. Anstatt dass jede Komponente mit jeder anderen direkt kommuniziert, kommunizieren sie nur mit dem Mediator. Dies führt zu einer vereinfachten und übersichtlicheren Architektur, besonders bei Systemen mit vielen interagierenden Komponenten.
+}
+
+\vorteil{Erleichterte Wartung}
+\note{
+    Da der Mediator die gesamte Interaktionslogik zentralisiert, wird der Code in den beteiligten Komponenten einfacher. Änderungen an der Interaktionslogik müssen nur im Mediator vorgenommen werden, was die Wartung und Erweiterung der Anwendung erleichtert.
+}
+
+\vorteil{Lose Kopplung}
+\note{
+    Komponenten sind lose gekoppelt, da sie nicht direkt miteinander, sondern nur mit dem Mediator interagieren. Dies fördert die Wiederverwendbarkeit der Komponenten, da sie unabhängig von den Details der anderen Komponenten arbeiten können.
+}
+
+\vorteil{Bessere Verteilung der Verantwortlichkeiten}
+\note{
+    Das Mediator-Muster fördert die klare Trennung der Logik. Komponenten sind für ihre eigenen Zustände und Aufgaben verantwortlich, während der Mediator die Kommunikationslogik handhabt. Dies entspricht dem Single Responsibility Principle (SRP).
+}
+
+\vorteil{Erleichterte Testbarkeit}
+\note{
+    Da die Logik der Interaktion zentralisiert ist, wird das Testen vereinfacht. Es ist einfacher, das Verhalten des Systems zu testen, indem nur der Mediator getestet wird, da er die zentralen Interaktionen steuert.
+}
+
+\vorteil{Flexibilität bei der Änderung der Interaktion}
+\note{
+    Da die Interaktionslogik im Mediator zentralisiert ist, können Änderungen an der Interaktion zwischen Komponenten leicht vorgenommen werden, ohne dass jede Komponente separat geändert werden muss.
+}
+
+\nachteil{Vermittler könnte zu einem Gott-Objekt werden}
+\note{
+    Wenn der Mediator zu viele Komponenten und deren Interaktionen verwaltet, kann der Mediator selbst sehr komplex und schwierig zu verstehen und zu pflegen werden. Dies führt zu einer „God Object“-Problematik, bei der eine Klasse zu viele Verantwortlichkeiten übernimmt.
+}
+
+\nachteil{Potenzielle Leistungseinbußen}
+\note{
+    Da alle Kommunikation über den Mediator läuft, kann dies zu einem Engpass führen, insbesondere wenn viele Komponenten häufig kommunizieren. Der Mediator kann dann die Leistung des Systems beeinträchtigen. Eventuell ist dann irgendeine Art von Redundanz und Lastverteilung notwendig. 
+}
+
+\nachteil{Schwierigere Fehlersuche}
+\note{
+    Da die Kommunikation zentralisiert ist, kann es schwieriger sein, nachzuvollziehen, welche Komponente welches Ereignis ausgelöst hat und wie es zu bestimmten Zuständen oder Fehlern gekommen ist. Dies kann die Fehlersuche und das Debugging erschweren.
+}
+
+\nachteil{Erhöhte Komplexität bei der Einführung}
+\note{
+    In einfachen Szenarien kann das Hinzufügen eines Mediators unnötige Komplexität einführen. Das Mediator-Muster lohnt sich oft erst bei einer Vielzahl von Komponenten und komplexen Interaktionen. Die zentrale Lösung ist nicht immer die beste.
+}
+
+\nachteil{Potenzial für enge Kopplung an den Mediator}
+\note{
+    Obwohl der Mediator die Kopplung zwischen den Komponenten reduziert, können die Komponenten stark von dem spezifischen Mediator abhängen. Wenn der Mediator geändert werden muss, kann dies Auswirkungen auf alle beteiligten Komponenten haben.
+}
+
+\nachteil{Komplexität der Kommunikation wird einfach nur verlagert}
+\note{
+    Man muss bei diesem Muster beachten, dass die Komplexität der Kommunikation nicht einfach verschwindet, sondern sie wird erst einmal nur verlagert: aus den Komponenten heraus in den Mediator. 
+}

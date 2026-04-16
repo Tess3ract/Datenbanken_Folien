@@ -1,0 +1,124 @@
+\writeSectionFrame{\presentationTitle}{Singleton}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Singleton
+ 		\item Alternativer deutscher Name: Einzelstück (eher selten benutzt)
+ 		\item Englischer Name: Singleton
+ 		\item Gruppe: Erzeugungsmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Singleton}
+	\begin{block}{Zweck}
+ 		Sichere, dass eine Klasse genau ein Exemplar besitzt, und stelle einen globalen Zugriffspunkt darauf zur Verfügung.
+ 	\end{block}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/singleton1.jpg}
+\note{
+	Das erste einfache Muster ist der Singleton. Dieses Muster wird eingesetzt,
+	wenn es von einer Klasse nur ein einziges Objekt geben darf. Auf dieses Objekt kann dann vom gesamten
+	Programm aus zugegriffen werden.Wir erinnern uns an Spring: Dort wurden standardmäßig 
+	alle von Spring verwalteten Objekte als Singletons erstellt und verwaltet. Als
+	Singleton verwalten werden können z.B. Fassaden, Dao-Klassen oder Klassen mit der 
+	Geschäftslogik.  
+}
+
+\frameWithImageOnly{\BILDERPFAD/singleton2.jpg}
+\note{
+	 Beim Zustand der Singleton-Objekte ist Vorsicht geboten, denn sie dürfen natürlich keinen
+	 objektspezifischen Zustand besitzen. 
+}
+
+\begin{frame}{Klassendiagramm}
+	\begin{center}
+ 		\includegraphics[scale=0.65]{\BILDERPFAD/singleton3.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Das Klassendiagramm ist das einfachste der Entwurfsmuster. Der Singleton verwaltet das einzige
+	existierende Objekt selbst und somit können nicht mehr mehrere Objekte erzeugt werden.
+}
+
+\begin{frame}[fragile]{Einzige Instanz}
+	\begin{exampleblock}{ConfigurationSingleton.java}
+		\begin{lstlisting}
+public final class ConfigurationSingleton {
+	private static final String CONFIGURATION_FILE = 
+        "configuration.properties";
+	private Map<String, String> configurationMap;
+	private static ConfigurationSingleton configuration;
+			    
+		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Zuerst definieren wir in der Singleton-Klasse die einzige Instanz als statisches Attribut
+}
+
+\begin{frame}[fragile]{Methode getInstance()}
+	\begin{exampleblock}{ConfigurationSingleton.java}
+		\begin{lstlisting}
+public static ConfigurationSingleton getInstance() {
+    if (configuration == null) {
+        configuration = new ConfigurationSingleton();
+    }
+    return configuration;
+}		    
+		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Dann brauchen wir eine Methode, die das einzige Objekt zurückgibt, so dass man damit arbeiten kann.
+	Wir haben aber ein Problem: Wir stellen nicht sicher, dass es tatsächlich nur eine einzige Instanz
+	gibt. Aber wie erzeugen wir diese Instanz? Das tun wir in genau dieser Methode getInstance(). Wir sehen nach, ob das Objekt bereits existiert und
+	wenn nicht, wird es instantiiert.
+}
+
+\begin{frame}[fragile]{Verwendung}
+	\begin{exampleblock}{ConfigurationSingleton.java}
+		\begin{lstlisting}
+private static void singletonExample() {
+    ConfigurationSingleton configuration1 = 
+        ConfigurationSingleton.getInstance();
+ 
+    configuration1.addValue("background", "black");
+    configuration1.addValue("margin", "10mm");
+    
+    ConfigurationSingleton configuration2 = 
+        ConfigurationSingleton.getInstance();
+    
+    configuration2.addValue("italic", "true");
+    configuration2.addValue("bold", "false");
+    
+    configuration1.writeToFile();
+    configuration2.writeToFile();
+}
+	 	\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Wir haben jetzt tatsächlich nur ein einziges Objekt, wenn wir mit der Methode getInstance() arbeiten. Aber
+	wir erzwingen noch nicht, dass tatsächlich nur ein einziges Objekt erzeugt wird.
+}
+
+\begin{frame}[fragile]{Singleton}
+	\begin{exampleblock}{ConfigurationSingleton.java}
+		\begin{lstlisting}
+private ConfigurationSingleton() {
+    initializeFile();
+    configurationMap = new HashMap<String, String>();
+    loadConfigurationFromFile();
+}
+	 	\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+    Indem wir den Konstruktor privat setzen, verhindern wir jede weitere Objekterzeugung und somit können keine weiteren Objekte mehr erzeugt werden.
+}
+

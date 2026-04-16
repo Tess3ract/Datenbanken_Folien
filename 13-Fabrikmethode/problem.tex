@@ -1,0 +1,46 @@
+\writeSectionFrame{\presentationTitle}{Das Problem}
+\begin{frame}{Unser Transportunternehmen}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/problem1.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+ 	Wir haben eine Anwendung zur Verwaltung eines Transportunternehmens. Die
+ 	erste Version kann nur mit LKWs arbeiten. Aber nach einiger Zeit wird unsere
+ 	Anwendung richtig populär und beliebt und zahlreiche Unternehmen benutzen sie. 
+ 	Und irgendwann bekommen wir auch Anfragen von Unternehmen, die Fracht mit Schiffen
+ 	und Zügen transportieren. Unsere Anwendung ist jedoch fest an LKWs gekoppelt. Schiffe
+ 	oder Züge einbauen würde einen hohen Aufwand bedeuten und ein ziemliches Chaos
+ 	im Code. 
+}
+
+\begin{frame}{Unser Transportunternehmen}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/problem2.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+ 	Es wäre doch viel schöner, wenn wir die Anwendung unabhängig von konkreten
+ 	Transportmitteln halten könnten. Wenn die Anwendung in einem Logistik-Unternehmen,
+ 	das LKWs verwendet, würden LKW-Objekte verwendet werden, in einem Bahnunternehmen Züge
+ 	und in einer Schiffslogistikfirma kämen Schiffe zum Einsatz. Alle drei Klassen machen
+ 	das gleiche: Sie transportieren Waren.
+}
+
+\begin{frame}[fragile]{Traditionelle Objekterzeugung}
+	\begin{alertblock}{Fahrzeugerzeugung}
+        \begin{lstlisting}
+Transporter truck1 = new Truck(...);
+Transporter ship1 = new Ship(...);
+Transporter truck2 = new Truck(...);
+Transporter ship2 = new Ship...);
+Transporter train1 = new Train(...);
+Transporter train2 = new Train(...);
+        \end{lstlisting}
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Bei einer solchen Objekterzeugung haben wir mehrere Probleme, vor allem weil wir eine direkte Abhängigkeit zur Implementierung in unseren Code schreiben. Wenn wir irgendwelche Änderungen der Objekterzeugung vornehmen möchten, müssen wir Änderungen an mehreren Stellen im Code vornehmen. Im Grunde geht es darum, die Objekterzeugung auszulagern.
+}

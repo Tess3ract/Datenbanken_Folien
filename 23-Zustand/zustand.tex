@@ -1,0 +1,512 @@
+\writeSectionFrame{\presentationTitle}{Zustand}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Zustand
+ 		\item Englischer Name: State
+ 		\item Gruppe: Verhaltensmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Zustand}
+	\begin{block}{Zweck}
+ 		Ermögliche es einem Objekt, sein Verhalten zu ändern, wenn sich sein interner Zustand ändert. Es wird so aussehen, als ob das Objekt seine Klasse gewechselt hat. 
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+    \begin{tikzpicture}[scale=0.8, transform shape]
+        \umlclass[x=-3,y=0]{Kontext}{
+        }{
+        }
+    
+        \umlclass[x=2,y=0]{Zustand}{
+        }{
+            +bearbeiten()
+        }
+
+        \umlclass[x=-1,y=-3]{KonkreterZustand1}{
+        }{
+            +bearbeiten()
+        }
+
+        \umlclass[x=4,y=-3]{KonkreterZustand2}{
+        }{
+            +bearbeiten()
+        }
+        
+        \umlaggreg{Kontext}{Zustand}
+        
+        \umlinherit{KonkreterZustand1}{Zustand}
+        \umlinherit{KonkreterZustand2}{Zustand}
+    \end{tikzpicture}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/zustand1.jpg}
+
+\tikzumlset{
+    state width=1ex
+}
+
+\begin{frame}{Zustandsdiagramm Beispiel}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlstateinitial[name=initial, x=1, y=5.2]  % Startpunkt des Diagramms
+        \umlstatefinal[name=final, x=2, y=-1.9]      % Endpunkt des Diagramms
+    
+        \begin{umlstate}[name=waitingState, x=4, y=5]{WaitingState}
+        \end{umlstate}
+    
+        \begin{umlstate}[name=alarmedState, x=12, y=5]{AlarmedState}
+        \end{umlstate}
+    
+        \begin{umlstate}[name=deadState, x=7, y=-2]{DeadState}
+        \end{umlstate}
+    
+        \begin{umlstate}[name=fightingState, x=14, y=-2]{FightingState}
+        \end{umlstate}
+
+        \begin{umlstate}[name=goingBackState, x=7, y=2]{GoingBackState}
+        \end{umlstate}        
+
+        \begin{umlstate}[name=victoriousState, x=2, y=0]{VictoriousState}
+        \end{umlstate}  
+
+        \begin{umlstate}[name=attackingState, x=14, y=2]{attackingState}
+        \end{umlstate}  
+    
+        \umltrans{initial}{waitingState}
+        \umltrans[arg=distance<5]{waitingState}{alarmedState}
+        \umlHVtrans[arg=distance<3]{alarmedState}{attackingState}
+        \umltrans[arg=distance<1]{attackingState}{fightingState}
+        \umltrans[arg=distance>5]{attackingState}{goingBackState}
+        \umltrans[arg=distance>5]{fightingState}{goingBackState}
+        \umlHVtrans[arg=angekommen]{goingBackState}{waitingState}
+        \umltrans[arg=hitpoints<0]{fightingState}{deadState}
+        \umltrans[arg=hitpointsPlayer<0]{fightingState}{victoriousState}
+        \umltrans{victoriousState}{final}
+        \umltrans{deadState}{final}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Klassendiagramm Beispiel}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=-3,y=0]{Enemy}{
+        }{
+        }
+    
+        \umlclass[x=2,y=0]{EnemyState}{
+        }{
+            +react()
+        }
+
+        \umlclass[x=-1,y=-3]{WaitingState}{
+        }{
+            +react()
+        }
+
+        \umlclass[x=4,y=-3]{AlarmedState}{
+        }{
+            +react()
+        }
+
+        \umlclass[x=7,y=-1]{AttackingState}{
+        }{
+            +react()
+        }
+
+        \umlclass[x=2,y=-5]{FightingState}{
+        }{
+            +react()
+        }        
+        
+        
+        \umlaggreg{Kontext}{EnemyState}
+        
+        \umlinherit{AlarmedState}{EnemyState}
+        \umlinherit{WaitingState}{EnemyState}
+        \umlinherit{AttackingState}{EnemyState}
+        \umlinherit{FightingState}{EnemyState}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Zustand}
+	\begin{exampleblock}{EnemyState}
+     	  \begin{lstlisting}
+public abstract class EnemyState {
+	public abstract void react();
+}     	      
+     	  \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Zustand 1}
+	\begin{exampleblock}{WaitingState}
+ 		\begin{lstlisting}
+public class WaitingState extends EnemyState {
+	public void react() {
+		int distance = 0;
+
+		distance = player.getPosition() - enemy.getPosition();
+		if (distance >= WAITING_RADIUS) {
+			System.out.println("Feind wartet");
+		} else {
+			enemy.changeState(new AlarmedState(enemy, player));
+		}
+	}
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Zustand 2}
+	\begin{exampleblock}{AlarmedState}
+ 		\begin{lstlisting}
+public class AlarmedState extends EnemyState {
+	public void react() {
+		int distance = 0;
+		distance = player.getPosition() - enemy.getPosition();
+		enemy.moveForward();
+		
+		if (distance > 0 && distance <= ALARMED_RADIUS) {
+			System.out.println("Feind ist alarmiert");
+		} else {
+			enemy.changeState(new AttackingState(enemy, player));
+		}
+	}
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{Enemy}
+ 		\begin{lstlisting}
+public class Enemy {
+	private EnemyState enemyState;
+	private int position;
+	private int health;
+	
+	public Enemy() {
+		position = 0;
+		health = 10;
+	}
+	
+	public void changeState(EnemyState enemyState) {
+		this.enemyState = enemyState;
+	}
+	
+	public void doAction() {
+		enemyState.react();
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/zustand2.jpg}
+\begin{frame}{Zustandsdiagramm Beispiel}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlstateinitial[name=initial, x=1, y=5.2]  % Startpunkt des Diagramms
+        \umlstatefinal[name=final, x=3, y=-0.7]      % Endpunkt des Diagramms
+    
+        \begin{umlstate}[name=readyState, x=4, y=5]{ReadyState}
+        \end{umlstate}
+    
+        \begin{umlstate}[name=playState, x=9, y=5]{PlayState}
+        \end{umlstate}
+    
+        \begin{umlstate}[name=pauseState, x=14, y=2]{PauseState}
+        \end{umlstate}
+    
+        \begin{umlstate}[name=stoppedState, x=8, y=-1]{StoppedState}
+        \end{umlstate}
+    
+        \umltrans{initial}{readyState}
+        \umltrans[arg=onPlay]{readyState}{playState}
+        \umlHVtrans[arg=onPause]{playState}{pauseState}
+        \umlHVtrans[arg=onPlay]{pauseState}{playState}
+        \umlVHtrans[arg=onstop]{pauseState}{stoppedState}
+        \umltrans[arg=onstop]{playState}{stoppedState}
+        \umltrans[arg=onplay]{stoppedState}{readyState}
+        \umltrans[arg=onstop]{stoppedState}{final}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Klassendiagramm Beispiel}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=-3,y=0]{MediaPlayer}{
+        }{
+        }
+    
+        \umlclass[x=2,y=0]{State}{
+        }{
+            +onNext(): String\\
+            +onPlay(): String\\
+            +onPrevious(): String\\
+            +onStop(): String\\
+        }
+
+        \umlclass[x=-1,y=-3]{PauseState}{
+        }{
+        }
+
+        \umlclass[x=4,y=-3]{PlayingState}{
+        }{
+        }
+
+        \umlclass[x=7,y=-1]{StoppedState}{
+        }{
+        }
+
+        \umlclass[x=2,y=-5]{ReadyState}{
+        }{
+        }        
+        
+        \umlaggreg{MediaPlayer}{State}
+        
+        \umlinherit{StoppedState}{State}
+        \umlinherit{PlayingState}{State}
+        \umlinherit{PauseState}{State}
+        \umlinherit{ReadyState}{State}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Zustand}
+	\begin{exampleblock}{State.java}
+     	  \begin{lstlisting}
+public abstract class State {
+    private MediaPlayer player;
+
+    public State(MediaPlayer player) {
+        this.player = player;
+    }
+
+    public abstract String onStop();
+    public abstract String onPlay();
+    public abstract String onNext();
+    public abstract String onPrevious();
+}      
+     	  \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Zustand 1}
+	\begin{exampleblock}{PlayingState.java}
+ 		\begin{lstlisting}
+public class PlayingState extends State {
+    PlayingState(MediaPlayer player) {
+        super(player);
+    }
+
+    @Override
+    public String onStop() {
+    	MediaPlayer player = getPlayer();
+        player.changeState(new StoppedState(player));
+        player.setCurrentTrackAfterStop();
+        return "Abspielen gestoppt";
+    }    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Zustand 1}
+	\begin{exampleblock}{PlayingState.java}
+ 		\begin{lstlisting}
+@Override
+public String onPlay() {
+    MediaPlayer player = getPlayer();
+    player.changeState(new PauseState(player));
+    return "Pausiert...";
+}
+
+@Override
+public String onNext() {
+    MediaPlayer player = getPlayer();
+    return player.nextTrack();
+} 
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Zustand 1}
+	\begin{exampleblock}{PlayingState.java}
+ 		\begin{lstlisting}
+@Override
+public String onPrevious() {
+    MediaPlayer player = getPlayer();
+    return player.previousTrack();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{Enemy.java}
+ 		\begin{lstlisting}
+public class MediaPlayer {
+    private State state;
+    private boolean playing;
+    private List<String> playlist;
+    private int currentTrack = 0;
+
+    public MediaPlayer() {
+    	playlist = new ArrayList<>();
+        this.state = new ReadyState(this);
+        playing = true;
+        for (int i = 1; i <= 12; i++) {
+            playlist.add("Track " + i);
+        }
+    }
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/zustand3.jpg}
+\begin{frame}{Zustandsdiagramm Beispiel}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+    % Initial state (start)
+    \umlstateinitial[name=initial, x=-1, y=0]
+
+    % Define the states
+    \begin{umlstate}[name=normalState, x=2, y=0]{NormalState}
+    \end{umlstate}
+
+    \begin{umlstate}[name=overdrawnState, x=12, y=-3]{OverdrawnState}
+    \end{umlstate}
+
+    \begin{umlstate}[name=lockedState, x=6, y=-6]{LockedState}
+    \end{umlstate}    
+    % Final state (end)
+    \umlstatefinal[name=final, x=1, y=-4]
+
+    % Transitions between the states
+    \umltrans[arg=Konto eröffnen]{initial}{normalState}
+    \umlHVtrans[arg=Geld abheben ohne ausreichendes Guthaben]{normalState}{overdrawnState}
+    \umltrans[arg=Genug Geld einzahlen]{overdrawnState}{normalState}
+    \umltrans[arg=Konto sperren]{overdrawnState}{lockedState}
+    \umltrans[arg=Konto sperren]{normalState}{lockedState}
+    \umltrans[arg=Konto schließen]{lockedState}{final}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Klassendiagramm Beispiel}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=-3,y=-5]{Bank}{
+        }{
+        }
+    
+        \umlclass[x=-3,y=0]{BankAccount}{
+        }{
+        }
+    
+        \umlclass[x=4,y=0]{AccountState}{
+        }{
+            +deposit(account: BankAccount, amount:double)\\
+            +withdraw(account: BankAccount, amount:double)\\
+        }
+
+        \umlclass[x=-1,y=-3]{NormalState}{
+        }{
+        }
+
+        \umlclass[x=4,y=-3]{OverdrawnState}{
+        }{
+        }
+
+        \umlclass[x=9,y=-3]{LockedState}{
+        }{
+        }        
+        
+        \umluniassoc{BankAccount}{AccountState}
+        \umlaggreg{Bank}{BankAccount}
+        
+        \umlinherit{LockedState}{AccountState}
+        \umlinherit{OverdrawnState}{AccountState}
+        \umlinherit{NormalState}{AccountState}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Zustand}
+	\begin{exampleblock}{AccountState.java}
+     	  \begin{lstlisting}
+public interface AccountState {
+    void deposit(BankAccount account, double amount);
+    void withdraw(BankAccount account, double amount);
+}
+     	  \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Zustand 1}
+	\begin{exampleblock}{NormalState}
+ 		\begin{lstlisting}
+public class NormalState implements AccountState {
+    @Override
+    public void deposit(BankAccount account, double amount) {
+        account.setBalance(account.getBalance() + amount);
+        System.out.println("..." + account.getBalance());
+    }
+
+    @Override
+    public void withdraw(BankAccount account, double amount) {
+        if (account.getBalance() >= amount) {
+            account.setBalance(account.getBalance() - amount);
+            System.out.println("...");
+        } else {
+            System.out.println("...");
+            account.setState(new OverdrawnState());
+            account.setBalance(account.getBalance() - amount);  
+        }
+    }
+} 
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Zustand 1}
+	\begin{exampleblock}{OverdrawnState.java}
+ 		\begin{lstlisting}
+public class OverdrawnState implements AccountState {
+    @Override
+    public void deposit(BankAccount account, double amount) {
+        account.setBalance(account.getBalance() + amount);
+        System.out.println("...");
+
+        if (account.getBalance() >= 0) {
+            System.out.println("...");
+            account.setState(new NormalState());
+        }
+    }
+
+    @Override
+    public void withdraw(BankAccount account, double amount) {
+        System.out.println("...");
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]{Kontext}
+	\begin{exampleblock}{BankAccount.java}
+ 		\begin{lstlisting}
+public class BankAccount {
+    private AccountState state;
+    private double balance;
+    private int accountId;
+
+    public void deposit(double amount) {
+        state.deposit(this, amount);
+    }
+
+    public void withdraw(double amount) {
+        state.withdraw(this, amount);
+    }
+
+    public void lock() {
+        setState(new LockedState());
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

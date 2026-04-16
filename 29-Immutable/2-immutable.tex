@@ -1,0 +1,214 @@
+\writeSectionFrame{\presentationTitle}{Unveränderliche (immutable) Objekte}
+\begin{frame}{Idee: Immutable Objects}
+    \begin{block}{Definition}
+        Ein immutable object ist ein Objekt, dessen Zustand sich nach
+        der Erzeugung nicht mehr ändern kann.
+    \end{block}
+    \pause
+    \begin{itemize}
+        \item Zustand wird nur im Konstruktor gesetzt
+        \item Keine Setter
+        \item Änderungen erzeugen neue Objekte
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Immutable Object – Beispiel}
+    \begin{exampleblock}{Monster.java}
+        \begin{lstlisting}
+public class Monster {
+    private final int health;
+
+    public Monster(int health) {
+        this.health = health;
+    }
+
+    public Monster takeDamage(int damage) {
+        return new Monster(health - damage);
+    }
+
+    public int getHealth() {
+        return health;
+    }
+}
+        \end{lstlisting}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Immutable Object – Beispiel}
+    \begin{exampleblock}{Player.java}
+        \begin{lstlisting}[basicstyle=\tiny]
+public class Player {
+	private final int health;
+	private final int gold;
+
+    public Player(int health, int gold) {
+        this.health = health;
+        this.gold = gold;
+    }
+    
+    public Player takeGold(int amount) {
+    	return new Player(health, this.gold + amount);
+    }
+    
+    public Player spendGold(int amount) {
+    	return new Player(health, this.gold - amount);
+    }
+
+    public Player takeDamage(int damage) {
+        return new Player(health - damage, gold);
+    }
+
+    public int getHealth() {
+        return health;
+    }
+}
+        \end{lstlisting}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Wir haben ein Problem}
+    \begin{alertblock}{Player.java}
+        \begin{lstlisting}
+public class Player {
+	// ...
+
+    public Player attack(Monster monster) {
+    	// ????
+    }
+}        
+        \end{lstlisting}
+    \end{alertblock}
+    \begin{alertblock}{Warum?}
+    	\begin{itemize}
+    	  \item Zwei Objekte ändern logisch ihren Zustand
+    	  \item Immutable Objekte können ihren Zustand nicht ändern
+    	  \item Eine Methode kann aber nur einen Rückgabewert haben
+    	\end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Überlegungen zur Lösung}
+	\begin{itemize}
+	  \item Immutable Objects erzwingen saubere Trennung von
+	  	\begin{itemize}
+	  	  \item Berechnung
+	  	  \item Zustandsübergang
+	  	  \item Koordination
+	  	\end{itemize}
+	  \item Ein Immutable Object sollte nicht mehrere Aggregate verändern
+	  \item Kein technisches Problem, sondern ein Modellierungs­problem
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Lösungsmöglichkeiten}
+	\begin{itemize}
+	  \item Monster veränderlich definieren
+	  \item Ergebnisobjekt zurückgeben
+	  \item Die Aktion aus dem Entity herausziehen (DDD-Stil)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Monster veränderlich definieren}
+	\begin{alertblock}{Keine Lösung}
+		\begin{itemize}
+		  \item bricht Immutability
+		  \item versteckter Seiteneffekt
+		  \item genau das, was wir vermeiden wollten
+		\end{itemize}	
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Ergebnisobjekt zurückgeben}
+	\begin{itemize}
+	  \item Man führt ein Result- / Event- / Outcome-Objekt ein
+	  \item Ergebnis wird klar von der Aktion getrennt
+	  \item Objekte können unveränderlich bleiben
+	\end{itemize}	
+\end{frame}
+
+\begin{frame}[fragile]{Ergebnisobjekt zurückgeben}
+	\begin{exampleblock}{AttackResult.java}
+		\begin{lstlisting}
+public class AttackResult {
+    private final Player player;
+    private final Monster monster;
+
+    public AttackResult(Player player, Monster monster) {
+        this.player = player;
+        this.monster = monster;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Monster getMonster() {
+        return monster;
+    }
+}		
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Neue attack-Methode}
+	\begin{exampleblock}{Player.java}
+		\begin{lstlisting}
+public AttackResult attack(Monster monster) {
+    Monster damagedMonster = monster.takeDamage(
+    	this.attackPower);
+    Player damagedPlayer = this.takeDamage(
+    	monster.getAttackPower());
+
+    return new AttackResult(damagedPlayer, damagedMonster);
+}		
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Bewertung}
+	\begin{itemize}
+	  \item Beide neuen Zustände sind explizit sichtbar
+	  \item Kein Objekt wird verändert
+	  \item Sehr gut testbar
+	  \item Sehr modernes Pattern
+	\end{itemize}	
+\end{frame}
+
+\begin{frame}{Die Aktion aus dem Entity herausziehen}
+	\begin{alertblock}{Frage}
+		Gehört die attack-Methode überhaupt in ein Entity?	
+	\end{alertblock}
+	\pause
+	
+	\begin{exampleblock}{Antwort}
+		Man könnte sie auch als Bestandteil der Geschäftslogik betrachten!
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klasse der Geschäftslogik}
+	\begin{exampleblock}{CombatServiceImpl.java}
+		\begin{lstlisting}
+public class CombatServiceImpl implements CombatService {
+	@Override
+    public AttackResult attack(Player player, 
+    		Monster monster) {
+        Monster newMonster = monster.takeDamage(
+        	player.getAttackPower());
+        Player newPlayer = player.takeDamage(
+        	monster.getAttackPower());
+
+        return new AttackResult(newPlayer, newMonster);
+    }
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Bewertung}
+	\begin{itemize}
+	  \item Die Entity-Klassen bleiben schlank und enthalten nur Daten und Regeln
+	  \item Kampf ist eine Domänenaktion, kein Objektproblem
+	  \item Das ist Clean Architecture pur (Domain Driven Design)
+	  \item Sehr moderne Softwarearchitektur
+	\end{itemize}	
+\end{frame}

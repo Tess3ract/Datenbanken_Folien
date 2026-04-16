@@ -1,0 +1,140 @@
+\writeSectionFrame{\presentationTitle}{Das zu lösende Problem}
+
+\begin{frame}{Unser Programm}
+    \begin{center}
+        \includegraphics[scale=0.45]{\BILDERPFAD/problem1.png}
+    \end{center}
+\end{frame}
+\note{
+    Wir möchten das folgende Programm. Konfigurationsdaten werden
+    in einer properties-Datei abgelegt. Eine Configuration-Klasse
+    liest diese Datei und schreibt die gelesenen Werte in eine Map.
+    Dann kann die Konfiguration geändert werden und irgendwann werden
+    die neuen Daten in die Datei zurückgeschrieben. In unserem Beispiel
+    wird die Datei bei jedem Start neu angelegt, damit man die Effekte
+    beobachten kann. 
+}
+
+\begin{frame}[fragile]{Ausgangsklasse}
+	\begin{alertblock}{Configuration.java}
+        \begin{lstlisting}
+public final class Configuration {
+	private static final String CONFIGURATION_FILE 
+        = "configuration.properties";
+	private Map<String, String> configurationMap;
+	
+    public Configuration() {
+		initializeFile();
+		configurationMap = new HashMap<String, String>();
+		loadConfigurationFromFile();
+	}       
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Ausgangsklasse}
+	\begin{alertblock}{Configuration.java}
+        \begin{lstlisting}
+private void loadConfigurationFromFile() {
+    Properties properties = new Properties();
+    File propertiesFile = new File(CONFIGURATION_FILE);
+    
+    try (FileInputStream fileInputStream = 
+            new FileInputStream(propertiesFile)) {
+        properties.load(fileInputStream);
+        
+        Set<String> keys = properties.stringPropertyNames();
+        for (String key: keys) {
+            String value = properties.getProperty(key);
+            configurationMap.put(key, value);
+        }
+    } // catch-Zweige
+}      
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Hier wird die properties-Datei gelesen und die Werte werden in 
+    die Map hineingeschrieben. 
+}
+
+\begin{frame}[fragile]{Ausgangsklasse}
+	\begin{alertblock}{Configuration.java}
+        \begin{lstlisting}
+public void addValue(String key, String value) {
+    if (configurationMap.containsKey(key)) {
+        configurationMap.replace(key, value);
+    } else {
+        configurationMap.put(key, value);
+    }
+}
+
+public Optional<String> getValue(String key) {
+    String value = configurationMap.get(key);
+    if (value == null) {
+        return Optional.empty();
+    } else {
+        return Optional.of(value);
+    }
+}    
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Die Methode addValue() schreibt einen neuen Wert in die Map, nicht
+    aber in die Datei.
+}
+
+\begin{frame}[fragile]{Ausgangsklasse}
+	\begin{alertblock}{Configuration.java}
+        \begin{lstlisting}
+public void writeToFile() {
+    File file = new File(CONFIGURATION_FILE);
+
+    try (FileWriter writer = new FileWriter(file);
+         FileReader reader = new FileReader(file)) {
+
+        Properties properties = new Properties();
+        properties.load(reader);
+        
+        configurationMap.forEach((key, value) -> 
+            properties.setProperty(key, value));
+
+        LocalDateTime now = LocalDateTime.now();
+        properties.store(writer, now.toString());
+    } // catch-Zweige
+}   
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Hier wird die aktuelle Konfiguration in die Datei geschrieben. 
+}
+
+\begin{frame}[fragile]{Ausgangsklasse}
+	\begin{alertblock}{ConfigurationMain.java}
+        \begin{lstlisting}
+private static void notSingletonExample() {
+    Configuration configuration1 = new Configuration();
+    configuration1.addValue("background", "black");
+    configuration1.addValue("margin", "10mm");
+
+    Configuration configuration2 = new Configuration();
+    configuration2.addValue("italic", "true");
+    configuration2.addValue("bold", "false");
+    
+    configuration1.writeToFile();
+    configuration2.writeToFile();
+}            
+        \end{lstlisting}
+ 	\end{alertblock}
+\end{frame}
+
+\note{
+ 	Wir können jedoch mehrere Objekte erzeugen und haben somit mehrere Konfigurationen in unserem Programm,
+ 	die sich im Extremfall auch noch widersprechen. Unser Problem ist also, dass wir mehrere Objekte
+ 	von einer Klasse bilden können, obwohl dies unerwünscht ist. Behelfen kann man sich mit einer 
+ 	Programmierrichtlinie. Aber dann muss sich erstens jeder Programmierer dran halten und zweitens muss
+ 	man auch erkennen können, ob schon ein Objekt existiert. Besser wäre es, wenn man die Existenz nur
+ 	eines Objekts erzwingen könnte. Nach dem Ablauf dieses Programms werden wir nur eine einzige Konfiguration gespeichert; die andere ist verschwunden. 
+}

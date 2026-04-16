@@ -1,0 +1,280 @@
+\writeSectionFrame{\presentationTitle}{Prototyp}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Prototyp
+ 		\item Englischer Name: Prototype
+ 		\item Gruppe: Erzeugungsmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Prototyp}
+	\begin{block}{Zweck}
+ 		Bestimme die Arten zu erzeugender Objekte durch die Verwendung eines prototypischen Exemplars und erzeuge neue Objekte durch Kopieren dieses Prototypen.
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=0, y=0]{Prototype}{
+            + clone(): Prototype
+        }{}
+    
+        \umlclass[x=-5, y=0]{Client}{
+        }{
+        }
+    
+        \umlclass[x=-5, y=-4]{ConcretePrototype1}{
+        }{
+            + clone(): ConcretePrototype1
+        }
+    
+        \umlclass[x=5, y=-4]{ConcretePrototype2}{
+        }{
+            + clone(): ConcretePrototype2
+        }
+    
+        % Relations
+        \umlinherit[geometry=|-|]{ConcretePrototype1}{Prototype}
+        \umlinherit[geometry=|-|]{ConcretePrototype2}{Prototype}
+    
+        \umluniassoc[geometry=-|]{Client}{Prototype}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Klassendiagramm - Beispiel}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=0, y=0]{Shape}{
+            + clone(): Shape
+        }{}
+    
+        \umlclass[x=-5, y=0]{ShapeClient}{
+        }{
+        }
+    
+        \umlclass[x=-5, y=-4]{Circle}{
+        }{
+            + clone(): Circle
+        }
+    
+        \umlclass[x=5, y=-4]{Rectangle}{
+        }{
+            + clone(): Rectangle
+        }
+    
+        % Relations
+        \umlinherit[geometry=|-|]{Circle}{Shape}
+        \umlinherit[geometry=|-|]{Rectangle}{Shape}
+    
+        \umluniassoc[geometry=-|]{ShapeClient}{Prototype}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Prototyp}
+	\begin{exampleblock}{Shape}
+ 		\begin{lstlisting}
+public abstract class Shape implements Cloneable {
+	private double x;
+	private double y;
+
+	public Shape(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{KonkreterPrototyp 1}
+	\begin{exampleblock}{Circle}
+ 		\begin{lstlisting}
+public class Circle extends Shape {
+	private double radius;
+	
+	public Circle(double x, double y, double radius) {
+		super(x, y);
+		this.radius = radius;
+	}
+
+	@Override
+	public Circle clone() throws CloneNotSupportedException {
+		return (Circle)super.clone();
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{KonkreterPrototyp 2}
+	\begin{exampleblock}{Rectangle}
+ 		\begin{lstlisting}
+public class Rectangle extends Shape {
+	private double width;
+	private double height;
+
+	public Rectangle(double x, double y, double height,
+            double width) {
+		super(x, y);
+		this.height = height;
+		this.width = width;
+	}
+	
+	@Override
+	public Rectangle clone() throws CloneNotSupportedException {
+		return (Rectangle)super.clone();
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klient}
+	\begin{exampleblock}{Dialog}
+ 		\begin{lstlisting}
+Circle circle = new Circle(3, 4, 2);
+Circle clonedCircle = circle.clone();
+
+Rectangle rectangle = new Rectangle(5, 6, 3, 6);
+Rectangle clonedRectangle = rectangle.clone();
+
+System.out.println(circle.toString());
+System.out.println(clonedCircle.toString());
+System.out.println(rectangle.toString());
+System.out.println(clonedRectangle.toString());
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Flache und tiefe Kopien}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/prototyp1.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Im Beispiel haben wir nur einfache Datentypen kopiert. Aber oft hat man 
+	Objektbäume, bei denen man überlegen muss, ob das Kopieren von Referenzen
+	reicht (flache Kopie) oder ob die kompletten Objekte kopiert werden müssen
+	(tiefe Kopie).
+}
+
+\frameWithImageOnly{\BILDERPFAD/prototyp2.jpg}
+\note{
+	Ein etwas realistischeres Beispiel: Wir möchten gerne eine Software für die Verwaltung von
+	Prüfungen. Dabei werden die Prüfungen in einer xml-Datei gespeichert. Die Prüfungen werden
+	aus der xml-Datei gelesen und neue Prüfungen können als Klon vorhandener Prüfungen erzeugt
+	werden. In diesem Fall werden die Java-spezifischen Möglichkeiten nicht verwendet, da dies 
+	nicht von jeder Programmiersprache in dieser Form unterstützt wird. 
+}
+
+\begin{frame}{Klassendiagramm - Beispiel -- Prüfungsplan}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=0, y=0]{Examination}{
+            + clone(): Examination
+        }{}
+    
+        \umlclass[x=-6, y=0]{ExaminationSchedule}{
+        }{
+        }
+    
+        \umlclass[x=-5, y=-4]{WrittenExamination}{
+        }{
+            + clone(): WrittenExamination
+        }
+    
+        \umlclass[x=1, y=-4]{OralExamination}{
+        }{
+            + clone(): OralExamination
+        }
+        
+        \umlclass[x=6, y=-4]{Project}{
+        }{
+            + clone(): Project
+        }
+    
+        % Relations
+        \umlinherit{WrittenExamination}{Examination}
+        \umlinherit{OralExamination}{Examination}
+        \umlinherit{Project}{Examination}
+    
+        \umluniassoc{ExaminationSchedule}{Examination}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Prototyp}
+	\begin{exampleblock}{Examination}
+ 		\begin{lstlisting}
+public abstract class Examination {
+	private String date;
+	private Room room; 
+	
+	public Examination(String date, Room room) {
+		this.date = date;
+		this.room = room;
+	}
+	
+	public abstract Examination clone();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Prototyp - Flaches Kopieren}
+	\begin{exampleblock}{Project}
+ 		\begin{lstlisting}
+public class Project extends Examination {
+	private String title;
+
+	public Project(String date, String title, Room room) {
+		super(date, room);
+		this.title = title;
+	}
+	
+	@Override
+	public Project clone() {
+		return new Project(getDate(), title, getRoom());
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Prototyp 2 - Tiefes Kopieren}
+	\begin{exampleblock}{WrittenExamination}
+        \begin{lstlisting}
+public class WrittenExamination extends Examination {
+	private String timeStart;
+	private String timeEnd;
+	
+	public WrittenExamination(String date, 
+			String timeStart, String timeEnd, Room room) {
+		super(date, room);
+		this.timeStart = timeStart;
+		this.timeEnd = timeEnd;
+	}
+	
+	@Override
+	public WrittenExamination clone() {
+		return new WrittenExamination(getDate(),  
+				timeStart, timeEnd, getRoom().clone());
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/prototyp6.jpg}
+\note{
+	Hier kann man sich vorstellen, dass man das Prototyping wunderbar mit einer grafischen Oberfläche
+	verbinden kann, wo der Benutzer im Kontextmenü einen Kopieren-Menüpunkt erhält und dann einfach
+	eine Kopie einer Prüfung anlegen kann. 
+}

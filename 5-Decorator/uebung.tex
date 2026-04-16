@@ -1,0 +1,31 @@
+\writeSectionFrame{\presentationTitle}{Übung}
+
+\begin{frame}
+    \frametitle{Aufgabenbeschreibung}
+    \begin{itemize}
+        \item Implementieren Sie ein Pizza-Bestellsystem unter Verwendung des Dekorator-Musters.
+        \item Die Basis-Pizza ist eine einfache Pizza ohne Beläge.
+        \item Es gibt verschiedene Dekoratoren für die Pizza, wie z.B. Käse, Pepperoni und Oliven.
+        \item Jeder Dekorator sollte die Beschreibung der Pizza erweitern und die Kosten entsprechend anpassen.
+        \item Implementieren Sie eine abstrakte Klasse \texttt{Pizza}, die die Methoden \texttt{getDescription()} und \texttt{getCost()} definiert.
+        \item Implementieren Sie eine konkrete Klasse \texttt{PlainPizza}, die eine einfache Pizza ohne Beläge repräsentiert.
+        \item Erstellen Sie eine abstrakte Dekorator-Klasse \texttt{PizzaDecorator}, die von der \texttt{Pizza}-Klasse erbt und die Dekoratoren-Struktur umsetzt.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Aufgabenbeschreibung}
+    \begin{itemize}
+        \item Erstellen Sie mindestens drei konkrete Dekoratoren-Klassen, z.B. \texttt{CheeseDecorator}, \texttt{PepperoniDecorator}, und \texttt{OlivesDecorator}.
+        \item Testen Sie das System in der \texttt{main}-Methode, indem Sie verschiedene Pizzen mit unterschiedlichen Belägen erstellen und die Beschreibung und Kosten ausgeben.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Erweiterungen (Optional)}
+    \begin{itemize}
+        \item Fügen Sie eine Kalorienberechnung für jeden Belag hinzu.
+        \item Jeder Dekorator sollte die Kalorien der Basis-Pizza entsprechend erweitern.
+        \item Stellen Sie sicher, dass die Kalorien korrekt für jede Pizza-Bestellung berechnet werden.
+    \end{itemize}
+\end{frame}

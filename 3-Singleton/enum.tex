@@ -1,0 +1,24 @@
+\writeSectionFrame{\presentationTitle}{Enums in Java als Singleton-Lösung}
+\begin{frame}[fragile]{Enums}
+	\begin{exampleblock}{ConfigurationEnum.java}
+		\begin{lstlisting}
+public enum ConfigurationEnum {
+	HEIGHT("80"), WIDTH("100"), COLOR("red");
+	
+	private String value;
+	
+	private ConfigurationEnum(String value) {
+		this.value = value;
+	}
+	
+	public String getValue() {
+		return value;
+	}
+}    
+		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Der einfache Java-Enum ist eine Alternative zu einem Singleton, denn er wird automatisch als Singleton verwaltet und ist threadsicher. Nachteil an dieser Lösung ist, dass die Werte nicht während der Laufzeit verändert werden können. 
+}

@@ -1,0 +1,86 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendungsfälle}
+	\begin{itemize}
+ 		\item Unveränderliche Objekte
+ 		\item Datenkonvertierung
+ 		\item Objekte, die aus verschiedenen Teilen zusammengesetzt sind
+ 		\item Klassen mit vielen Konstruktoren
+ 		\item Objekte mit unterschiedlichen Repräsentationen, erbaut in mehreren Schritten
+ 		\item Erstellen von komplexen zusammengesetzten Objekten
+ 	\end{itemize}
+\end{frame}
+
+\realworld{StringBuilder}{Effiziente Konstruktion von Zeichenfolgen}
+\note{
+    StringBuilder und StringBuffer verwenden eine Variation des Erbauer-Musters, um Zeichenfolgen effizient zu konstruieren. Sie ermöglichen die Erstellung von Zeichenfolgen durch Verkettung von Methodenaufrufen, was für eine übersichtliche und effiziente String-Manipulation sorgt.
+}
+
+\realworld{JavaFX}{Konstruieren von komplexen Fenstern}
+\note{
+    In JavaFX können komplexe Fenster mithilfe des Erbauermusters konstruiert werden.
+}
+
+\realworld{Apache HTTPClient}{Erstellen von HTTP-Anfragen}
+\note{
+     In der Apache HTTPClient-Bibliothek wird das Erbauer-Muster verwendet, um HTTP-Anfragen zu erstellen. Mit dem HttpRequest.Builder kann man auf einfache Weise HTTP-GET, -POST, und andere Arten von Anfragen mit verschiedenen Headern, Parametern und Körperinhalten erstellen.
+}
+
+\realworld{SpringBoot}{Konfiguration von Objekten}
+\note{
+     Das Erbauer-Muster wird in Spring Boot häufig für die Konfiguration von Objekten und die Erstellung von Bean-Definitionen verwendet. Zum Beispiel verwendet die ApplicationBuilder-Klasse das Erbauer-Muster, um eine Spring-Anwendung zu konfigurieren.
+}
+
+\realworld{Mockito}{Komplexe Mock-Objekte erstellen}
+\note{
+     In Test-Frameworks wie Mockito wird das Erbauer-Muster verwendet, um komplexe Mock-Objekte und deren Verhalten zu erstellen. Mithilfe von when().thenReturn()-Ketten können spezifische Verhaltensweisen für Mocks definiert werden.
+}
+
+\vorteil{Klarheit und Lesbarkeit}
+\note{
+    Das Erbauer-Muster ermöglicht eine klare und lesbare Syntax für die Erstellung komplexer Objekte. Anstatt einen Konstruktor mit vielen Parametern aufzurufen, können Entwickler Methodenaufrufe verwenden, die den Zweck jedes Parameters klar definieren. Dies führt zu besser lesbarem und wartbarem Code.
+}
+
+\vorteil{Vermeidung von Konstruktorüberladung}
+\note{
+    In Fällen, in denen ein Objekt viele optionale Parameter hat, kann die Verwendung mehrerer Konstruktoren unübersichtlich werden. Das Erbauer-Muster vermeidet diese Konstruktorüberladung, indem es eine einzige Erbauermethode bereitstellt, die optional alle Parameter akzeptiert.
+}
+
+\vorteil{Flexibilität und Erweiterbarkeit}
+\note{
+    Das Erbauer-Muster ermöglicht es, einfach neue Parameter hinzuzufügen, ohne bestehende Codeänderungen zu erzwingen. Neue Methoden können zum Builder hinzugefügt werden, um zusätzliche Attribute zu unterstützen, ohne die existierenden Methodenaufrufe zu beeinflussen.
+}
+
+\vorteil{Unveränderlichkeit}
+\note{
+    Objekte, die mit einem Erbauer erstellt wurden, können unveränderlich (immutable) gemacht werden. Der Erbauer kann während des Erstellungsprozesses ändern, aber das endgültige Objekt wird unveränderlich sein, was zu sicherem und nebenläufigem Code beiträgt.
+}
+
+\vorteil{Bessere Fehlerbehandlung}
+\note{
+    Mit dem Erbauer-Muster können komplexe Validierungen oder Konsistenzprüfungen in der build()-Methode implementiert werden. Dadurch wird sichergestellt, dass nur gültige Objektinstanzen erstellt werden.
+}
+
+\vorteil{Unterstützung von Vorlagen und wiederverwendbarem Konstruktions-Code}
+\note{
+    Der Direktor kann verwendet werden, um verschiedene vordefinierte Konfigurationen eines Objekts zu erstellen. Der Konstruktionscode kann somit wiederverwendet werden
+}
+
+\vorteil{Objekte können Schritt für Schritt erstellt werden}
+\note{
+    Mit dem Erbauermuster können Objekte Schritt für Schritt erstellt werden. Das kann somit z.B. auch in der Benutzeroberfläche repräsentiert werden. Ebenso können bestimmte Konstruktionsschritte optional sein. 
+}
+
+\nachteil{Code-Komplexität steigt}
+\note{
+    Das Erbauer-Muster erfordert zusätzlichen Code, da für jede Produktklasse auch eine Erbauerklasse erstellt werden muss. Dieser Mehraufwand kann in Fällen, in denen nur wenige Parameter zu setzen sind, überflüssig erscheinen.
+}
+
+\nachteil{Laufzeitkosten}
+\note{
+    Die Verwendung eines Erbauers kann zu geringfügigen Laufzeitkosten führen, da zusätzliche Objekte (der Erbauer selbst) im Speicher vorhanden sind, bevor das endgültige Objekt erstellt wird. Dies kann bei ressourcenbeschränkten Anwendungen oder in Umgebungen mit extremen Leistungsanforderungen relevant sein.
+}
+
+\nachteil{Duplizierung bei ähnlichen Objekten}
+\note{
+    Wenn viele ähnliche Objekte mit geringfügigen Unterschieden erstellt werden, kann es zu Code-Duplizierung im Erbauer kommen, insbesondere wenn diese Unterschiede nicht durch den Direktor abstrahiert werden.
+}

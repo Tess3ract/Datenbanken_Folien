@@ -1,0 +1,70 @@
+\writeSectionFrame{\presentationTitle}{Repository-Muster}
+\begin{frame}[fragile]{Repository Interface}
+	\begin{exampleblock}{PlayerRepository.java}
+		\begin{lstlisting}
+public interface PlayerRepository {
+    void save(Player player);
+    Player findById(int id);
+    List<Player> findAll();
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Implementierung: Map}
+	\begin{exampleblock}{MapPlayerRepository.java}
+		\begin{lstlisting}[basicstyle=\tiny]
+public class MapPlayerRepository 
+        implements PlayerRepository {
+    private final Map<Integer, Player> storage = new HashMap<>();
+
+    @Override
+    public void save(Player player) {
+        storage.put(player.getId(), player);
+    }
+
+    @Override
+    public Player findById(int id) {
+        return storage.get(id);
+    }
+
+    @Override
+    public List<Player> findAll() {
+        return new ArrayList<>(storage.values());
+    }
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Implementierung: List}
+	\begin{exampleblock}{ListPlayerRepository.java}
+		\begin{lstlisting}[basicstyle=\tiny]
+public class ListPlayerRepository implements PlayerRepository {
+
+	private final List<Player> storage = new ArrayList<>();
+
+	@Override
+	public void save(Player player) {
+		storage.add(player);
+	}
+
+	@Override
+	public Player findById(int id) {
+		for (Player player: storage) {
+			if (player.getId() == id) {
+				return player;
+			}
+		}
+		
+		return null;
+	}
+
+	@Override
+	public List<Player> findAll() {
+		return Collections.unmodifiableList(storage);
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}

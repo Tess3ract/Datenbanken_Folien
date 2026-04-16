@@ -1,0 +1,290 @@
+\writeSectionFrame{\presentationTitle}{Beispiel Spiel}
+\begin{frame}{Wir setzen unsere Klassen ein}
+	\begin{center}
+ 		\includegraphics[scale=0.35]{\BILDERPFAD/spiel1.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Abstrakte Oberklasse}
+	\begin{exampleblock}{\javapackageSpiel{monsters.Monster}}
+        \begin{lstlisting}
+public abstract class Monster {
+	private int health;
+	private String name;
+	
+	public Monster(String name, int health) {
+		this.health = health;
+		this.name = name;
+	}
+	
+	public abstract int calculateDamage(int attackStrength);
+	
+	public void injure(int hitpoints) {
+		health = health - hitpoints;
+	}
+	// ...
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Unterklasse Orc}
+	\begin{exampleblock}{\javapackageSpiel{monsters.Orc}}
+        \begin{lstlisting}
+public class Orc extends Monster {
+	public Orc(String name, int health) {
+		super(name, health);
+	}
+
+	@Override
+	public int calculateDamage(int hitpoints) {
+		return hitpoints;
+	}
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Unterklasse Dragon}
+	\begin{exampleblock}{\javapackageSpiel{monsters.Dragon}}
+        \begin{lstlisting}
+public class Dragon extends Monster {
+	public Dragon(String name, int health) {
+		super(name, health);
+	}
+
+	@Override
+	public int calculateDamage(int attackStrength) {
+		return getHealth() * 5 + attackStrength;
+	}
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dekorierer-Klasse}
+	\begin{exampleblock}{\javapackageSpiel{monsters.EquipmentDecorator}}
+        \begin{lstlisting}
+public abstract class EquipmentDecorator extends Monster {
+	private Monster monster;
+
+	public EquipmentDecorator(String name, int health, 
+            Monster monster) {
+		super(name, health);
+		this.monster = monster;
+	}
+
+	@Override
+	public int calculateDamage(int attackStrength) {
+		return monster.calculateDamage(attackStrength);
+	}
+}        
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Unterklasse HelmDecorator}
+	\begin{exampleblock}{\javapackageSpiel{monsters.HelmDecorator}}
+        \begin{lstlisting}
+public class HelmDecorator extends EquipmentDecorator {
+	private final int armorStrength;
+
+	public HelmDecorator(int armorStrength, 
+            Monster monster) {
+		super("Helm", 50, monster);
+		this.armorStrength = armorStrength;
+	}
+
+	@Override
+	public int calculateDamage(int attackStrength) {
+		return super.calculateDamage(attackStrength) 
+            - armorStrength / 3;
+	}
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Unterklasse MetalChainCoat}
+	\begin{exampleblock}{\javapackageSpiel{monsters.MetalChainCoat}}
+        \begin{lstlisting}
+public class MetalChainCoat extends EquipmentDecorator {
+	private final int armorStrength;
+
+	public MetalChainCoat(int armorStrength, 
+            Monster monster) {
+		super("Kettenhemd", 100, monster);
+		this.armorStrength = armorStrength;
+	}
+
+	@Override
+	public int calculateDamage(int attackStrength) {
+		return super.calculateDamage(attackStrength) 
+            - armorStrength;
+	}
+}        
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Monster erzeugen}
+	\begin{exampleblock}{\javapackageSpiel{dialog.MainDialog}}
+        \begin{lstlisting}
+Orc orc = new Orc("Orc 1", 50);
+Goblin goblin = new Goblin("Goblin 1", 25);
+Dragon dragon = new Dragon("Drache 1", 1000);
+MetalChainCoat metalChainCoatForOrc = new 
+    MetalChainCoat(100, orc);
+BootsDecorator bootsForOrc = new BootsDecorator
+    ("Stiefel", 50, metalChainCoatForOrc);
+HelmDecorator helmForOrc = new HelmDecorator(
+    30, bootsForOrc);
+
+MetalChainCoat metalChainCoatForDragon = new MetalChainCoat(
+    300, dragon);
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/spiel2.jpg}
+\note{
+    Der Teil des Spiels mit den Gebäuden ist etwas komplizierter. Gebäude haben eine Produktionsrate, die bestimmt, wie viel Gold der Spieler von den Gebäuden in jedem Spielzug erhält, eine Verteidigungsstärke und Kosten, die sich aus verschiedenen gebäudespezifischen Faktoren berechnen. Mit den Dekorieren können sowohl Produktion, als auch Verteidigung und Kosten beeinflusst werden. 
+}
+
+\begin{frame}{Die Gebäudeklassen}
+	\begin{center}
+ 		\includegraphics[scale=0.35]{\BILDERPFAD/spiel3.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Abstrakte Oberklasse Building}
+	\begin{exampleblock}{\javapackageSpiel{buildings.Building}}
+        \begin{lstlisting}
+public abstract class Building {
+	private final double defenseValue;
+	private final double productionRate;
+	private final int buyingCosts;
+	
+	public Building(double defenseValue, 
+			double productionRate, int buyingCosts) {
+		super();
+		this.defenseValue = defenseValue;
+		this.productionRate = productionRate;
+		this.buyingCosts = buyingCosts;
+	}
+
+	public abstract double calculateProduction();
+	public abstract double calculateDefenseValue();
+    // ...
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Unterklasse Farm}
+	\begin{exampleblock}{\javapackageSpiel{buildings.Farm}}
+        \begin{lstlisting}
+public class Farm extends Building {
+	private List<Animal> stall;
+	
+	public Farm(double defenseValue, double productionRate, 
+            int buyingCosts) {
+		super(defenseValue, productionRate, buyingCosts);
+		stall = new ArrayList<>();
+	}
+
+	public void addAnimal(Animal animal) {
+		stall.add(animal);
+	}
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Unterklasse Farm}
+	\begin{exampleblock}{\javapackageSpiel{buildings.Farm}}
+        \begin{lstlisting}
+	@Override
+	public double calculateProduction() {
+		double productionRate = getProductionRate();
+		
+		for (Animal animal: stall) {
+			productionRate = productionRate + 
+                animal.getValue() * animal.getAmount();
+		}
+		return productionRate;
+	}
+	
+	@Override
+	public double calculateDefenseValue() {
+		return getDefenseValue();
+	}
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dekoratorklasse BuildingDecorator}
+	\begin{exampleblock}{\javapackageSpiel{buildings.BuildingDecorator}}
+        \begin{lstlisting}
+public abstract class BuildingDecorator extends Building {
+	private final Building building;
+	
+	public BuildingDecorator(/* ... */) {
+		super(defenseValue, productionRate, buyingCosts);
+		this.building = building;
+	}
+	
+	@Override
+	public double calculateDefenseValue() {
+		return building.calculateDefenseValue();
+	}
+	
+	@Override
+	public double calculateProduction() {
+		return building.calculateProduction();
+	}
+}
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dekoratorklasse Wall}
+	\begin{exampleblock}{\javapackageSpiel{buildings.Wall}}
+        \begin{lstlisting}
+public class Wall extends BuildingDecorator {
+	private int height;
+	
+	public Wall(double defenseValue, double productionRate, 
+            int buyingCosts, int height, 
+            Building building) {
+		super(defenseValue, productionRate, buyingCosts, building);
+		this.height = height;
+	}
+
+	@Override
+	public double calculateProduction() {
+		return getProductionRate() - height * COSTS_MULTIPLICATOR;
+	}
+
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dekoratorklasse Wall}
+	\begin{exampleblock}{\javapackageSpiel{buildings.Wall}}
+        \begin{lstlisting}
+	@Override
+	public double calculateDefenseValue() {
+		return getDefenseValue() + height * DEFENSE_MULTIPLICATOR;
+	}
+	
+	@Override
+	public int getBuyingCosts() {
+		return super.getBuyingCosts() + height * WALL_HEIGHT_COSTS;
+	}
+}
+
+        \end{lstlisting}
+	\end{exampleblock}
+\end{frame}

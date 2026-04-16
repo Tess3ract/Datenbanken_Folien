@@ -1,0 +1,100 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendbarkeit}
+	\begin{itemize}
+ 		\item Klonen einfacher als erstmalige Erzeugung
+ 		\item Laden von Objektzuständen aus Dateien / Datenbank usw. 
+        \item Vorlagen in Benutzeroberflächen
+ 	\end{itemize}
+\end{frame}
+
+\realworld{JavaFX}{Schnelles Erstellen von Benutzeroberflächenkomponenten}
+\note{
+    In UI-Frameworks, wie z.B. Swing oder JavaFX, können Prototypen verwendet werden, um verschiedene Benutzeroberflächenkomponenten schnell zu erstellen, indem sie von einer Basisinstanz geklont werden.
+}
+
+\realworld{Spiele}{Erstellen von Spielobjekten}
+\note{
+    In Spielen kann das Prototyp-Muster verwendet werden, um verschiedene Spielobjekte zu erstellen, wie z.B. unterschiedliche Arten von Gegnern oder Items, die auf einem Basismodell basieren und nur leicht modifiziert werden.
+}
+
+\realworld{Grafische Anwendungen}{Klonen von komplexen grafischen Objekten}
+\note{
+    In grafischen Editor-Anwendungen können Prototypen verwendet werden, um komplexe grafische Objekte wie Formen oder Textfelder zu klonen, anstatt sie jedes Mal von Grund auf neu zu erstellen.
+}
+
+\vorteil{Effiziente Objekterzeugung}
+\note{
+    Da das Prototyp-Muster das Klonen eines bestehenden Objekts verwendet, kann die Erstellung neuer Objekte schneller und effizienter sein, insbesondere wenn die Erzeugung komplex oder ressourcenintensiv ist.
+}
+
+\vorteil{Weniger Abhängigkeiten zu konkreten Klassen}
+\note{
+    Das Prototyp-Muster kann dazu beitragen, Abhängigkeiten zu konkreten Klassen zu reduzieren, da der Code das Prototyp-Interface oder die abstrakte Klasse verwendet, anstatt spezifische Klassen direkt zu instanziieren.
+}
+
+\vorteil{Flexibilität bei der Objekterstellung}
+\note{
+    Es ermöglicht die einfache Erstellung von Variationen eines Objekts, indem ein Basismodell geklont und anschließend angepasst wird. Dies ist besonders nützlich, wenn Objekte nur in geringfügigen Details variieren. Somit ist es in solchen Fällen besser als die abstrakte Fabrik.
+}
+
+\vorteil{Wiederverwendbarkeit von Vorlagen}
+\note{
+    Ein bestehendes Prototyp-Objekt kann als Vorlage verwendet werden, was zu weniger Code-Duplizierung führt und die Wiederverwendbarkeit von Code verbessert.
+}
+
+\vorteil{Einfache Implementierung von Undo/Redo-Funktionalitäten}
+\note{
+    Prototypen können verwendet werden, um verschiedene Zustände eines Objekts zu speichern, was die Implementierung von Undo/Redo-Funktionalitäten in Anwendungen erleichtert.
+}
+
+\vorteil{Keine Erzeugerhierarchie notwendig}
+\note{
+    Im Gegensatz zur abstrakten Fabrik oder zur Fabrikmethode ist es nicht notwendig, Fabrikklassen in einer eigenen Hierarchie unterzubringen, was die Codestruktur erheblich vereinfacht. 
+}
+
+\vorteil{Wiederholte langwierige Konfiguration fällt weg}
+\note{
+    Besonders nützlich ist das Muster, wenn die Konfiguration von Objekten sehr langwierig oder schwierig ist. Diese Initialisierung kann dann sehr vereinfacht werden. 
+}
+
+\nachteil{Klonen von komplexen Objekten schwierig}
+\note{
+    Das Klonen von serhr komplexem Objekten kann schwierig und fehleranfällig sein.
+}
+
+\nachteil{Anlegen von tiefen Kopien}
+\note{
+    Das Erstellen von tiefen Kopien (deep copies) kann zusätzlichen Aufwand und Komplexität mit sich bringen. Wenn ein Objekt Referenzen auf andere Objekte enthält, müssen diese ebenfalls geklont werden. Hier muss dann u.U. auch eine Entscheidung getroffen werden, ob eine tiefe Kopie überhaupt notwendig ist. 
+}
+
+\nachteil{Aufwändige Verwaltung der Klone}
+\note{
+    Das Verwalten und Synchronisieren von Prototypen kann schwierig werden, insbesondere wenn Prototypen häufig geändert oder aktualisiert werden. 
+}
+
+\nachteil{Java: Abhängigkeit von der Cloneable-Schnittstelle}
+\note{
+    In Java ist die Cloneable-Schnittstelle nicht ideal, da sie oft nicht richtig implementiert wird und keine Garantie für die Tiefe des Klonens gibt. Viele Entwickler empfinden die Cloneable-Schnittstelle als fehleranfällig und umständlich. Es kann sich u.U. lohnen, in Java den Mechanismus unabhängig von Cloneable zu implementieren.  
+}
+
+\nachteil{Speicherverbrauch}
+\note{
+    Die Verwendung von Prototypen kann zu zusätzlichem Speicherverbrauch führen, da viele Instanzen (auch geklonte) im Speicher vorhanden sein können, insbesondere wenn viele unterschiedliche Prototypen verwendet werden. Hier muss eventuell ein Mechanismus zur effizienten Verwaltung vieler geklonter Objekte geplant werden. 
+}
+
+
+%\begin{frame}{Ergänzende Muster / Alternativen}
+%	\begin{itemize}
+% 		\item Abstrakte Fabrik / Fabrikmethode
+% 		\item Befehl
+% 		\item Kompositum / Dekorator
+% 		\item Memento
+% 	\end{itemize}
+%\end{frame}
+%\note{
+%	Abstrakte Fabriken können das Prototype-Muster für die Objekterzeugung benutzen. Mithilfe von
+%	Prototyp können Kopien von Befehlen in einer Historie gespeichert werden. Wenn Kompositum oder
+%	Dekorator viel verwendet werden, kann das Prototyp-Muster zum Kopieren verwendet werden. Prototyp
+%	kann manchmal eine einfache Variante für das Memento-Muster sein, nämlich dann wenn relativ
+%	einfache Objekte ohne Verbindungen zu externen Ressourcen verwendet werden. 
+%}

@@ -1,0 +1,782 @@
+\writeSectionFrame{\presentationTitle}{Das Command-Muster}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Befehl
+ 		\item Alternativer deutscher Name: Kommando
+ 		\item Englischer Name: Command
+ 		\item Gruppe: Verhaltensmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Befehl}
+	\begin{block}{Zweck}
+ 		Eine Anfrage als ein Objekt kapseln. Dies ermöglicht es, Klienten mit verschiedenen Anfragen zu parametrisieren, Operationen in eine Warteschlange zu stellen, ein Logbuch zu führen und Operationen rückgängig zu machen.
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Beispiel aus dem realen Leben}
+	\myImageWithSource{0.5}{\BILDERPFAD/command1.png}{https://refactoring.guru/design-patterns/command}
+\end{frame}
+\note{
+    Das Befehlsmuster dürfte eines der am schwersten verständlichen sein. Deswegen näheren wir uns dem Thema mit einem Beispiel aus dem realen Leben. Sie laufen durch die Stadt und haben Hunger, weil Sie schon den ganzen Tag unterwegs waren. Sie gehen in ein Restaurant und werden von einem freundlichen Kellner bedient. Er nimmt Ihre Bestellung auf und schreibt diese auf einen Zettel. Diesen Zettel gibt er in der Küche ab. Der Koch bearbeitet die Zettel nacheinander. Die gekochten Gerichte stellt er zusammen mit dem Bestellzettel zum Abholen bereit. Der Kellner sieht, dass das Gericht fertig gekocht, kann es dem Tisch zuordnen und bringt es zu Ihnen. Der Zettel ist das Befehlsobjekt, das in einer Warteschlange verbleibt, bis der Koch sich darum kümmert. So kann der Koch sich darum kümmern zu kochen statt zu den Tischen zu laufen und sich mit den Bestelldetails auseinanderzusetzen.
+}
+
+\begin{frame}{Schichtenarchitektur}
+	\myImageWithSource{0.6}{\BILDERPFAD/command2.png}{https://refactoring.guru/design-patterns/command}
+\end{frame}
+\note{
+    Gutes Softwaredesign basiert auf Trennung der Belange und häufig wird dazu die Schichtenarchitektur angewendet. Wenn wir als Beispiel eine grafische Benutzeroberfläche nehmen, dann haben wir mehrere Elemente in der Benutzeroberfläche, die ihre Daten an die Geschäftslogik senden. Diese übernimmt deren Verarbeitung und führt die Logik aus. Die Komponenten der GUI senden also eine Anfrage an die Geschäftslogik. Das Problem ist, dass in diesem Beispiel alle drei Komponenten das gleiche machen und prinzipiell die gleiche Anfrage senden.
+}
+
+\begin{frame}{Schichtenarchitektur mit Befehlsobjekt}
+	\myImageWithSource{0.6}{\BILDERPFAD/command3.png}{https://refactoring.guru/design-patterns/command}
+\end{frame}
+\note{
+    Das Befehlmuster schreibt ein weiteres Objekt vor, das Befehlsobjekt. Die GUI sollte die Geschäftslogik nicht sofort aufrufen, sondern soll alle Daten extrahieren. Dazu gehören neben der Parameterliste auch der Name der Methode. Diese werden an das Befehlsobjekt übergeben, das nur eine einzige Methode hat, die den Request auslöst. Dieses Objekt dient als Verbindung zwischen verschiedenen Elementen der GUI und der Geschäftslogik. Die GUI braucht nicht zu wissen, welches Element der Geschäftslogik die Anfrage erhält und wie sie verarbeitet wird. Die GUI stößt nur das Kommando an und dieses kümmert sich um alle Details. 
+}
+
+\begin{frame}{Befehlsobjekt mit Interface}
+	\myImageWithSource{0.6}{\BILDERPFAD/command4.png}{https://refactoring.guru/design-patterns/command}
+\end{frame}
+\note{
+    Der nächste Schritt ist natürlich, ein Interface für das Befehlsobjekt zu erschaffen, da alle Befehlsobjekte dieselbe Schnittstelle implementieren. Normalerweise hat es nur eine einzige parameterlose Methode. Dieses Interface erlaubt es, verschiedene Befehle mit demselben Sender auszuführen, ohne den Sender an eine konkrete Klasse zu koppeln. Als kleiner Bonus ist es auf diese Art sogar einfach möglich, Befehlsobjekte auszutauschen und somit das Verhalten eines Senders zur Laufzeit zu ändern. Eine Frage ist noch, wie das Befehlsobjekt an die Parameter kommt, wenn die Methode parameterlos ist und einsetzbar für jede Art von Request. Das sehen wir uns gleich an. Wir implementieren also Befehlsobjekte für jede mögliche Operation und stecken eine Referenz auf die Objekte in die GUI-Komponenten. Somit sind sie mit einem Befehl verbunden, der ausgeführt wird, wenn der Benutzer mit dem Element interagiert. Somit werden die Befehlsobjekte zu einer Zwischenschicht, die für eine lose Kopplung sorgt zwischen GUI und Geschäftslogik. Und da wir mit einem Interface arbeiten, ist das konkrete Befehlsobjekt und damit das Verhalten austauschbar. 
+}
+
+\begin{frame}{Ablauf}
+	\begin{center}
+ 		\includegraphics[scale=0.3]{\BILDERPFAD/command5.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Ein Klient erzeugt das Befehl-Objekt, das aus einem Satz von Aktionen auf einem 
+	Empfänger besteht. Das Befehl-Objekt bietet die einzige Methode ausführen(). Diese 
+	kapselt die Aktionen und kann aufgerufen werden, um die Methoden auf dem Empfänger
+	auszuführen. Der Klient ruft setBefehl() auf einem Aufrufer-Objekt auf mit dem
+	Befehl-Objekt als Übergabe. Dieses Objekt wird im Aufrufer gespeichert, bis es
+	benötigt wird. Irgendwann in der Zukunft fordert der Klient den Aufrufer auf, 
+	den Befehl auszuführen. Und dann werden auch die Aktionen auf dem Empfänger
+	ausgeführt. 
+}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+        \umlclass[type=interface,x=6, y=6]{Command}{}{
+            +execute() : void
+        }
+    
+        % ConcreteCommand
+        \umlclass[x=6, y=1]{ConcreteCommand}{}{
+            -receiver: Receiver \\
+            +ConcreteCommand(receiver: Receiver) \\
+            +execute() : void
+        }
+    
+        % Receiver
+        \umlclass[x=-2, y=1]{Receiver}{}{
+            +action() : void
+        }
+    
+        % Invoker
+        \umlclass[, x=-5, y=6]{Invoker}{}{
+            -command: Command \\
+            +setCommand(command: Command) : void \\
+            +invoke() : void
+        }
+    
+        % Client
+        \umlclass[x=0, y=-4]{Client}{}{
+        }
+    
+        % Relationships
+        \umlimpl{ConcreteCommand}{Command}
+        \umluniassoc{ConcreteCommand}{Receiver}
+        \umluniaggreg{Invoker}{Command}
+        \umldep{Client}{ConcreteCommand}
+        \umluniassoc{Client}{Receiver}
+    \end{tikzpicture}
+\end{frame}
+
+\note{
+	Der Aufrufer initiiert Anfragen. Diese Klasse braucht ein Feld zur Speicherung einer Referenz auf Befehlsobjekte. Der Aufrufer stößt das Kommando an statt direkt den Empfänger aufzurufen. Der Aufrufer erzeugt die Befehlsobjekte nicht selbst, sondern erhält sie normalerweise vom Klienten über den Konstruktor. Das Interface Befehl enthält eine Methode zum Auführen der Operation. Konkrete Befehle implementieren das Interface mit einem konkreten Verhalten. Dabei soll ein konkretes Kommando die Arbeit nicht selbst machen, sondern den Aufruf an ein Objekt der Geschäftslogik weiterleiten. Parameter, die zur Ausführung einer Methode benötigt werden, können als Zustand der Befehle in Attributen gespeichert werden. Befehlsobjekte sollten unveränderlich sein. Der Empfänger enthält die Geschäftslogik und somit kann es sich dabei um beinahe jedes beliebige Objekt handeln. Die Befehlsobjekte kümmern sich im Allgemeinen nur um die Details, wie ein Befehl an einen Empfänger übertragen wird, während der Empfänger die wirkliche Arbeit ausführt. Der Klient erzeugt reale Befehlsobjekte und übergibt ihnen seine Parameter und eine Referenz auf den Empfänger im Konstruktor. Der Aufrufer kann auch mehrere Referenzen auf Befehle enthalten. Dann kann man z.B. eine Undo-Funktionalität realisieren.
+}
+
+\begin{frame}{Klassendiagramm -- SmartHome}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+    % Klassen erstellen mit festen Positionen
+    \umlclass[x=0, y=4]{Client}{}{}
+
+    \umlclass[x=6, y=4]{SimpleRemoteControl}{}{
+        -command: Command \\
+        +setCommand(command: Command) \\
+        +execute()
+    }
+
+    \umlclass[x=12, y=4]{Command}{}{
+        +execute() : void
+    }
+
+    \umlclass[x=10, y=0]{LightOnCommand}{}{
+        -light: Light \\
+        +lightOnCommand(light: Light) \\
+        +execute() : void
+    }
+
+    \umlclass[x=17, y=0]{LightOffCommand}{}{
+        -light: Light \\
+        +lightOffCommand(light: Light) \\
+        +execute() : void
+    }
+
+    \umlinterface[x=14, y=-4]{Light}{}{
+        +on() : void \\
+        +off() : void
+    }
+
+    \umlclass[x=8, y=-6]{LivingRoomLight}{}{
+        +on() : void \\
+        +off() : void
+    }
+
+    % Verbindungen
+    \umluniassoc{Client}{SimpleRemoteControl}
+    \umlaggreg[geometry=-|]{SimpleRemoteControl}{Command}
+    \umlimpl{LightOnCommand}{Command}
+    \umlimpl{LightOffCommand}{Command}
+    \umluniassoc{LightOnCommand}{Light}
+    \umluniassoc{LightOffCommand}{Light}
+    \umlimpl{LivingRoomLight}{Light}
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Befehl}
+	\begin{exampleblock}{Command.java}
+ 		\begin{lstlisting}
+public interface Command {
+	public void execute();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Befehl}
+	\begin{exampleblock}{LightOnCommand.java}
+        \begin{lstlisting}
+public class LightOnCommand implements Command {
+	private Light licht;
+	
+	public LightOnCommand(Light licht) {
+		super();
+		this.licht = licht;
+	}
+
+	@Override
+	public void execute() {
+		licht.einschalten();
+	}
+}      
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Aufrufer}
+	\begin{exampleblock}{SimpleRemoteControl.java}
+ 		\begin{lstlisting}
+public class SimpleRemoteControl {
+	private Command command;
+
+	public void pressButton() {
+		command.execute();
+	}
+	
+	public void setCommand(Command command) {
+		this.command = command;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klient}
+	\begin{exampleblock}{SimpleRemoteControlDialog.java}
+ 		\begin{lstlisting}
+private void lightOn() {
+    Command lightOnCommand = new LichtAnBefehl(light);
+    simpleRemoteControl.setCommand(lightOnCommand);
+    simpleRemoteControl.pressButton();
+}
+
+private void lightOff() {
+    Command lightOffCommand = new LightOffCommand(light);
+    simpleRemoteControl.setCommand(lightOffCommand);
+    simpleRemoteControl.pressButton();
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Unsere Fernbedienung}
+	\begin{center}
+ 		\includegraphics[scale=0.22]{\BILDERPFAD/command6.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Wir können mit unserer Fernbedienung jetzt einen einzigen Befehl ausführen. Es wäre
+	jedoch viel interessanter, wenn wir viele verschiedene Geräte damit steuern könnten.
+}
+
+\begin{frame}[fragile]{Fernbedienung mit mehreren Plätzen}
+	\begin{exampleblock}{ComplexRemoteControl.java}
+ 		\begin{lstlisting}
+public class ComplexRemoteControl {
+	private static final int COMMAND_COUNT = 7;
+	
+	private Command[] onCommands;
+	private Command[] offCommands;
+	
+	public ComplexRemoteControl() {
+		onCommands = new Command[COMMAND_COUNT];
+		offCommands = new Command[COMMAND_COUNT];
+		
+		for (int i = 0; i < COMMAND_COUNT; i++) {
+			onCommands[i] = new NoCommand();
+			offCommands[i] = new NoCommand();
+		}
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Wir spendieren unserer Fernbedienung nun zwei Arrays mit Befehlen. 
+}
+
+\begin{frame}[fragile]{KeinBefehl}
+	\begin{exampleblock}{NoCommand.java}
+ 		\begin{lstlisting}
+public class NoCommand implements Command {
+
+	@Override
+	public void execute() {
+	}
+}
+    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Damit es keine Probleme gibt bei einer neuen Fernbedienung, werden alle Plätze mit einem leeren Befehl initialisiert. So braucht man sich nicht um null-Pointer zu kümmern. Wenn der Knopf gedrückt wird, passiert einfach nichts. Dies wird auch das Null-Object-Muster genannt.  
+}
+
+\begin{frame}[fragile]{Fernbedienung mit mehreren Plätzen}
+	\begin{exampleblock}{ComplexRemoteControl.java}
+ 		\begin{lstlisting}
+public void setCommand(int platz, Command onCommand, 
+			Command offCommand) {
+		onCommands[platz] = onCommand;
+		offCommands[platz] = offCommand;
+	}
+	
+public void pressOnButton(int plcae) {
+    onCommands[plcae].execute();
+    undoCommand = onCommands[plcae];
+}
+
+public void pressOffButton(int place) {
+    offCommands[place].execute();
+    undoCommand = offCommands[place];
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/command7.jpg}
+\note{
+	Wir möchten jetzt noch eine einfache Rückgängig-Funktion implementieren. Dabei soll es der Einfachheit halber nur möglich sein, eine einzige Aktion rückgängig zu machen. 
+}
+
+\begin{frame}[fragile]{Befehl mit Rückgängig-Funktion}
+	\begin{exampleblock}{Command}
+ 		\begin{lstlisting}
+public interface Command {
+	public void execute();
+	public void undo();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Dazu definieren wir im Interface eine entsprechende Methode.
+}
+
+\begin{frame}[fragile]{Befehl mit Rückgängig-Funktion}
+	\begin{exampleblock}{LightOnCommand}
+           \begin{lstlisting}
+public class LightOnCommand implements Command {
+	private Light light;
+	
+	public LightOnCommand(Light light) {
+		super();
+		this.light = light;
+	}
+
+	@Override
+	public void execute() {
+		light.switchOn();
+	}
+
+	@Override
+	public void undo() {
+		light.switchOff();
+	}
+}            
+           \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Im einfachsten Fall implementieren wir diese Methode, indem wir das Gegenteil des eigentlichen Befehls aufrufen.
+}
+
+\begin{frame}[fragile]{Befehl mit einem Zustand}
+	\begin{exampleblock}{SwitchFanCommand.java}
+ 		\begin{lstlisting}
+public class SwitchFanCommand implements Command {
+	private Fan fan;
+	private FanSpeed lastSpeed;
+	
+	public SwitchFanCommand(Fan fan) {
+		super();
+		this.fan = fan;
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Einige komplexere Befehle benötigen einen eigenen Zustand.
+}
+
+\begin{frame}[fragile]{Befehl mit einem Zustand}
+	\begin{exampleblock}{SwitchFanCommand.java}
+ 		\begin{lstlisting}
+@Override
+public void execute() {
+    lastSpeed = fan.getSpeed();
+    switch(lastSpeed) {
+    case OFF: fan.switchToSlow();
+    break;
+    case SLOW: fan.switchToMiddle();
+    break;
+    case MIDDLE: fan.switchToFast();
+    break;
+    case FAST: fan.turnOff();
+    break;
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Befehl mit einem Zustand}
+	\begin{exampleblock}{SwitchFanCommand.java}
+ 		\begin{lstlisting}
+@Override
+public void undo() {
+    switch(lastSpeed) {
+    case OFF: fan.turnOff();
+    break;
+    case SLOW: fan.switchToSlow();
+    break;
+    case MIDDLE: fan.switchToMiddle();
+    break;
+    case FAST: fan.switchToFast();
+    break;
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Auf diesen kann dann bei der Undo-Funktion zurückgegriffen werden. 
+}
+
+\frameWithImageOnly{\BILDERPFAD/command8.jpg}
+\note{
+	Als nächstes programmieren wir einen einfachen Texteditor im Terminal mit der Möglichkeit, Aktionen rückgängig zu machen und zu wiederholen, wobei Wiederholen nur beim Schreiben von Text wirklich Sinn ergibt.
+}
+
+\begin{frame}{Klassendiagramm -- Texteditor}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+        % Klassen erstellen mit festen Positionen
+        \umlclass[x=0, y=8]{Client}{}{
+            +main()
+        }
+    
+        \umlclass[x=6, y=8]{EditorInvoker}{}{
+            -Stack executed \\
+            -Stack history \\
+            +executeCommand() \\
+            +repeatCommand \\
+            +undo()
+        }
+    
+        \umlclass[x=12, y=8]{TextEditorCommand}{}{
+            +execute()\\
+            +undo()
+        }
+    
+        \umlclass[x=12, y=4]{CopyCommand}{}{
+            +execute()
+        }
+    
+        \umlclass[x=16, y=4]{PasteCommand}{}{
+            +execute()
+        }
+    
+        \umlclass[x=10, y=0]{TextEditor}{}{
+            +copy() \\
+            +paste()
+        }
+    
+        \umlclass[x=7, y=4]{WriteCommand}{}{
+            +execute()
+        }
+    
+        % Verbindungen
+        \umluniassoc{Client}{EditorInvoker}
+        \umlaggreg[geometry=-|]{EditorInvoker}{TextEditorCommand}
+        \umlinherit{CopyCommand}{TextEditorCommand}
+        \umlinherit{PasteCommand}{TextEditorCommand}
+        \umlinherit{WriteCommand}{TextEditorCommand}
+        \umluniassoc{CopyCommand}{TextEditor}
+        \umluniassoc{PasteCommand}{TextEditor}
+        \umluniassoc{WriteCommand}{TextEditor}
+    
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Aufrufer}
+	\begin{exampleblock}{EditorInvoker.java}
+ 		\begin{lstlisting}
+public class EditorInvoker {
+	private Stack<TextEditorCommand> executed = new Stack<>();
+    private Stack<TextEditorCommand> history = new Stack<>();
+
+    public void executeCommand(TextEditorCommand command) {
+        command.execute();
+        
+        if (!(command instanceof CopyCommand)) { 
+            history.push(command);
+        }
+        
+        if (command instanceof WriteCommand) {
+        	executed.add(command);
+        }
+    }
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Aufrufer}
+	\begin{exampleblock}{EditorInvoker.java}
+ 		\begin{lstlisting}
+public void repeatCommand() {
+    TextEditorCommand command = executed.peek();
+    command.execute();
+}
+
+public void undo() {
+    if (!history.isEmpty()) {
+        TextEditorCommand command = history.pop();
+        executed.push(command);
+        command.undo();
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kommando}
+	\begin{exampleblock}{TextEditorCommand.java}
+ 		\begin{lstlisting}
+public interface TextEditorCommand {
+    void execute();
+    void undo();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Kommando}
+	\begin{exampleblock}{WriteCommand.java}
+ 		\begin{lstlisting}
+public class WriteCommand implements TextEditorCommand {
+    private TextEditor editor;
+    private String text;
+
+    public WriteCommand(TextEditor editor, String text) {
+        this.editor = editor;
+        this.text = text;
+    }
+
+    public void execute() {
+        editor.write(text);
+    }
+
+    public void undo() {
+        editor.delete(editor.getText().length() - text.length());
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Empfänger}
+	\begin{exampleblock}{TextEditor.java}
+ 		\begin{lstlisting}
+public class TextEditor {
+    private StringBuilder text = new StringBuilder();
+    private String clipboard = "";
+
+    public void write(String newText) {
+        text.append(newText);
+    }
+    
+    public void write(int index, String newText) {
+    	text.insert(index, newText);
+    }
+
+    public void delete(String deletedText) {
+    	int start = text.indexOf(deletedText);
+    	if (start >= 0) {
+    		text.delete(start, start + deletedText.length());
+    	}
+    }
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Empfänger}
+	\begin{exampleblock}{TextEditor.java}
+ 		\begin{lstlisting}
+public void copy(String textToCopy) {
+    clipboard = textToCopy;
+}
+
+public void paste() {
+    text.append(clipboard);
+}
+
+public String getText() {
+    return text.toString();
+}
+
+public String getClipboard() {
+    return clipboard;
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/command9.jpg}
+\note{
+	Und jetzt sehen wir uns noch ein ganz einfaches Schachspiel an. Wir werden nur zwei Figuren implementieren, aber Erweiterungsmöglichkeiten sind natürlich vorhanden.
+}
+
+\begin{frame}{Klassendiagramm -- Schach}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+       % ChessBoard Klasse
+    \umlclass[x=0, y=3]{ChessBoard}{
+    - board : ChessPiece[8][8]
+    }{
+    + movePiece() : void \\
+    + undoMove() : void \\
+    }
+    
+    % ChessPiece Interface
+    \umlinterface[x=-5, y=3]{ChessPiece}{
+    }{
+    + move() : boolean \\
+    }
+    
+    % Rook Klasse
+    \umlclass[x=-10, y=2]{Rook}{
+    }{
+    + move() : boolean \\
+    }
+    
+    % Knight Klasse
+    \umlclass[x=-10, y=4]{Knight}{
+    }{
+    + move() : boolean \\
+    }
+    
+    % MoveStrategy Interface
+    \umlinterface[x=-12, y=8]{MoveStrategy}{
+    }{
+    + canMove() : boolean \\
+    }
+
+    \umlclass[x=-10, y=12]{KnightMoveStrategy}{
+    - board: ChessBoard \\
+    }{
+    + KnightMoveStrategy(board: ChessBoard) \\
+    + canMove() : boolean \\
+    }
+    
+    % RookMoveStrategy Klasse
+    \umlclass[x=-5, y=8]{RookMoveStrategy}{
+    - board: ChessBoard \\
+    }{
+    + RookMoveStrategy(board: ChessBoard) \\
+    + canMove() : boolean \\
+    }
+    
+    % Command Interface
+    \umlinterface[x=1, y=8]{Command}{
+    }{
+    + execute() : void \\
+    + undo() : void \\
+    }
+    
+    % MovePieceCommand Klasse
+    \umlclass[x=6, y=8]{MovePieceCommand}{
+    - board: ChessBoard \\
+    - piece: ChessPiece \\
+    - fromX: int \\
+    - fromY: int \\
+    - toX: int \\
+    - toY: int \\
+    }{
+    + execute() : void \\
+    + undo() : void \\
+    }
+    
+    % ChessGame Klasse
+    \umlclass[x=3, y=12]{ChessGame}{
+    - commandHistory: List<Command> \\
+    }{
+    + performMove(command: Command) : void \\
+    + undoLastMove() : void \\
+    }
+    
+    % Assoziationen
+    \umlimpl{Rook}{ChessPiece}
+    \umlimpl{Knight}{ChessPiece}
+    \umlimpl{RookMoveStrategy}{MoveStrategy}
+    \umlimpl{KnightMoveStrategy}{MoveStrategy}
+    \umlimpl{MovePieceCommand}{Command}
+    
+    \umluniassoc{ChessBoard}{ChessPiece}
+    \umluniassoc{ChessBoard}{MoveStrategy}
+    \umluniassoc{ChessBoard}{MovePieceCommand}
+    \umluniassoc{MovePieceCommand}{ChessPiece}
+    \umluniassoc{ChessGame}{Command}
+
+\end{tikzpicture}
+\end{frame}
+\note{
+    Diese Implementierung verbindet zwei Muster miteinander. Befehl wird für die Bewegungsbefehle verwendet, aber die einzelnen Bewegungsarten werden mithilfe von Strategie verwaltet. Somit kann das Spiel leicht um weitere Figuren erweitert werden.
+}
+
+\begin{frame}[fragile]{ChessGame}
+	\begin{exampleblock}{EditorInvoker.java}
+ 		\begin{lstlisting}
+public class ChessGame {
+    private List<Command> commandHistory;
+    
+    public void performMove(Command command) {
+        command.execute();
+        commandHistory.add(command);
+    }
+
+    public void undoLastMove() {
+        if (!commandHistory.isEmpty()) {
+            Command lastCommand = commandHistory
+                .remove(commandHistory.size() - 1);
+            lastCommand.undo();
+        } else {
+            System.out.println("No move to undo");
+        }
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Kommando}
+	\begin{exampleblock}{Command.java}
+ 		\begin{lstlisting}
+public interface Command {
+    void execute();
+    void undo();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Kommando}
+	\begin{exampleblock}{MovePieceCommand.java}
+ 		\begin{lstlisting}
+public class MovePieceCommand implements Command {
+    private ChessBoard board;
+    private ChessPiece piece;
+    private int fromX, fromY, toX, toY;
+
+    @Override
+    public void execute() {
+        board.movePiece(piece, fromX, fromY, toX, toY);
+    }
+
+    @Override
+    public void undo() {
+        board.undoMove(piece, fromX, fromY, toX, toY);
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Empfänger}
+	\begin{exampleblock}{ChessBoard.java}
+ 		\begin{lstlisting}
+public class ChessBoard {
+    private ChessPiece[][] board;
+
+    public void movePiece(ChessPiece piece, int fromX, 
+            int fromY, int toX, int toY) {
+        if (piece.equals(board[fromY][fromX]) && 
+                piece.move(fromX, fromY, toX, toY)) {
+            board[toY][toX] = piece;
+            board[fromY][fromX] = null;
+            System.out.println(" ...");
+        } else {
+            System.out.println("Ungueltiger Zug fuer ...");
+        }
+    }
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Empfänger}
+	\begin{exampleblock}{ChessBoard.java}
+ 		\begin{lstlisting}
+public void undoMove(ChessPiece piece, int fromX, 
+        int fromY, int toX, int toY) {
+    if (board[toY][toX] == piece) {
+        board[fromY][fromX] = piece;
+        board[toY][toX] = null;
+        System.out.println("...");
+    } else {
+        System.out.println("...");
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

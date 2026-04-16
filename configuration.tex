@@ -1,0 +1,216 @@
+\setbeamertemplate{note page}[plain]
+
+\lstset{ % General setup for the package
+    language=Java, 
+    basicstyle=\scriptsize\sffamily,
+    numbers=left,
+    numberstyle=\tiny, 
+    frame=tb,
+    tabsize=2,
+    columns=fixed,
+    showstringspaces=false,
+    showtabs=false,
+    keepspaces,
+    commentstyle=\color{red},
+    keywordstyle=\color{blue}
+}
+
+
+
+\newcommand{\VORLESUNG}{1}
+\newcommand{\KURSEINHEITNR}{36}
+\newcommand{\NAMEVORLESUNG}{Datenbanken Repetitorium}
+
+\if \VORLESUNG 1
+    \setbeameroption{}
+\else 
+    \setbeameroption{show notes on second screen}
+\fi 
+
+\date{Datenbanken Repetitorium}
+\newcommand{\BILDERPFAD}{\KURSEINHEIT/bilder}
+
+\ifnum\KURSEINHEITNR=0
+    \newcommand{\KURSEINHEIT}{00-Example-Chapter}
+    \newcommand{\presentationTitle}{Latex Beamer Template}
+\fi
+
+\ifnum\KURSEINHEITNR=1
+    \newcommand{\KURSEINHEIT}{1-Einfuehrung}
+    \newcommand{\presentationTitle}{Einführung}
+\fi
+	
+\ifnum\KURSEINHEITNR=2
+    \newcommand{\KURSEINHEIT}{2-UML}
+    \newcommand{\presentationTitle}{Einführung in UML}
+\fi
+
+\ifthenelse {\KURSEINHEITNR = 3} {
+    \newcommand{\KURSEINHEIT}{3-Singleton}
+    \newcommand{\presentationTitle}{Singleton}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 4} {
+    \newcommand{\KURSEINHEIT}{4-Multiton}
+    \newcommand{\presentationTitle}{Multiton}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 5} {
+    \newcommand{\KURSEINHEIT}{5-Decorator}
+    \newcommand{\presentationTitle}{Dekorator}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 6} {
+    \newcommand{\KURSEINHEIT}{6-Strategie}
+    \newcommand{\presentationTitle}{Strategie}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 7} {
+    \newcommand{\KURSEINHEIT}{7-Schablonenmethode}
+    \newcommand{\presentationTitle}{Schablonenmethode}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 8} {
+    \newcommand{\KURSEINHEIT}{8-kompositum}
+    \newcommand{\presentationTitle}{Kompositum}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 9} {
+    \newcommand{\KURSEINHEIT}{9-Iterator}
+    \newcommand{\presentationTitle}{Iterator}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 10} {
+    \newcommand{\KURSEINHEIT}{10-Bruecke}
+    \newcommand{\presentationTitle}{Brücke}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 11} {
+    \newcommand{\KURSEINHEIT}{11-Kommando}
+    \newcommand{\presentationTitle}{Kommando}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 12} {
+    \newcommand{\KURSEINHEIT}{12-Proxy}
+    \newcommand{\presentationTitle}{Proxy}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 13} {
+    \newcommand{\KURSEINHEIT}{13-Fabrikmethode}
+    \newcommand{\presentationTitle}{Fabrikmethode}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 14} {
+    \newcommand{\KURSEINHEIT}{14-AbstrakteFabrik}
+    \newcommand{\presentationTitle}{Abstrakte Fabrik}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 15} {
+    \newcommand{\KURSEINHEIT}{15-Prototyp}
+    \newcommand{\presentationTitle}{Prototyp}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 16} {
+    \newcommand{\KURSEINHEIT}{16-Mediator}
+    \newcommand{\presentationTitle}{Mediator}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 17} {
+    \newcommand{\KURSEINHEIT}{17-Fliegengewicht}
+    \newcommand{\presentationTitle}{Fliegengewicht}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 18} {
+    \newcommand{\KURSEINHEIT}{18-Beobachter}
+    \newcommand{\presentationTitle}{Beobachter}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 19} {
+    \newcommand{\KURSEINHEIT}{19-Erbauer}
+    \newcommand{\presentationTitle}{Erbauer}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 20} {
+    \newcommand{\KURSEINHEIT}{20-Besucher}
+    \newcommand{\presentationTitle}{Besucher}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 21} {
+    \newcommand{\KURSEINHEIT}{21-Fassade}
+    \newcommand{\presentationTitle}{Fassade}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 22} {
+    \newcommand{\KURSEINHEIT}{22-Adapter}
+    \newcommand{\presentationTitle}{Adapter}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 23} {
+    \newcommand{\KURSEINHEIT}{23-Zustand}
+    \newcommand{\presentationTitle}{Zustand}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 24} {
+    \newcommand{\KURSEINHEIT}{24-ChainOfResponsibility}
+    \newcommand{\presentationTitle}{Verantwortlichkeitskette}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 25} {
+    \newcommand{\KURSEINHEIT}{25-Memento}
+    \newcommand{\presentationTitle}{Memento}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 26} {
+    \newcommand{\KURSEINHEIT}{26-Interpreter}
+    \newcommand{\presentationTitle}{Interpreter}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 27} {
+    \newcommand{\KURSEINHEIT}{27-DependencyInjection}
+    \newcommand{\presentationTitle}{Dependency Injection}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 28} {
+    \newcommand{\KURSEINHEIT}{28-FluentAPI}
+    \newcommand{\presentationTitle}{FluentAPI}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 29} {
+    \newcommand{\KURSEINHEIT}{29-Immutable}
+    \newcommand{\presentationTitle}{Unveränderliche Objekte}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 30} {
+    \newcommand{\KURSEINHEIT}{30-Specification}
+    \newcommand{\presentationTitle}{Specification Pattern}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 31} {
+    \newcommand{\KURSEINHEIT}{31-NullObjectPattern}
+    \newcommand{\presentationTitle}{Null Object Pattern}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 32} {
+    \newcommand{\KURSEINHEIT}{32-Repository}
+    \newcommand{\presentationTitle}{Repository}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 33} {
+    \newcommand{\KURSEINHEIT}{33-ValueObjects}
+    \newcommand{\presentationTitle}{Value Objects}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 34} {
+    \newcommand{\KURSEINHEIT}{34-ModelViewController}
+    \newcommand{\presentationTitle}{ModelViewController}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 35} {
+    \newcommand{\KURSEINHEIT}{35-Einführung-Datenbanken}
+    \newcommand{\presentationTitle}{Einführung}
+}{}
+
+\ifthenelse {\KURSEINHEITNR = 36} {
+    \newcommand{\KURSEINHEIT}{36-Datenbankentwurf}
+    \newcommand{\presentationTitle}{Datenbankentwurf}
+}{}

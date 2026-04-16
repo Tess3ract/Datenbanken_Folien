@@ -1,0 +1,95 @@
+\writeSectionFrame{\presentationTitle}{Thread-Sicherheit}
+\frameWithImageOnly{\BILDERPFAD/threads1.jpg}
+\note{
+	Problematisch wird das Singleton-Muster, wenn wir mit mehreren Threads arbeiten möchten.
+	Threads machen die Dinge sehr viel komplizierter. Natürlich sollte auch der 
+	Singleton entsprechend threadsicher gestaltet werden, um unvorhersehbare Ergebnisse
+	bei paralleler Verarbeitung zu vermeiden. Da Threads jederzeit unterbrochen werden können, können in einer parallelen Umgebung tatsächlich mehrere Instanzen existieren. Es kann passieren, dass ein Thread direkt nach der Überprüfung NULL pausiert. Dann kann ein anderer Thread ebenfalls ein Objekt anlegen. Die Wahrscheinlichkeit ist nicht groß, aber da gilt das Gesetz der großen Zahlen. Zur Lösung dieser Probleme gibt es verschiedene Möglichkeiten.  
+}
+
+\begin{frame}[fragile]{synchronized}
+	\begin{exampleblock}{ConfigurationThreadSafeVersion1.java}
+		\begin{lstlisting}
+public static synchronized ConfigurationThreadSafeVersion1 
+        getInstance() {
+    if (configuration == null) {
+        configuration = new ConfigurationThreadSafeVersion1();
+    }
+    return configuration;
+}
+	 	\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Die einfachste Variante ist die Verwendung des Schlüsselwortes synchronized. Damit wird eine Sperre gesetzt. Diese Sperre muss erst aufgehoben werden, bevor die Methode weiter ausgeführt werden darf. Das hat allerdings
+	den Nachteil, dass der Zugriff auf diese Methode ja sehr oft erfolgt und somit werden auch
+	lesende Zugriffe synchronisiert. In extremen Fällen kann sich die Performanz um einen Faktor 100
+	oder mehr verschlechtern. 
+}
+
+\begin{frame}[fragile]{Doppelte Überprüfung der Sperrung}
+	\begin{exampleblock}{ConfigurationThreadSafeVersion2.java}
+		\begin{lstlisting}
+public class ConfigurationThreadSafeVersion2  {
+	private static final String CONFIGURATION_FILE = 
+        "configuration.properties";
+	private Map<String, String> configurationMap;
+	private static ConfigurationThreadSafeVersion2    
+        configuration;
+	
+	public static ConfigurationThreadSafeVersion2 
+            getInstance() {
+		if (configuration == null) {
+			synchronized (ConfigurationThreadSafeVersion2.class) {
+				if (configuration == null) {
+					configuration = new 
+                        ConfigurationThreadSafeVersion2();
+				}
+			}
+		}
+		return configuration;
+	}		    
+    // ...
+}
+ 
+		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	Hier wird die Sperrung doppelt überprüft. Der erste if (instance == null)-Check prüft, ob das Singleton-Objekt bereits erstellt wurde. Dieser Check erfolgt ohne Synchronisation, um den Overhead zu minimieren. Wenn instance bereits existiert, wird sie direkt zurückgegeben, ohne den Synchronisationsblock zu betreten. Wenn der erste Check ergibt, dass instance noch null ist, tritt der Code in den Synchronisationsblock ein. Dieser Schritt ist notwendig, da wir in einer Multi-Thread-Umgebung nur einen Thread die Initialisierung der Instanz vornehmen lassen wollen. Innerhalb des Synchronisationsblocks erfolgt der zweite if (instance == null)-Check. Dies stellt sicher, dass instance nicht bereits von einem anderen Thread initialisiert wurde, der möglicherweise den Synchronisationsblock schneller erreicht hat. Wenn nach wie vor null, erstellt der aktuelle Thread die Singleton-Instanz.
+}
+
+\begin{frame}[fragile]{Schlüsselwort volatile}
+	\begin{exampleblock}{ConfigurationThreadSafeVersion2.java}
+		\begin{lstlisting}
+public class ConfigurationThreadSafeVersion2  {
+	private static final String CONFIGURATION_FILE = 
+        "configuration.properties";
+	private Map<String, String> configurationMap;
+	private static volatile ConfigurationThreadSafeVersion2    
+        configuration;
+	
+	public static ConfigurationThreadSafeVersion2 
+            getInstance() {
+		if (configuration == null) {
+			synchronized (ConfigurationThreadSafeVersion2.class) {
+				if (configuration == null) {
+					configuration = new 
+                        ConfigurationThreadSafeVersion2();
+				}
+			}
+		}
+		return configuration;
+	}		    
+    // ...
+}
+ 
+		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\note{
+	In einer Multithread-Umgebung können Threads auf dem lokalen Cache von CPUs arbeiten. Dies führt zu einer Situation, in der ein Thread möglicherweise Änderungen an einer Variablen nicht sofort im Hauptspeicher speichert, sondern diese nur im lokalen Cache behält. Andere Threads könnten somit eine veraltete Version der Variable sehen. Das Schlüsselwort volatile sorgt dafür, dass alle Lese- und Schreibzugriffe auf eine Variable direkt im Hauptspeicher durchgeführt werden. Es verhindert, dass Threads lokale Kopien der Variable in CPU-Caches verwenden, und stellt sicher, dass jeder Thread den aktuellen Wert aus dem Hauptspeicher liest. Mit volatile wird der Schreibvorgang an der instance-Variable im Hauptspeicher sofort sichtbar gemacht, sodass alle anderen Threads den korrekten Wert sehen und sicher sein können, dass der Konstruktor des Objekts vollständig ausgeführt wurde.
+}

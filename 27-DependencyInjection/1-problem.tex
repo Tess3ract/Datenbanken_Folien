@@ -1,0 +1,84 @@
+\writeSectionFrame{\presentationTitle}{Das Problem}
+\begin{frame}{Dependency Injection – Motivation}
+	\begin{itemize}
+	    \item \textbf{Problem ohne DI:} 
+	    \begin{itemize}
+	        \item Klassen erstellen ihre Abhängigkeiten selbst
+	        \item Starke Kopplung zwischen Komponenten
+	        \item Schwer testbar und schwer erweiterbar
+	    \end{itemize}
+	    \item \textbf{Ziel von DI:}
+	    \begin{itemize}
+	        \item Entkopplung von Klassen
+	        \item Einfache Testbarkeit
+	        \item Flexibilität bei Austausch von Implementierungen
+	    \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Ohne DI - Beispiel Strategie-Muster}
+	\begin{exampleblock}{AttackStrategy.java}
+		\begin{lstlisting}
+public interface AttackStrategy {
+	void attack();
+}	
+		\end{lstlisting}	
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Ohne DI - Beispiel Strategie-Muster}
+	\begin{exampleblock}{FireAttackStrategy.java}
+		\begin{lstlisting}
+public class FireAttackStrategy implements AttackStrategy {
+	@Override
+	public void attack() {
+		System.out.println("Ich greife mit Feuer an.");
+	}
+}
+		\end{lstlisting}	
+	\end{exampleblock}
+	
+	\begin{exampleblock}{MeleeAttackStrategy.java}
+		\begin{lstlisting}
+public class MeleeAttackStrategy implements AttackStrategy {
+	@Override
+	public void attack() {
+		System.out.println("Ich greife waffenlos an.");
+	}
+}
+		\end{lstlisting}	
+	\end{exampleblock}	
+\end{frame}
+
+\begin{frame}[fragile]{Ohne DI - Beispiel Strategie-Muster}
+	\begin{exampleblock}{Monster.java}
+		\begin{lstlisting}
+public class Monster {
+	private AttackStrategy attackStrategy;
+	
+	public Monster() {
+		attackStrategy = new MeleeAttackStrategy();
+	}
+	
+	public void changeToMeleeStrategy() {
+		attackStrategy = new MeleeAttackStrategy();
+	}
+	
+	public void changeToCloseCombatStrategy() {
+		attackStrategy = new CloseCombatStrategy();
+	}
+
+	public void attack() {
+		attackStrategy.attack();
+	}
+ }
+		\end{lstlisting}	
+	\end{exampleblock}
+\end{frame}
+\note{
+	Beim Strategiemuster hatten wir den Nachteil, dass der Kontext, hier Monster,
+	abhängig ist von der konkreten Strategie. Wir können zwar neue Angriffsstrategien
+	leicht hinzufügen, aber Monster muss noch angepasst werden. Dependency 
+	Injection löst dieses Problem.
+}
+

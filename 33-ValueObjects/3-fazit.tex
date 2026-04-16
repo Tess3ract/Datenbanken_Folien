@@ -1,0 +1,21 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Vorteile von Value Objects}
+    \begin{itemize}
+        \item Vermeidet Primitive Obsession
+        \item Fördert Unveränderlichkeit
+        \item Klarere, selbsterklärende Typen
+        \item Einheitliche Logik und Validierung für den Wert an einem Ort
+        \item Gleichheit auf Basis des Inhalts, nicht der Identität
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Erweiterung: Fluent Methods}
+    \begin{itemize}
+        \item Value Objects lassen sich leicht mit Fluent Methods kombinieren
+        \item Beispiel: Position.move(dx, dy) liefert direkt eine neue Position zurück
+        \item Kette von Änderungen ist möglich:
+        \begin{itemize}
+            \item player.move(1, 0).move(0, 2)
+        \end{itemize}
+    \end{itemize}
+\end{frame}

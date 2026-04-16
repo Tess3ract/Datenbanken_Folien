@@ -1,0 +1,139 @@
+%Stildatei für Präsentationen.
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{array}
+\usepackage{listings}
+\usetheme{Warsaw}
+%\usecolortheme{crane}
+
+\newcommand{\rede}[1]{\glqq #1\grqq}
+\newcommand{\gquote}[1]{\glqq #1\grqq}
+\newcommand{\fachwort}[1]{\textit{#1}}
+\newcommand{\code}[1]{\textit{#1}}
+\newcommand{\htmlTag}[1]{<{#1}>}
+\newcommand{\attribut}[1]{Attribut \code{#1}}
+\newcommand{\redeEn}[1]{``#1``}
+
+\date{Datenbanken Repetitorium im Sommersemester 2026}
+
+% Erste Folie
+\newcommand{\IntroVorlesung}[0]{
+	\title{\NAMEVORLESUNG}
+    \institute{Moritz Niederer, M. Sc.}
+    \date{}
+	\frame[plain]{\titlepage{}}
+}
+
+% Neues Kaptitel
+\newcommand{\writeSectionFrame}[1]{
+	\title{#1}
+    \subtitle{\NAMEVORLESUNG}
+	\author{}
+	\frame[plain]{\titlepage{}}
+}
+
+\newcommand{\writeSubsectionFrame}[2]{
+	\subsection{#2}
+	\title{#1}
+	\author{#2}
+	\frame[plain]{\titlepage{}}	
+}
+
+\newcommand{\writeContentFrame}{
+	\begin{frame}[plain]{Inhaltsverzeichnis}
+		\tableofcontents
+	\end{frame}
+}
+
+\newcommand{\frameWithImageOnly}[1] {
+	{
+	\setbeamertemplate{background canvas}{
+	  \includegraphics[%
+		width=\paperwidth,
+		height=\paperheight]{#1}
+	}
+	\begin{frame}[plain]
+	\end{frame}
+	}
+}
+
+\newcommand{\myImageWithSource}[3]{
+	\begin{figure}
+ 		\includegraphics[scale=#1]{#2}
+
+ 		\footnotesize\sffamily\textbf{Quelle:} #3
+ 	\end{figure}
+}
+
+\newcommand{\realworld}[2]{
+    \begin{frame}{Einsatz in der realen Welt}
+        \begin{block}{#1}
+            #2
+        \end{block}
+    \end{frame}
+}
+
+\newcommand{\vorteil}[1]{
+    \begin{frame}{Vor und Nachteile}
+    	\begin{exampleblock}{Vorteile}
+     		#1
+     	\end{exampleblock}
+    \end{frame}
+}
+
+\newcommand{\nachteil}[1]{
+    \begin{frame}{Vor und Nachteile}
+    	\begin{alertblock}{Nachteile}
+     		#1
+     	\end{alertblock}
+    \end{frame}
+}
+
+% Arrow mit fazit
+% Usage: \arrowFazit{<length of arrow in cm>}{<Fazit Text>}
+\newcommand{\arrowFazit}[2]{%
+\begin{tikzpicture}
+    \draw[
+        draw=Blue,
+        line width=3mm,
+        -{Triangle[length=6mm,width=6mm]}
+    ]
+    (0,0) -- (#1cm,0);
+
+    \node[
+        anchor=west,
+        align=left,
+        text width=6cm
+    ]
+    at ([xshift=0.2cm]#1cm,0)
+    {#2};
+\end{tikzpicture}%
+}
+
+% Arrow zwischen zwei Bildern
+% Usage: \arrowImages{<length of arrow in cm>}{<left image>}{<right image>}
+% Example: \arrowImages{1.3}
+    %{\includegraphics[height=2.5cm]{5-Decorator/bilder/cpp1.png}}
+    %{\includegraphics[height=4cm]{5-Decorator/bilder/realwelt1.png}}
+\newcommand{\arrowImages}[3]{%
+\begin{tikzpicture}
+    % left image
+    \node[anchor=east] at ([xshift=-0.2cm]0,0) {#2};
+    \pause
+    % arrow
+    \draw[
+        draw=Blue,
+        line width=3mm,
+        -{Triangle[length=6mm,width=6mm]}
+    ]
+    (0,0) -- (#1cm,0);
+    \pause
+    % right image
+    \node[anchor=west] at ([xshift=0.2cm]#1cm,0) {#3};
+\end{tikzpicture}%
+}
+
+
+\setcounter{tocdepth}{2}

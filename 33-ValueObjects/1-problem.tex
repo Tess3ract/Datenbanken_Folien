@@ -1,0 +1,48 @@
+\writeSectionFrame{\presentationTitle}{Problem}
+\begin{frame}{Problem: Primitive Obsession}
+    \begin{itemize}
+        \item Häufig werden primitive Datentypen wie Strings oder int mehrfach in der Domäne verwendet
+        \item Bsp.: Positionen, Geldbeträge, Adressen als String oder int speichern
+        \item Problem:
+        \begin{itemize}
+            \item Code wird unklar
+            \item Fehleranfällig (falscher Wert oder falscher Typ)
+            \item Logik verteilt sich über viele Stellen
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Lösung: Value Objects}
+    \begin{itemize}
+        \item Kapseln eines Wertes mit Bedeutung
+        \item Unveränderlich (immutable)
+        \item Ermöglicht:
+        \begin{itemize}
+            \item Klarere Typen
+            \item Bessere Lesbarkeit
+            \item Konsistente Logik an einer zentralen Stelle
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Negativbeispiel}
+    \begin{alertblock}{Problematisch}
+    	\begin{lstlisting}
+public class Player {
+	private String name;
+	private String email;
+	private int positionX;
+	private int positionY;
+	
+	public Player(String name, String email, 
+			int positionX, int positionY) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.positionX = positionX;
+		this.positionY = positionY;
+	}
+}    	
+    	\end{lstlisting}
+    \end{alertblock}
+\end{frame}

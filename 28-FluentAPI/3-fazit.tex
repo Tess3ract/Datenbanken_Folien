@@ -1,0 +1,64 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}[fragile]{ArchUnit als Beispiel}
+	\begin{lstlisting}[basicstyle=\tiny]
+ArchRule domain_is_framework_independent =
+    noClasses()
+        .that().resideInAPackage("..domain..")
+        .should().dependOnClassesThat()
+        .resideInAnyPackage(
+            "org.springframework..",
+            "jakarta..",
+            "javax.."
+        );
+
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{ArchUnit als Beispiel}
+	\begin{lstlisting}[basicstyle=\tiny]
+JavaClasses classes =
+    new ClassFileImporter().importPackages("de.example.app");
+
+ArchRule rule =
+    layeredArchitecture()
+        .layer("Controller").definedBy("..controller..")
+        .layer("Service").definedBy("..service..")
+        .layer("Domain").definedBy("..domain..")
+        .layer("Persistence").definedBy("..persistence..")
+
+        .whereLayer("Controller").mayOnlyBeAccessedByLayers("Service")
+        .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller")
+        .whereLayer("Domain").mayOnlyBeAccessedByLayers("Service", "Persistence")
+        .whereLayer("Persistence").mayNotBeAccessedByAnyLayer();
+
+rule.check(classes);
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Vorteile}
+	\begin{itemize}
+		\item Sehr gute Lesbarkeit
+		\item Weniger temporäre Variablen
+		\item Führt den Nutzer durch erlaubte Aufrufreihenfolgen
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Nachteile und Risiken}
+	\begin{itemize}
+		\item Kann komplexe Logik verschleiern
+		\item Debugging manchmal schwieriger
+		\item Gefahr von \glqq API-Spielereien\grqq
+		\item Gute Namenswahl entscheidend
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Regel}
+\centering
+\Large
+\emph{Eine Fluent API ist dann gut, wenn der Code\\
+seine eigene Dokumentation ist.}
+
+\emph{Eine gute Fluent API zwingt uns nicht, Code zu lesen –
+sie erlaubt uns, Absichten zu lesen.}
+\end{frame}

@@ -1,0 +1,83 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+
+\begin{frame}{Verwendung}
+    \begin{block}{Verwenden wenn ...}
+    	... es einen klaren Zugriffspunkt auf eine bestimmte Menge Objekte einer Klasse geben soll. 
+    \end{block}
+\end{frame}
+
+\realworld{Datenbanken}{Datenbankverbindungen}
+\note{
+    Datenbankverbindungen werden normalerweise in einem Pool verwaltet, weil die Erstellung relativ teuer ist. Verbindungen werden also nicht neu erstellt, sondern aus dem Pool angefordert und nach der Benutzung wieder zurückgegeben.
+}
+
+\realworld{Caching}{Caching von Objekten}
+\note{
+    Das Multiton-Muster kann für das Caching von Objekten verwendet werden, bei dem jedes Objekt eindeutig durch einen Schlüssel identifiziert wird. Dadurch wird vermieden, dass dasselbe Objekt mehrfach erstellt wird, was Speicher und Rechenressourcen spart.
+}
+
+\realworld{Logging}{Logger-Instanzen}
+\note{
+    Wenn unterschiedliche Logger-Instanzen für verschiedene Anwendungsbereiche (z.B. für unterschiedliche Module oder Klassen) benötigt werden, könnte das Multiton-Muster verwendet werden. Jede Instanz des Loggers wird durch den Bereich oder den Modulnamen identifiziert.
+}
+
+\realworld{JNDI (Java Naming and Directory Interface)}{Ressourcen}
+\note{
+    JNDI verwendet ein ähnliches Konzept, bei dem verschiedene Ressourcen (wie Datenquellen, Umgebungsvariablen usw.) über Namen identifiziert und verwaltet werden. Die Ressourcen können als Singleton oder Multiton betrachtet werden, basierend auf der Anzahl der Instanzen, die für einen bestimmten Namen erlaubt sind.
+}
+
+\vorteil{Einfache Verwaltung eines Pools von Objekten}
+\note{
+    Das Multiton-Muster stellt sicher, dass für jeden eindeutigen Schlüssel nur eine Instanz existiert. Dadurch wird die Anzahl der Instanzen kontrolliert und unnötige Objekterstellungen vermieden.
+}
+
+\vorteil{Eindeutigkeit der Instanzen}
+\note{
+    Das Muster gewährleistet, dass eine Instanz eindeutig durch ihren Schlüssel identifiziert werden kann.
+}
+
+\vorteil{Zentralisierter Zugriff auf ein Verzeichnis}
+\note{
+    Alle Instanzen werden zentral an einem Ort verwaltet, oft in einer statischen Map oder einem ähnlichen Konstrukt.
+}
+
+\vorteil{Flexibilität durch konfigurierbare Instanzen}
+\note{
+    Da jede Instanz über einen Schlüssel konfiguriert werden kann, bietet das Multiton-Muster eine größere Flexibilität als das Singleton-Muster, das nur eine Instanz zulässt und alle Instanzen können noch einmal separat konfiguriert werden. So ist es möglich, bestimmte häufig benötigte Konfigurationen vorzubereiten. 
+}
+
+\vorteil{Mechanismus der Objektverwaltung wird nach außen versteckt}
+\note{
+    Das anfordernde Objekt kennt keine Details über den Mechanismus der Objektverwaltung und ist somit vollkommen unabhängig davon. Der Mechanismus selbst kann also angepasst werden, ohne dass Änderungen bei den anfordernden Klassen notwendig sind. 
+}
+
+\vorteil{Rückgabe von null kann vermieden werden}
+\note{
+    Die Rückgabe von null kann generell vermieden werden. So könnte bspw. auch der Pool erweitert werden, wenn nicht mehr genügend Objekte vorhanden sind. Man konfiguriert einen Objektpool der Größe vor, wie er erfahrungsgemäß benötigt wird. Und wenn dann doch einmal mehr Objekte benötigt werden, wird der Pool erweitert. Oder statt mit null kann man mit Ausnahmen arbeiten usw.
+}
+
+\vorteil{Lazy Initialization ist möglich}
+\note{
+    Ein Mechanismus zur Lazy Initialization ist einfach und schnell umgesetzt, d.h. Objekte werden erst erzeugt, wenn sie benötigt werden. Da der Mechanismus der Objektverwaltung vor dem Client versteckt wird, weiß der Client überhaupt nicht, ob die Objekte bei der Anforderung bereits existieren oder ob sie noch erzeugt werden müssen. 
+}
+
+\nachteil{Thread-Sicherheit}
+\note{
+    Wie beim Singleton-Muster muss auch beim Multiton-Muster die Instanzierung und der Zugriff auf die Instanzen thread-sicher gestaltet werden. Unsachgemäße Implementierung kann zu Race Conditions und anderen Synchronisationsproblemen führen, insbesondere in einer multithreaded Umgebung.
+}
+
+\nachteil{Höhere Komplexität als Singleton}
+\note{
+    Das Multiton-Muster ist komplexer als das Singleton-Muster, da es die Verwaltung mehrerer Instanzen erfordert, die durch Schlüssel identifiziert werden. Diese erhöhte Komplexität kann den Code schwerer wartbar machen und das Risiko für Fehler erhöhen, insbesondere wenn das Muster nicht korrekt implementiert wird.
+}
+
+\nachteil{Speicherverbrauch}
+\note{
+    Da für jeden Schlüssel eine eigene Instanz erstellt und verwaltet wird, kann das Muster zu einem höheren Speicherverbrauch führen, insbesondere wenn viele Schlüssel verwendet werden. In Anwendungen, in denen viele Schlüssel nötig sind, kann dies den Speicherbedarf erheblich steigern und potenziell zu Speicherlecks führen, wenn Instanzen nicht ordnungsgemäß freigegeben werden. Und der Multiton fügt einen globalen Zustand ein, d.h. der Speicher für die Instanzen wird während der gesamten Laufzeit des Programms belegt, was vor allem bei Systemen mit eingeschränktem Speicher zu Problemen führen kann. 
+}
+
+\nachteil{Schweres Unit-Testing}
+\note{
+    Wie beim Singleton-Muster kann das Testen von Klassen, die auf das Multiton-Muster angewiesen sind, schwierig sein. Da das Muster Instanzen global verwaltet, kann dies zu unerwarteten Zuständen führen, die das Testen komplizieren
+}
+

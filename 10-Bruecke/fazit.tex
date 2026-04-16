@@ -1,0 +1,140 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\realworld{Grafische Benutzeroberflächen (GUIs)}{Abstraktion von Betriebssystemgrafik-API}
+\note{
+    Viele GUI-Frameworks, wie Swing und JavaFX, nutzen das Brückenmuster. Beispielsweise ist in Swing die javax.swing.JComponent-Klasse eine Abstraktionsebene, die über eine Implementierungsebene (z.B. sun.swing.SwingUtilities) mit der zugrunde liegenden Betriebssystemgrafik-API verbunden ist.
+}
+
+\realworld{Datenpersistenz-Frameworks}{Abstraktion von der konkreten Datenbank}
+\note{
+     In Frameworks wie Hibernate wird das Brückenmuster verwendet, um die Abstraktion der Datenzugriffslogik von der konkreten Datenbank-Implementierung zu trennen. Die Session- und Transaction-Schnittstellen in Hibernate dienen als Abstraktion, während die konkrete Implementierung Datenbank-spezifische Details behandelt.
+}
+
+\realworld{SLF4J}{Abstraktion von konkreten Logging-Implementierungen}
+\note{
+    In SLF4J wird das Brückenmuster verwendet, um die Logging-API von den konkreten Logging-Implementierungen zu trennen. SLF4J (Simple Logging Facade for Java) bietet eine Abstraktionsschicht, die es ermöglicht, verschiedene Logging-Frameworks (wie Log4j, Logback) nahtlos zu integrieren.
+}
+
+\realworld{Netzwerkkommunikation}{Abstraktion von Netzwerkprotokollen}
+\note{
+    In Netzwerkanwendungen kann das Brückenmuster verwendet werden, um die Abstraktion von Netzwerkprotokollen von deren konkreter Implementierung zu trennen. Zum Beispiel kann eine API für HTTP-Client-Kommunikation über eine Abstraktionsebene verfügen, die verschiedene Implementierungen (z.B. Apache HttpClient, Java's HttpURLConnection) ermöglicht.
+}
+
+\begin{frame}{Benutzen, wenn ...}
+	\begin{itemize}
+        \item eine dauerhafte Bindung zwischen Implementierung und Abstraktion vermieden werden soll
+        \item wenn die Implementierung während der Laufzeit austauschbar sein soll
+        \item Abstraktion und Implementierung voneinander unabhängig weiterentwickelt werden sollen
+        \item Änderungen in Implementierung keine Auswirkungen auf die Klienten haben soll
+        \item die Implementierung eigenständig ausgerollt werden soll
+ 		\item es viele Differenzierungen gibt
+ 		\item die Definition unabhängig von Verwendung ist
+ 		\item Implementierungsklassen von verschiedenen Abstraktionsklassen wiederverwendet werden können
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	 Das Brückenmuster ist interessant, wenn verschiedene Aspekte einer Klasse ausdifferenziert werden
+	 müssen und das viele Klassen mit sich bringen würde. Manchmal sind die Implementierer während
+	 der Compilezeit nicht bekannt oder müssen zur Laufzeit ausgetauscht werden. Die Folge daraus ist,
+	 dass bei einer Änderung der Implementierung die Abstraktion nicht neu übersetzt werden muss. Sie kann
+	 also unabhängig von dem Implementieren ausgerollt werden. Es kann eingesetzt werden, wenn die Definition
+	 von etwas unabhängig von der Verwendung ist und wenn eine oder mehrere Implementierungen von einer 
+	 oder mehreren Abstraktionen wiederverwendet werden sollen. 
+}
+
+\begin{frame}{Getrennte Entwicklung}
+	\begin{center}
+ 		\includegraphics[scale=0.4]{\BILDERPFAD/fazit1.png}
+ 	\end{center}	
+\end{frame}
+
+\note{
+	Die Schnittstelle der Implementierer muss nicht zu 100\% derjenigen der Abstraktion entsprechen. 
+	Eher im Gegenteil. Das Muster ist so flexibel, dass die beiden Hierarchien sich getrennt voneinander
+	weiterentwickeln können. Dokumentenklassen können auch eine Methode delete() implementieren. Der 
+	Provider setzt diese Operation dann physisch um. Ein Archiv ist jedoch revisionssicher. Dort darf
+	nicht ohne weiteres gelöscht werden. Der ArchiveProvider würde dann entsprechend umgesetzt werden. 
+	Der Implementierer kann Methoden anbieten, die nicht alle Abstraktionen nutzen, wie z.B. das 
+	Kopieren. Manche Dokumente wie Rechnungen dürfen nicht einfach kopiert werden. Angebote bspw. dürften
+	allerdings beliebig oft kopiert werden. Auch die Implementierungen können unabhängig von den Abstraktionen
+	weiterentwickelt werden. Der ArchiveStorageProvider könnte ein logisches Löschen zulassen, indem er
+	bspw. ein Löschbit als Markierung setzt. 
+}
+
+\begin{frame}{Wann ist die Brücke ungeeignet?}
+	\begin{itemize}
+ 		\item Wenn es nur eine Implementierung gibt
+ 		\item Fachlich sehr enge Kopplung zwischen Abstraktion und Implementierer
+ 		\item Wiederverwendung von Implementierungen wirklich ausgeschlossen werden kann
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	 Unter bestimmten Umständen ist das Brückenmuster nicht geeignet. Manchmal gibt es nur
+	 eine Implementierungsklasse und keine weitere ist in Sicht. Wobei eine Trennung dennoch
+	 interessant sein kann, denn alleine das getrennte Ausrollen kann schon von Vorteil sein. 
+	 Manchmal sind Implementierung und Abstraktion fachlich so eng miteinander verbunden, 
+	 dass einfache Vererbung sinnvoller ist. Und wenn eine Wiederverwendung ausgeschlossen
+	 werden kann, also wenn eine Implementierung nur für eine Abstraktion zuständig ist, 
+	 ist die Brücke auch nicht sinnvoll. 
+}
+
+\vorteil{Entkopplung von Abstraktion und Implementierung}
+\note{
+    Das Hauptziel des Brückenmusters ist die Trennung von Abstraktion und Implementierung, was bedeutet, dass beide unabhängig voneinander variiert werden können. Dies erleichtert das Hinzufügen neuer Abstraktionen und Implementierungen ohne Beeinträchtigung des bestehenden Codes.
+}
+
+\vorteil{Erhöhte Flexibilität}
+\note{
+    Durch die Entkopplung können verschiedene Kombinationen von Abstraktionen und Implementierungen erstellt werden. Dies fördert die Wiederverwendbarkeit und Anpassbarkeit des Codes, da verschiedene Implementierungen (z.B. verschiedene Zeichnungs-APIs) leicht ausgetauscht werden können.
+}
+
+\vorteil{Einhaltung des Open-Closed-Prinzips}
+\note{
+    Das Brückenmuster fördert das Open/Closed-Prinzip, da es einfach ist, neue Implementierungen hinzuzufügen, ohne bestehende Codebasen zu ändern. Neue Abstraktionen oder Implementierungen können hinzugefügt werden, ohne dass der bereits bestehende Code verändert werden muss.
+}
+
+\vorteil{Einhaltung des Single-Responsibility-Prinzips}
+\note{
+    Da die Aufgaben klar verteilt sind, wird auch das Prinzip der einzigen Zuständigkeit eingehalten. Jede Klasse hat eine Zuständigkeit und die Details sind getrennt von der High-Level-Logik.
+}
+
+\vorteil{Bessere Struktur für komplexe Systeme}
+\note{
+    In Systemen mit mehreren Dimensionen der Variabilität, z.B. unterschiedliche Geräte und Steuerungen, bietet das Brückenmuster eine klare Struktur und reduziert die Komplexität des Codes.
+}
+
+\vorteil{Höhere Wartbarkeit}
+\note{
+    Da Abstraktionen und Implementierungen getrennt sind, ist der Code in der Regel leichter zu warten und zu verstehen. Änderungen in der Implementierung betreffen nicht die Abstraktionsschicht und umgekehrt.
+}
+
+\vorteil{Austausch der Implementierung während Laufzeit möglich}
+\note{
+    Durch die Trennung von Abstraktion und Implementierung ist es auch möglich, die Implementierung während der Laufzeit auszutauschen, denn diese beiden Bestandteile sind nur lose gekoppelt. 
+}
+
+\nachteil{Erhöhte Komplexität}
+\note{
+    Das Brückenmuster kann den Entwurf und die Implementierung eines Systems komplizierter machen, da es zusätzliche Klassen und Schnittstellen erfordert. Diese zusätzliche Komplexität kann für kleine oder einfache Systeme unnötig sein.
+}
+
+\nachteil{Mehr Aufwand in der Implementierung}
+\note{
+    Die Einführung des Brückenmusters kann initial mehr Entwicklungsaufwand erfordern, da zusätzliche Schnittstellen und Klassen erstellt und verwaltet werden müssen. Der Aufwand kann sich allerdings auf längere Sicht durch die erhöhte Flexibilität lohnen. 
+}
+
+\nachteil{Potenzial für Über-Engineering}
+\note{
+    Wenn das Brückenmuster in Situationen eingesetzt wird, in denen die Trennung von Abstraktion und Implementierung nicht wirklich notwendig ist, kann dies zu Über-Engineering führen. Dies kann den Code unnötig aufblähen und schwerer verständlich machen.
+}
+
+\nachteil{Erhöhte Anzahl von Objekten}
+\note{
+    Da das Brückenmuster oft mehrere Objekte zur Laufzeit erfordert (z.B. eine Abstraktion und eine Implementierung), kann dies den Speicherverbrauch und die Laufzeitkomplexität leicht erhöhen, was insbesondere in ressourcenbeschränkten Umgebungen nachteilig sein könnte.
+}
+
+\nachteil{Schwierigkeiten bei der Rückverfolgung}
+\note{
+    In komplexen Systemen kann es schwieriger sein, nachzuvollziehen, wie Abstraktionen und Implementierungen miteinander verbunden sind, insbesondere wenn viele Abstraktionen und Implementierungen im Spiel sind.
+}

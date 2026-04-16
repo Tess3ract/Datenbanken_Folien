@@ -1,0 +1,108 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendungsfälle}
+	\begin{itemize}
+ 		\item Zeitliche Entkopplung von Aufruf und Ausführung
+ 		\item Räumliche Entkopplung von Aufruf und Ausführung
+ 		\item Warteschlangen
+ 		\item Serialisierung
+ 		\item Undo/Redo
+ 		\item Transaktionen
+ 		\item Umfangreiche Parametrisierungen
+ 		\item Makros
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	 Manchmal sollen Aktionen nicht sofort ausgeführt werden. Dann könnten sie mithilfe des Befehlsmusters in eine Warteschlange eingereiht werden, um z.B. Lastspitzen abzufedern. Kommandos könnten auch zwischengespeichert werden, wenn bspw. eine Ressource nicht erreichbar ist. Räumlich entkoppelbar wären Aufruf und Ausführung bspw. durch eine Serialisierung und ein Senden über ein Netzwerk. Durch die Undo-Möglichkeiten wäre ein Transaktionsmechanismus umsetzbar und auch ein Redo ist mit dem	Befehlsmuster umsetzbar. Wenn eine Methode viele Parameter bekommt, kann es sinnvoll sein, für diese
+	   umfangreichen Parametrisierungen ein Objekt zu benutzen. Auch zusammengesetzte Befehle (Makros) können mit dem Befehlmuster (eventuell in Kombination mit Kompositum u.ä.) umgesetzt werden.     
+}
+
+\realworld{JavaFX}{EventHandler}
+\note{
+     In JavaFX sind Action-Objekte eine zentrale Anwendung des Kommando-Musters. Zum Beispiel kann ein Button in JavaFX eine setOnAction-Methode haben, die einen EventHandler<ActionEvent> akzeptiert. Dieser EventHandler fungiert als Befehl (Command), der die Logik für das, was passieren soll, wenn der Button geklickt wird, kapselt. 
+}
+
+\realworld{Java EE und Spring Framework}{Kapseln von Geschäftslogik}
+\note{
+    In Spring wird das Kommando-Muster für die Implementierung von Business Commands in Verbindung mit dem CommandHandler verwendet. Auch in Java EE (Enterprise Edition) kann das Muster verwendet werden, um Transaktionen oder verschiedene Arten von Geschäftslogik in einem Command-Objekt zu kapseln.
+}
+
+\realworld{Mikroservice-Architektur}{ Operationen zwischen Diensten kapseln}
+\note{
+    In einer Mikroservice-Architektur kann das Kommando-Muster verwendet werden, um Operationen zwischen Diensten zu kapseln. Dies ermöglicht eine lose Kopplung und eine klare Trennung zwischen den Diensten.
+}
+
+\realworld{Selenium}{Aktionen auf Benutzeroberflächen kapseln}
+\note{
+    In Testautomatisierungsframeworks wie Selenium wird das Kommando-Muster verwendet, um Aktionen auf Benutzeroberflächen zu kapseln. Diese Aktionen können dann von Tests verwendet werden, um verschiedene Benutzerinteraktionen zu simulieren.
+}
+
+\vorteil{Entkopplung von Sender und Empfänger}
+\note{
+    Das Kommando-Muster trennt den Sender eines Befehls (z. B. eine Benutzeroberfläche) vom Empfänger, der den Befehl ausführt. Dies ermöglicht eine flexible und modulare Struktur, bei der sich Sender und Empfänger unabhängig voneinander entwickeln und ändern lassen.
+}
+
+\vorteil{Einfache Implementierung von Undo/Redo}
+\note{
+     Durch die Kapselung der Operationen als Objekte können ausgeführte Befehle gespeichert und später rückgängig gemacht oder noch einmal ausgeführt werden. Dies ist besonders nützlich in Anwendungen, die eine Undo/Redo-Funktionalität benötigen, wie z. B. Texteditoren oder CAD-Anwendungen.
+}
+
+\vorteil{Befehle können protokolliert werden}
+\note{
+     Da jeder Befehl ein eigenes Objekt ist, können Befehle leicht protokolliert werden. Diese Protokollierung ist nützlich für Debugging-Zwecke oder zur Wiederherstellung des Anwendungszustands nach einem Fehler.
+}
+
+\vorteil{Wiederverwendbarkeit von Befehlen}
+\note{
+     Einmal definierte Befehle können an verschiedenen Stellen der Anwendung wiederverwendet werden. Zum Beispiel kann der gleiche Befehl sowohl über eine Menüoption als auch über eine Tastenkombination ausgelöst werden.
+}
+
+\vorteil{Erleichterte Erweiterbarkeit}
+\note{
+     Neue Befehle können einfach hinzugefügt werden, ohne dass bestehender Code geändert werden muss. Man muss lediglich eine neue Kommando-Klasse erstellen, die das Kommando-Interface implementiert, und sie bei Bedarf registrieren.
+}
+
+\vorteil{Kombination von Befehlen}
+\note{
+     Das Muster ermöglicht die Erstellung komplexer Befehle durch die Kombination einfacher Befehle. Dies kann durch die Implementierung von Makros oder Skripten geschehen, die mehrere Befehle zusammen ausführen.
+}
+
+\vorteil{Implementierung abgeleiteter Operationen möglich}
+\note{
+     Da die Befehle Klassen sind, von denen Unterklassen abgeleitet werden können, können auch abgeleitete Befehle implementiert werden. 
+}
+
+\vorteil{Single-Responsibility-Prinzip}
+\note{
+     Jeder Befehl hat genau eine Verantwortlichkeit.
+}
+
+\vorteil{Open-Closed-Prinzip}
+\note{
+     Und auch das Open-Closed-Prinzip ist gewährleistet, weil einfach neue Kommandos hinzugefügt werden können.
+}
+
+\nachteil{Erhöhter Overhead}
+\note{
+    Da für jeden Befehl ein eigenes Objekt erstellt wird, kann dies zu einem erhöhten Speicherbedarf und Verwaltungsaufwand führen, insbesondere in Anwendungen mit vielen kleinen und häufig ausgeführten Befehlen.
+}
+
+\nachteil{Komplexität der Implementierung}
+\note{
+    Das Muster fügt zusätzliche Klassen und Schnittstellen hinzu, was die Struktur der Anwendung komplexer machen kann. Für einfache Anwendungen kann dieser zusätzliche Aufwand unnötig sein und die Lesbarkeit und Wartbarkeit des Codes erschweren.
+}
+
+\nachteil{Schwierigere Nachverfolgbarkeit}
+\note{
+     Da die Logik von Aktionen in separate Kommando-Klassen ausgelagert ist, kann es schwieriger werden, die Ausführungspfade des Programms zu verfolgen und zu verstehen. Dies kann die Fehlersuche und das Debugging erschweren.
+}
+
+\nachteil{Potenzielle Leistungsprobleme}
+\note{
+     In Anwendungen mit Echtzeitanforderungen oder begrenzten Ressourcen könnte die Erstellung und Verwaltung vieler Kommando-Objekte zu Leistungsproblemen führen. Besonders in ressourcenbeschränkten Umgebungen sollte dies sorgfältig abgewogen werden.
+}
+
+\nachteil{Konsistenz des Zustands}
+\note{
+     Wenn nicht sorgfältig implementiert, können Befehle den Anwendungszustand inkohärent machen. Besonders bei komplexen Befehlen oder mehreren parallelen Ausführungen muss sichergestellt werden, dass der Zustand der Anwendung korrekt bleibt.
+}

@@ -1,0 +1,67 @@
+\writeSectionFrame{\presentationTitle}{C++-Beispiel}
+\begin{frame}{Autos mit Dekorierern}
+	\begin{center}
+ 		\includegraphics[scale=0.45]{\BILDERPFAD/cpp1.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Die abstrakte Oberklasse Car}
+	\begin{exampleblock}{Car.h}
+		\begin{lstlisting}
+class Car {
+private:
+	double price;
+
+public:
+	Car(double price);
+	virtual ~Car();
+	virtual double calculatePrice() = 0;
+	double getPrice() const;
+};
+ 		\end{lstlisting}
+	 \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{BasicCar}
+	\begin{exampleblock}{BasicCar.h}
+		\begin{lstlisting}
+class BasicCar: public Car {
+private:
+
+public:
+	BasicCar(double price);
+	double calculatePrice() override;
+};
+ 		\end{lstlisting}
+	 \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Basis-Dekorierer}
+	\begin{exampleblock}{CarDecorator.h}
+		\begin{lstlisting}
+class CarDecorator: public Car {
+private:
+	const Car* decoratedCar;
+
+public:
+	CarDecorator(const Car& decoratedCar, double price);
+	double calculatePrice() override;
+	const Car& getDecoratedCar() const;
+};
+ 		\end{lstlisting}
+	 \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dekorierer}
+	\begin{exampleblock}{GoldenSteeringWheel.h}
+		\begin{lstlisting}
+class GoldenSteeringWheel: public CarDecorator {
+private:
+	const double GOLD_PRICE = 5000;
+public:
+	GoldenSteeringWheel(const Car& decoratedCar, double price);
+	double calculatePrice() override;
+};
+ 		\end{lstlisting}
+	 \end{exampleblock}
+\end{frame}

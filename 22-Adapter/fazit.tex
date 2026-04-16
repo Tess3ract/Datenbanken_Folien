@@ -1,0 +1,79 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendbarkeit}
+	\begin{itemize}
+ 		\item Inkompatible Bibliotheken
+ 		\item Inkompatible Schnittstellen
+ 		\item Adaptierte Schnittstelle muss in Ziel-Schnittstelle umgewandelt werden können
+ 		\item Nachrüstung von Funktionalität, die adaptierte Klasse nicht anbietet
+ 	\end{itemize}
+\end{frame}
+
+\realworld{JDBC (Java Database Connectivity)}{Treiberklassen}
+\note{
+    JDBC-Driver-Klassen agieren als Adapter zwischen der JDBC API und spezifischen Datenbanktreibern. Sie übersetzen die generischen Datenbankbefehle in die spezifischen Befehle des jeweiligen Datenbanktyps.
+}
+
+\realworld{Spring Data JPA}{Unterstützung verschiedener Datenbanktechnologien}
+\note{
+    Spring Data JPA verwendet das Repository-Pattern und Adaptermuster, um verschiedene Datenbanktechnologien nahtlos zu unterstützen. Der Spring Data JPA-Repository-Adapter abstrahiert die Interaktion mit verschiedenen JPA-Implementierungen.
+}
+
+\realworld{Apache Struts}{Integration von verschiedenen View-Technologien}
+\note{
+    Apache Struts verwendet Adapter, um die Integration von verschiedenen View-Technologien wie JSP, Freemarker oder Velocity zu ermöglichen. Adapter sorgen dafür, dass die Struts-Controller die Views korrekt rendern können.
+}
+
+\vorteil{Integration inkompatibler Schnittstellen}
+\note{
+    Das Adaptermuster ermöglicht die Integration von Klassen oder Schnittstellen, die ansonsten inkompatibel wären. Dies ist besonders nützlich, wenn Sie bestehende Klassen oder Bibliotheken in Ihr System integrieren möchten, die nicht direkt mit Ihrer bestehenden API oder Ihrem System übereinstimmen.
+}
+
+\vorteil{Wiederverwendbarkeit}
+\note{
+    Adapter fördern die Wiederverwendbarkeit des Codes, da bestehende Klassen durch die Verwendung eines Adapters in neue Kontexte integriert werden können, ohne die bestehenden Klassen ändern zu müssen.
+}
+
+\vorteil{Flexibilität}
+\note{
+    Durch den Einsatz eines Adapters können Sie verschiedene Implementierungen oder externe Systeme austauschen, ohne den Rest des Systems anzupassen. Dies bietet eine hohe Flexibilität und erleichtert Änderungen und Erweiterungen.
+}
+
+\vorteil{Trennung von Verantwortlichkeiten}
+\note{
+    Das Adaptermuster trennt die Verantwortung für die Konvertierung von Schnittstellen von der Logik, die diese Schnittstellen verwendet. Dies führt zu einer besseren Strukturierung und Wartbarkeit des Codes.
+}
+
+\vorteil{Ermöglicht den Einsatz von Legacy-Systemen}
+\note{
+    Adapter ermöglichen die Nutzung von Legacy-Systemen und -Bibliotheken, ohne deren Code ändern zu müssen. Dies hilft, ältere Systeme zu integrieren und weiterzuverwenden.
+}
+
+\vorteil{Reduziert Kopplung}
+\note{
+    Durch die Verwendung von Adaptern wird die direkte Kopplung zwischen den Komponenten reduziert, da die Kommunikation über eine definierte Schnittstelle erfolgt.
+}
+
+\nachteil{Erhöhter Overhead}
+\note{
+    Die Einführung von Adaptern kann zusätzlichen Overhead in Bezug auf Komplexität und Performance mit sich bringen. Jedes Mal, wenn eine Anfrage durch einen Adapter geleitet wird, kann dies zu einer zusätzlichen Verarbeitungszeit führen.
+}
+
+\nachteil{Erhöhte Komplexität}
+\note{
+    Das Hinzufügen von Adaptern kann die Systemarchitektur komplexer machen, insbesondere wenn viele Adapter verwendet werden. Dies kann die Wartung und das Verständnis des Systems erschweren.
+}
+
+\nachteil{Potenzielle Code-Duplikation}
+\note{
+    Wenn Adapter für ähnliche Klassen oder Schnittstellen erstellt werden müssen, kann es zu Code-Duplikationen kommen, wenn die Konvertierungscode-Logik nicht gut abstrahiert ist.
+}
+
+\nachteil{Abhängigkeit von der Implementierung}
+\note{
+    Die Implementierung eines Adapters kann spezifisch für die verwendete API oder Klasse sein. Änderungen an der zugrunde liegenden API oder Klasse können Anpassungen im Adapter erfordern, was zusätzliche Wartungsaufgaben mit sich bringt.
+}
+
+\nachteil{Verführt dazu, inhaltlich nicht kompatible Klassen zu adaptieren}
+\note{
+    Man sollte sich bei der Verwendung dieses Musters immer eine wichtige Frage stellen: Sind Ziel und adaptierte Klasse wirklich inhaltlich kompatibel? Wenn das nicht der Fall ist, handelt es sich nicht um einen Fall für den Adapter.
+}

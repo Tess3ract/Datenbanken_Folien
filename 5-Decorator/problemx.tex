@@ -1,0 +1,52 @@
+\writeSectionFrame{\presentationTitle}{Das Problem}
+\frameWithImageOnly{\BILDERPFAD/problem1.jpg}
+\note{
+	Wir möchten gerne eine Spiel entwickeln, in dem der Spieler Gebäude bauen und erweitern kann. Die Erweiterungen verbessern die Produktion und die Verteidigung der Gebäude. Nachts können die Gebäude des Spielers von Monstern angegriffen werden. Monster haben eine Grundstärke, die mithilfe von Rüstungsgegenständen und Waffen verbessert werden kann. 
+}
+
+\begin{frame}{Klassendiagramm mit Monstern}
+	\begin{center}
+ 		\includegraphics[scale=0.35]{\BILDERPFAD/problem2.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+ 	Es gibt eine ganze Menge von Monstern, die mit einer ganzen Menge von Ausrüstungsgegenständen kombiniert werden können.
+}
+
+\begin{frame}{Klassendiagramm mit Ausrüstungsgegenständen}
+	\begin{center}
+ 		\includegraphics[scale=0.5]{\BILDERPFAD/problem3.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}{Klassendiagramm mit Kombinationen}
+	\begin{center}
+ 		\includegraphics[scale=0.35]{\BILDERPFAD/problem4.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+ 	So ergeben sich eine unglaubliche Menge an Kombinationsklassen und eine Struktur, die nicht wartbar und erst recht nicht erweiterbar ist. 
+}
+
+\begin{frame}{Lösungsvorschlag}
+	\begin{center}
+ 		\includegraphics[scale=0.6]{\BILDERPFAD/problem5.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Folgender Vorschlag wurde unterbreitet: Wir erweitern die Klasse um boolsche Attributen für
+	jeden Ausrüstungsgegenstand und die Methode calculateDamage() berechnet aus der Belegung dieser Attribute den Schaden.
+	Die Unterklasse verwenden dann in ihrer Implementierung von calculateDamage() die Methode der
+	Oberklasse. 
+}
+\begin{frame}{Probleme}
+	\begin{itemize}
+ 		\item Wartungsalptraum
+ 		\item Unübersichtliche calculateDamage()-Methode
+ 		\item Schwer zu erweitern
+ 		\item Verstößt gegen Open-Closed-Prinzip
+ 	\end{itemize}
+\end{frame}

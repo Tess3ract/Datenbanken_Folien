@@ -1,0 +1,107 @@
+\writeSectionFrame{\presentationTitle}{UML-Anwendungsfalldiagramm}
+\note{
+	Das Anwendungsfalldiagramm betrachtet die Systemleistung von außen -- also nur das von	außen sichtbare Verhalten wird modelliert, nicht die interne Umsetzung. Genauso wie man bei diesem Haus von außen einige Eigenschaften wahrnehmen kann. Wir sehen, wie viele Türen und Fenster	das Haus hat, wir sehen den Garten und den Pool. Aber wir sehen nicht, wie die Räume aufgeteilt 
+	sind, welche Möbel im Haus stehen, welches Heizungssystem installiert ist, welche Dämmung es gibt und wie das Wasser im Pool erneuert wird. Das interessiert uns aber im ersten Moment nicht. Das sind Details für eine spätere Betrachtung. 
+}
+
+\begin{frame}{Das Anwendungsfalldiagramm}
+	\begin{block}{beantwortet die Frage}
+		Was soll mein System eigentlich leisten?
+	\end{block}
+\end{frame}
+
+\note{
+	Die Beantwortung dieser Frage ist wichtiger, als man im ersten Moment denken mag, denn die Antwort bewahrt davor, zu sehr im Detail zu versinken, bevor Sie überhaupt wissen, was von dem System erwartet wird, und später ein System zu entwickeln, das eigentlich niemand haben möchte. Es ist sehr wichtig, das Problem zuerst einmal zu verstehen, bevor man eine Lösung finden kann. 
+	Das Anwendungsfalldiagramm enthält keinerlei Informationen über den Aufbau des Systems und keine technischen Details. Es ist eine reine Darstellung aus der Nutzersicht. Ein Nutzer kann ein Mensch sein, aber auch ein anderes System. 
+}
+
+\begin{frame}{Definition Anwendungsfall}
+	\begin{exampleblock}{Balzert}
+		Ein Anwendungsfall (use case) besteht aus mehreren zusammenhängenden Aufgaben, die von einem Akteur durchgeführt werden, um ein Ziel zu erreichen bzw. ein gewünschtes Ergebnis zu erstellen.
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Definition Anwendungsfall}
+	\begin{exampleblock}{oose.de}
+		Ein Anwendungsfall beschreibt anhand eines zusammenhängenden Arbeitsablaufes die Interaktionen mit einem (geschäftlichen oder technischen) System. Ein Anwendungsfall wird stets durch einen Akteur initiiert und führt gewöhnlich zu einem für die Akteure wahrnehmbaren Ergebnis.
+	\end{exampleblock}
+\end{frame}
+
+\note{
+	Den Begriff Anwendungsfall zu definieren ist nicht ganz einfach. Man kann ihn beschreiben als eine Sequenz von von zusammengehörenden Transaktionen, die von einem Akteur im Dialog mit einem System durchgeführt wird, um ein Ergebnis von messbarem Wert zu erhalten Alle use cases zusammen dokumentieren alle Möglichkeiten 	der Benutzung des Systems (use case model). In einem Unternehmen ist ein UseCase eine Sequenz von unternehmensinternen Aktivitäten, die durchgeführt werden, um die Wünsche eines Kunden zu befriedigen.
+}
+
+\begin{frame}{Akteure und System}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.8, transform shape]
+        \umlactor[x=0, y=0]{Kunde} 
+        \umlactor[x=0, y=-3]{Lieferant} 
+        \begin{umlsystem}[x=4, y=0]{Handelshaus} 
+            \umlusecase[y=-2, name=Bestellen]{Bestellen} 
+            \umlusecase[y=-4, name=Liefern]{Liefern} 
+        \end{umlsystem} 
+
+        \umlassoc{Kunde}{Bestellen} 
+        \umlassoc{Lieferant}{Liefern} 
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+\note{
+    	Akteure sind Rollen, die Benutzer des Systems spielen. Sie haben einen Einfluss auf das System und	interagieren mit dem System. Ein Akteur ist häufig eine Person, es kann aber auch eine Organisationseinheit oder ein anderes System sein. Wichtig ist, dass sich Akteure immer immer außerhalb des Systems befinden. Anwendungsfälle werden als Kreise notiert und die Akteure, die mit einem Anwendungsfall zu tun haben, werden mit dem Anwendungsfall verbunden.   
+}
+
+\begin{frame}{Beispiel}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.8, transform shape]
+            \umlactor[x=0, y=0]{Gast} 
+            \umlactor[x=0, y=-3]{Barmixer} 
+            \umlactor[x=10, y=0]{Gastgeber} 
+            \umlactor[x=10, y=-3]{Schwenkmeister} 
+            
+            \begin{umlsystem}[x=4, y=0]{Grillparty} 
+                \umlusecase[y=-1, name=Begruessen]{Begrüßen} 
+                \umlusecase[y=-2, name=EssenHolen]{Essen holen} 
+                \umlusecase[y=-3, name=SichUnterhalten]{Sich unterhalten} 
+                \umlusecase[y=-4, name=Schwenken]{Schwenken} 
+                \umlusecase[y=-5, name=CocktailMixen]{Cocktail mixen} 
+                \umlusecase[y=-6, name=CocktailHolen]{Cocktail holen} 
+            \end{umlsystem} 
+    
+            \umlassoc{Gast}{Begruessen} 
+            \umlassoc{Gast}{EssenHolen} 
+            \umlassoc{Gast}{SichUnterhalten} 
+            \umlassoc{Gast}{CocktailHolen} 
+            \umlassoc{Gastgeber}{Begruessen} 
+            \umlassoc{Gastgeber}{SichUnterhalten} 
+            \umlassoc{Schwenkmeister}{Schwenken} 
+            \umlassoc{Barmixer}{CocktailMixen} 
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Beispiel}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.8, transform shape]
+            \umlactor[x=0, y=0]{Käufer} 
+            \umlactor[x=0, y=-2]{Verkäufer} 
+            \umlactor[x=8, y=-6]{Server} 
+            
+            \begin{umlsystem}[x=4, y=0]{Ebay} 
+                \umlusecase[y=-1, name=Bieten]{Auf Auktion bieten} 
+                \umlusecase[y=-2, name=Bezahlen]{Bezahlen} 
+                \umlusecase[y=-3, name=Anbieten]{Produkt anbieten} 
+                \umlusecase[y=-4, name=Versenden]{Versenden} 
+                \umlusecase[y=-5, name=Loeschen]{Auktion löschen} 
+                \umlusecase[y=-6, name=Beenden]{Auktion beenden} 
+                
+            \end{umlsystem} 
+    
+            \umlassoc{Käufer}{Bieten} 
+            \umlassoc{Käufer}{Bezahlen} 
+            \umlassoc{Verkäufer}{Anbieten} 
+            \umlassoc{Verkäufer}{Loeschen} 
+            \umlassoc{Verkäufer}{Versenden} 
+            \umlassoc{Server}{Beenden} 
+        \end{tikzpicture}
+    \end{center}
+\end{frame}

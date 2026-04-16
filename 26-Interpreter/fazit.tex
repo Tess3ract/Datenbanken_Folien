@@ -1,0 +1,67 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendungsfälle}
+	\begin{itemize}
+ 		\item Regel-Engines
+ 		\item Formel-Generatoren
+ 		\item Daten-Generatoren
+ 		\item Domain Specific Languages
+ 		\item Filter
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	Regeln sind im allgemeinen sehr schwierig, weil sie die gesamte Bandbreite an Operatoren, Variablen und allen möglichen
+	Ausdrücken anbeiten. Sie können jedoch nicht fest codiert werden, weil sie flexibel angepasst werden können. Solche
+	Regelwerke können auch zur Beschreibung von Geschäftsprozessen verwendet werden. Formel-Generatoren funktionieren
+	ähnlich wie Regel-Engines, nur dass im Allgemeinen zu Zahlen ausgewertet wird. Wenn Daten mithilfe von Definitionen
+	beschrieben werden können, kann dieses Muster auch zur Generierung von Daten verwendet werden. Domain-spezifische Sprachen
+	sind Sprachen für eine spezielle Aufgabenstellung. Das Interpreter-Muster ermöglicht es, dass deren Grammatik
+	beliebig formuliert werden kann. Filter-Ausdrücke sollen in beliebigen Kombinationen formuliert werden können. Auch hier 
+	kann das Interpretermuster eingesetzt werden. 
+}
+
+\vorteil{Erweiterbarkeit}
+\note{
+    Es ist einfach, die Grammatik durch das Hinzufügen neuer Regeln zu erweitern. Neue Expression-Unterklassen können problemlos hinzugefügt werden, ohne die bestehenden Klassen zu verändern.
+}
+
+\vorteil{Modularität}
+\note{
+    Jeder Ausdruck in der Grammatik wird durch eine eigene Klasse dargestellt, was das System modular und leichter verständlich macht.
+}
+
+\vorteil{Leichte Implementierung für kleine Sprachen}
+\note{
+    Für relativ einfache und kleine Sprachen oder Grammatikdefinitionen ist das Muster einfach zu implementieren.
+}
+
+\vorteil{Single-Responsibility-Prinzip}
+\note{
+    Jede Ausdrucksklasse kümmert sich nur um ihren Teil des Gesamtausdrucks. 
+}
+
+\nachteil{Leistungseinbußen}
+\note{
+    Da jede Regel durch eine eigene Klasse repräsentiert wird, können viele kleine Objekte erzeugt werden. Für komplexe Sprachen oder große Eingaben kann das zu einem erheblichen Leistungsverlust führen.
+}
+
+\nachteil{Komplexität für größere Sprachen}
+\note{
+    Das Muster ist nicht gut geeignet für komplexe oder umfangreiche Sprachen. Die Anzahl der Klassen kann explodieren, was zu einer unübersichtlichen und schwer wartbaren Codebasis führt.
+}
+
+\nachteil{Schwierige Optimierung}
+\note{
+    Es ist schwer, eine optimierte Ausführung oder Optimierungen wie Just-in-Time-Compilation (JIT) oder andere fortgeschrittene Techniken in ein Interpreter-Muster zu integrieren, denn die Optimierungstechniken sind schwer auf viele Klassen umzusetzen. Auch Techniken wie Vor-Kompilierung sind schwierig umzusetzen, wenn die gesamte Interpretation zur Laufzeit stattfindet. 
+}
+
+\nachteil{Nicht für jede Anwendung geeignet}
+\note{
+    Das Muster ist ideal für einfache formale Sprachen oder spezielle Probleme, aber für generelle Programmiersprachen oder sehr komplexe Interpretationsaufgaben könnte ein dedizierter Parser/Compiler besser geeignet sein.
+}
+
+\nachteil{Viele Klassen bei komplexen Grammatiken}
+\note{
+	Komplexe Grammatiken können schwer zu warten werden, weil mindestens eine Klasse für jede Regel in der Grammatik definiert
+	wird.
+}

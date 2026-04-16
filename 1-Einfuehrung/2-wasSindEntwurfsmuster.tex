@@ -1,0 +1,303 @@
+\writeSectionFrame{\presentationTitle}{Was sind Entwurfsmuster?}
+\frameWithImageOnly{\BILDERPFAD/wasSindEntwurfsmuster1.jpg}
+
+\begin{frame}{Definitionsversuch Muster allgemein}
+	\begin{block}{Christopher Alexander, Architekt}
+		\gquote{Jedes Muster beschreibt ein in unserer Umwelt beständig wiederkehrendes
+		Problem und erläutert den Kern der Lösung für dieses Problem, so dass Sie
+		diese Lösung beliebig oft anwenden können, ohne sie jemals ein zweites Mal
+		gleich auszuführen.}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Definitionsversuch Entwurfsmuster}
+	\begin{block}{Matthias Geirhos - Entwurfsmuster, das umfassende Handbuch}
+		\gquote{Ein Entwurfsmuster ist eine anpassbare Lösung für ein nicht triviales 
+		und immer wiederkehrendes Problem in der Entwicklung, dem Design und 
+		der Architektur von Software. Es ist damit ein Element der Wiederverwendung.}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Definitionsversuch Entwurfsmuster}
+	\begin{block}{Erich Gamma}
+		\gquote{Entwurfsmuster lösen spezifische Entwurfsprobleme und machen Entwürfe flexibler, 
+		eleganter und im Endeffekt erst wiederverwendbar.}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Bedeutung von Entwurfsmustern}
+	\begin{block}{Erich Gamma}
+		\gquote{Experten wissen es zu vermeiden, jedes Problem von Grund auf neu anzugehen. Statt dessen
+		verwenden sie Lösungen wieder, die sie zuvor erfolgreich eingesetzt haben. haben sie einmal eine
+		gute Lösung gefunden, verwenden sie sie wieder und wieder. Solche Erfahrung ist Teil dessen, was sie
+		zu Experten macht.  ($\ldots)$ Kennt ein Entwickler diese Muster, so kann er sie umittelbar auf
+		vorliegende Entwurfsprobleme anwenden, ohne die Lösung neu entdecken zu müssen.}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{itemize}
+	    \item Wartbarkeit
+        \item Effizienz und Kostenreduktion
+        \item Abstraktion
+        \item Konsistenz und Qualität
+        \item Kommunikation
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Wartbarkeit}
+        Geringere Wartungskosten
+ 	\end{block}
+\end{frame}
+\note{
+    Durch die Wiederverwendung von bewährten Mustern wird der Entwicklungsprozess effizienter. Anstatt neue Lösungen zu entwerfen, können Entwickler auf existierende Muster zurückgreifen, was die Implementierung beschleunigt. Außerdem helfen Muster, Entwürfe flexibler zu gestalten, sodass spätere Anpassungen einfacher und kostengünstiger werden.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Wartbarkeit}
+        Erhöhte Flexibilität
+ 	\end{block}
+\end{frame}
+\note{
+    Muster fördern flexible Softwareentwürfe, da sie häufig Mechanismen beinhalten, die zukünftige Erweiterungen oder Änderungen ermöglichen, ohne den gesamten Entwurf umzustrukturieren. Viele Muster unterstützen die Prinzipien der lose Kopplung und hohen Kohäsion, wodurch Systeme anpassungsfähiger werden.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Wartbarkeit}
+        Verbesserung der Lesbarkeit
+ 	\end{block}
+\end{frame}
+\note{
+    Da Entwurfsmuster ein gemeinsames Vokabular und bekannte Strukturen nutzen, wird der Code verständlicher. Entwickler, die mit den verwendeten Mustern vertraut sind, können den Code schneller lesen und verstehen, was die Einarbeitungszeit für neue Teammitglieder verkürzt. Dies führt langfristig zu besser wartbarem Code.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Wartbarkeit}
+        Unterstützung von Modulen und Schichtenarchitektur
+ 	\end{block}
+\end{frame}
+\note{
+    Entwurfsmuster helfen dabei, den Softwareentwurf in klar definierte Module und Schichten zu unterteilen. Dies erleichtert es, die Verantwortung zu trennen und die Systemkomponenten unabhängig voneinander zu entwickeln, zu testen und zu warten.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Effizienz und Kostenreduktion}
+        Wiederverwendbarkeit
+ 	\end{block}
+\end{frame}
+\note{
+    Entwurfsmuster bieten Lösungen, die in verschiedenen Kontexten wiederverwendet werden können. Sie sind nicht auf ein spezifisches Projekt oder eine spezielle Implementierung beschränkt, sondern bieten allgemeine Konzepte, die auf ähnliche Probleme in unterschiedlichen Projekten anwendbar sind. Das fördert die Effizienz, weil Entwickler bewährte Lösungen anpassen und implementieren können, anstatt jedes Mal bei Null anzufangen.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Effizienz und Kostenreduktion}
+        Geringere Weiterentwicklungskosten
+ 	\end{block}
+\end{frame}
+\note{
+    Durch die Wiederverwendung von bewährten Mustern wird der Entwicklungsprozess effizienter. Anstatt neue Lösungen zu entwerfen, können Entwickler auf existierende Muster zurückgreifen, was die Implementierung beschleunigt. Außerdem helfen Muster, Entwürfe flexibler zu gestalten, sodass spätere Anpassungen einfacher und kostengünstiger werden.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Abstraktion}
+        Hohe Abstraktionsebene
+ 	\end{block}
+\end{frame}
+\note{
+    Entwurfsmuster arbeiten auf einer höheren Abstraktionsebene als einfache Codefragmente. Sie beschreiben allgemeine Strukturen und Beziehungen zwischen Klassen und Objekten, die unabhängig von der konkreten Implementierung sind. Diese Abstraktion erleichtert es Entwicklern, das zugrundeliegende Problem zu verstehen und auf ähnliche Probleme anzuwenden.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Abstraktion}
+        Unabhängig von konkret verwendeter Technologie
+ 	\end{block}
+\end{frame}
+\note{
+    Entwurfsmuster sind nicht auf eine bestimmte Programmiersprache oder Technologie beschränkt. Sie beschreiben Konzepte, die in jeder objektorientierten Programmiersprache oder sogar in anderen Paradigmen umgesetzt werden können. Dies macht sie zu einem wertvollen Werkzeug, da sie technologieneutral sind und in vielen verschiedenen Umgebungen verwendet werden können.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Abstraktion}
+        Vielfältig einsetzbar
+ 	\end{block}
+\end{frame}
+\note{
+    Muster können in verschiedenen Bereichen der Softwareentwicklung angewendet werden, sei es in der Architektur, im Design oder in der Implementierung. Sie sind flexibel genug, um in unterschiedlichen Projekten und Domänen genutzt zu werden, sei es für Benutzeroberflächen, Datenbankzugriffe oder Geschäftslogik. Diese Vielseitigkeit macht sie zu einem universellen Werkzeug in der Softwareentwicklung.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Konsistenz und Qualität}
+        Förderung von Codekonsistenz
+ 	\end{block}
+\end{frame}
+\note{
+    Der wiederholte Einsatz von Entwurfsmustern trägt zu einer einheitlichen Struktur und Konsistenz im Code bei. Dadurch wird es einfacher, bestehende Projekte zu erweitern oder an anderen Stellen im Code ähnliche Strukturen zu implementieren, was die Homogenität des Projekts verbessert.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Konsistenz und Qualität}
+        Förderung von Best Practices
+ 	\end{block}
+\end{frame}
+\note{
+    Entwurfsmuster basieren auf bewährten und erprobten Lösungen, die sich in der Praxis als effektiv erwiesen haben. Sie tragen dazu bei, Best Practices zu etablieren, indem sie Entwicklern erprobte Ansätze für häufig auftretende Probleme zur Verfügung stellen. Dadurch wird verhindert, dass ineffiziente oder fehleranfällige Lösungen entstehen.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Konsistenz und Qualität}
+        Dokumentation
+ 	\end{block}
+\end{frame}
+\note{
+    Entwurfsmuster bieten eine standardisierte Möglichkeit, Lösungen zu dokumentieren. Dadurch wird es einfacher, den Entwurfsprozess nachzuvollziehen und zu erklären, warum bestimmte Entscheidungen getroffen wurden. Diese Dokumentation hilft nicht nur dem aktuellen Team, sondern auch zukünftigen Entwicklern, das System besser zu verstehen und weiterzuentwickeln.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Kommunikation}
+        Gemeinsames Vokabular
+ 	\end{block}
+\end{frame}
+\note{
+    Entwurfsmuster schaffen ein gemeinsames Verständnis zwischen Entwicklern. Wenn Entwickler über Muster wie Singleton, Factory oder Observer sprechen, wissen alle Beteiligten sofort, um welche Art von Problem und Lösung es sich handelt. Dies erleichtert die Kommunikation im Team und fördert eine effiziente Zusammenarbeit, da nicht jedes Detail neu erklärt werden muss.
+}
+
+\begin{frame}{Gründe für Einsatz von Mustern}
+	\begin{block}{Kommunikation}
+        Schulung und Lernhilfe
+ 	\end{block}
+\end{frame}
+\note{
+    Da Entwurfsmuster gut dokumentiert und in der Entwicklergemeinschaft weit verbreitet sind, können sie auch als Schulungsmaterial für neue Entwickler dienen. Sie bieten ein strukturiertes Lernmaterial, mit dem sich Entwickler schneller in die Prinzipien des objektorientierten Designs einarbeiten können.
+}
+
+\begin{frame}{Problem und Lösung}
+	\begin{center}
+ 		\includegraphics[scale=0.45]{\BILDERPFAD/wasSindEntwurfsmuster2.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Entwurfsmuster sind keine Softwarekomponenten, aus denen durch einfaches Zusammensetzen neue
+	Anwendungen entstehen. Entwurfsmuster sind Problem-Lösungspaare für in der Praxis auftretende Probleme
+	des Softwareentwurfs.
+}
+
+\begin{frame}{Alexanders Musterbegriff}
+	\begin{block}{Christopher Alexander, Architekt}
+		\gquote{Jedes Muster ist eine dreiteilige Regel, die einen Zusammenhang zwischen einem bestimmten 
+		Kontext, einem Problem und einer Lösung beschreibt.}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Kategorien von Mustern}
+	\begin{itemize}
+ 		\item Architekturmuster
+ 		\item Entwurfsmuster
+ 		\item Idiome
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	Ein Architekturmuster spiegelt ein grundsätzliches Strukturierungsprinzip von
+	Software-Systemen wider. Ein Entwurfsmuster beschreibt ein Schema zur
+	Verfeinerung von Subsystemen oder Komponenten eines Software-Systems oder den
+	Beziehungen zwischen ihnen. Es beschreibt eine häufig auftretende Struktur
+	von miteinander kommunizierenden Komponenten, die ein allgemeines
+	Entwurfsproblem in einem speziellen Kontext löst. Ein Idiom ist ein für eine bestimmte
+	Programmiersprache spezifisches Muster auf einer niedrigen Abstraktionsebene.
+	Es beschreibt, wie man spezielle Aspekte von Komponenten oder den Beziehungen zwischen
+	ihnen mit den Mitteln der Programmiersprache implementieren kann.
+}
+
+\begin{frame}{Analogie}
+	\begin{itemize}
+ 		\item Infrastruktur einer Stadt = Architekturmuster
+ 		\item Hochhaus oder Haus am Fluss = Entwurfsmuster
+ 		\item Konkretes Haus = Idiom
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Was sind Entwurfsmuster?}
+	\begin{itemize}
+ 		\item Wiederverwendung
+ 		\item Lösung für ein Problem
+ 		\item Nicht trivial
+ 		\item Konkret
+ 		\item Anpassbar
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	Ein Entwurfsmuster ist eine Lösung für ein konkret vorliegendes Problem. Dieses Problem muss oft genug
+	in der Praxis auftauchen, damit sich das Wissen um die Lösung überhaupt lohnt. Das zu lösende Problem
+	muss auch eine gewisse Komplexität aufweisen. Der Benutzer eines Musters kann einen Vorteil daraus
+	ziehen, dass jemand anderes das Problem bereits vollständig durchdacht und elegant und stimmig gelöst
+	hat. Es darf sich nicht um irgendwelche abstrakten Grundsatzfragen, sondern um in der Praxis existierende
+	Aufgabenstellungen. Zudem gibt es Freiheitsgrade in der Umsetzung der Muster. Man muss sich nicht 
+	sklavisch an die Muster halten, sondern es gibt immer Möglichkeiten, sie an ein konkretes Problem
+	und an die eigenen Bedürfnisse anzupassen.
+}
+
+\begin{frame}{Was sind Entwurfsmuster nicht?}
+	\begin{itemize}
+ 		\item Algorithmen
+ 		\item Fertige Code-Lösungen
+ 		\item Codeausschnitte oder Kopiervorlagen
+ 		\item Lösung für alle Probleme
+ 		\item APIs
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	Der Begriff Entwurfsmuster wird sehr inflationär gebraucht und oft auch missbraucht. Deswegen ist wichtig
+	zu wissen, was ein Entwurfsmuster nicht ist. Algorithmen sind konkrete Schritt-für-Schritt-Handlungsanweisungen
+	und damit konkreter als Entwurfsmuster. Ein Algorithmus verlangt im Wesentlichen die Fähigkeit, ihn elegant in
+	die Zielsprache zu übertragen. Ein Sortieralgorithmus wie Quicksort ist ein konkretes Verfahren, während Entwurfsmuster flexibler und allgemeiner sind.
+}
+
+\begin{frame}{Die Gang of Four}
+	\begin{itemize}
+ 		\item Erich Gamma
+ 		\item Richard Helm
+ 		\item Ralph Johnson
+ 		\item John Vlissides
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Klassifikation}
+	\begin{center}
+ 		\includegraphics[scale=0.2]{\BILDERPFAD/wasSindEntwurfsmuster3.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Erzeugungsmuster (creational patterns) helfen, ein System unabhängig davon zu machen, wie
+	seine Objekte erzeugt, zusammengesetzt und repräsentiert werden. Strukturmuster (structural 
+	patterns) befassen sich mit der Zusammensetzung von Klassen und Objekten zu größeren Strukturen.
+	Verhaltensmuster (behavioral patterns) befassen sich mit der Interaktion zwischen Objekten
+	und Klassen. Sie beschreiben komplexe Kontrollflüsse, die zur Laufzeit schwer nachvollziehbar sind.
+}
+
+\begin{frame}{Weitere Bereiche mit Mustern}
+	\begin{itemize}
+ 		\item Architektur
+ 		\item Microservice
+ 		\item Verteilte Systeme
+ 		\item Parallelität
+        \item Datenbanken
+        \item Grafische Oberflächen
+ 	\end{itemize}
+\end{frame}
+
+\note{
+    Die Gang-of-Four hat wie gesagt die 23 klassischen Muster definiert. Darüber hinaus haben sich noch zahlreiche weitere Muster entwickelt, die nicht zu den GoF-Mustern gehören. Dabei wurden die von der GoF definierten Bereiche erweitert, aber auch in vielen weiteren moderneren Bereichen haben sich Muster etabliert. Es ist immer wichtig, die Muster aus seinen Arbeitsbereichen zu kennen.
+}
+
+\begin{frame}{Anwendung von Entwurfsmustern}
+	\begin{enumerate}
+ 		\item Erkennen eines Designproblems
+ 		\item Verstehen, wann ein bestimmtes Muster sinnvoll ist und wann nicht
+ 		\item Anpassung eines Musters an konkrete Anforderungen einer Anwendung
+ 	\end{enumerate}
+\end{frame}

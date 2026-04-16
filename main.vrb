@@ -1,0 +1,18 @@
+\frametitle{Servlet-Filter in Jakarta EE}
+\begin{exampleblock}{Beispiel}
+		\begin{lstlisting}
+public class CompressionFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request,
+                ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletResponse httpResp = (HttpServletResponse)
+            response;
+        GZIPResponseWrapper wrappedResponse =
+            new GZIPResponseWrapper(httpResp);
+        chain.doFilter(request, wrappedResponse);
+        wrappedResponse.finishResponse();
+    }
+}
+        \end{lstlisting}
+	\end{exampleblock}

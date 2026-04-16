@@ -1,0 +1,90 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendbarkeit}
+	\begin{itemize}
+ 		\item Es gibt mehrere Produktfamilien
+ 		\item Produktfamilien können hinzukommen
+ 		\item Klient soll von Objekterzeugung nichts wissen
+ 		\item Ganze Familie soll austauschbar sein, nicht einzelne Objekte
+ 		\item Mischung von Produkten aus verschiedenen Familien soll vermieden werden
+ 	\end{itemize}
+\end{frame}
+
+\realworld{JavaFX}{Aussehen von UI-Komponenten}
+\note{
+    JavaFX verwendet das Abstrakte Fabrikmuster bspw. im Skinning-System, um das Aussehen von UI-Komponenten anzupassen. In JavaFX kann das Aussehen einer Komponente durch sogenannte "Skins" angepasst werden. Jede UI-Komponente hat eine Methode createDefaultSkin(), die ein Skin-Objekt zurückgibt. Diese Methode ist Teil der Skin-Factory und sorgt dafür, dass die UI-Komponenten entsprechend ihrer Bedürfnisse ihr Aussehen anpassen können.
+}
+
+\realworld{Java Database Connectivity (JDBC)}{Einheitliche Schnittstelle zur Datenbankinteraktion}
+\note{
+    JDBC verwendet das Abstrakte Fabrikmuster, um eine einheitliche Schnittstelle zur Datenbankinteraktion bereitzustellen. Durch die Nutzung von JDBC kann Java-Anwendungscode Datenbankoperationen ausführen, ohne sich um die spezifische Datenbankimplementierung (z. B. MySQL, PostgreSQL, Oracle) kümmern zu müssen. Die DriverManager-Klasse agiert als Fabrik für die Erstellung von Connection-Objekten, die spezifisch für verschiedene Datenbank-Backends sind. Die Implementierung dieser Verbindungen wird durch spezifische JDBC-Treiber bereitgestellt, die zur Laufzeit geladen werden.
+}
+
+\realworld{Java Naming and Directory Interface (JNDI)}{Standardisierung des Zugriffs auf verschiedene Namens- und Verzeichnisdienste}
+\note{
+    JNDI verwendet die Abstrakte Fabrik, um den Zugriff auf verschiedene Namens- und Verzeichnisdienste zu standardisieren. InitialContextFactory in JNDI agiert als Abstrakte Fabrik, die InitialContext-Instanzen erzeugt, welche wiederum für den Zugriff auf spezifische Verzeichnisdienste wie LDAP oder DNS verwendet werden. Die konkrete Implementierung der InitialContext hängt vom zugrunde liegenden Namensdienst ab, der durch die Context-Schnittstelle abstrahiert wird.
+}
+
+\realworld{Apache Commons Logging}{Bereitstellung einer einheitlichen Logging-Schnittstelle}
+\note{
+    Das Apache Commons Logging-Projekt nutzt das Abstrakte Fabrikmuster, um eine einheitliche Logging-Schnittstelle bereitzustellen, die unabhängig von der zugrunde liegenden Logging-Implementierung ist (z. B. Log4j, Java Util Logging, SLF4J).  LogFactory ist eine Abstrakte Fabrik, die spezifische Log-Implementierungen basierend auf der Umgebung zurückgibt. Die konkrete Log-Implementierung kann zur Laufzeit ausgetauscht werden, ohne dass der Client-Code angepasst werden muss.
+}
+
+\vorteil{Lose Kopplung zwischen Code des Klienten und der Produkte}
+\note{
+    Die Abstrakte Fabrik trennt die Erstellung von Objekten von deren Verwendung. Dadurch bleibt der Client-Code unabhängig von den konkreten Klassen der zu erstellenden Objekte. Das fördert eine saubere Trennung der Verantwortlichkeiten.
+}
+
+\vorteil{Produkte von einer Fabrik sind kompatibel zueinander}
+\note{
+    Die Abstrakte Fabrik stellt sicher, dass zusammengehörige Objekte aus derselben Familie stammen und miteinander kompatibel sind. Das ist besonders hilfreich, wenn das Programm Objekte erstellt, die zusammenarbeiten müssen, und verhindert Probleme mit Inkonsistenzen.
+}
+
+\vorteil{Einhaltung des Open-Closed-Prinzip im Hinblick auf Produktfamilien}
+\note{
+    Das Hinzufügen neuer Produkttypen oder Produktfamilien ist einfacher. Man muss nur neue konkrete Fabriken und Produkte hinzufügen, ohne den bestehenden Client-Code zu ändern. Dies macht das System flexibel und anpassungsfähig an zukünftige Anforderungen.
+}
+
+\vorteil{Vermeidung von hart codierten Klassen}
+\note{
+    Da der Client-Code keine konkreten Klassen verwenden muss, wird er weniger anfällig für Änderungen in diesen Klassen. Dies reduziert die Kopplung im System und fördert die Wiederverwendbarkeit des Codes.
+}
+
+\vorteil{Unterstützung für den Austausch von Produktfamilien zur Laufzeit}
+\note{
+    Da die konkreten Fabriken zur Laufzeit ausgetauscht werden können, kann das System dynamisch verschiedene Produktfamilien verwenden. Dies ist nützlich in Anwendungen, die auf unterschiedliche Konfigurationen oder Benutzeranforderungen reagieren müssen.
+}
+
+\vorteil{Single-Responsibility-Prinzip}
+\note{
+    Das Single-Responsibility-Prinzip wird auf mehrere Arten unterstützt. Die Klasse, die Objekte verwendet (Client), ist nicht verantwortlich für deren Erzeugung. Das ist die Verantwortlichkeit der Fabriken. Die Verantwortung jeder konkreten Fabrik ist klar definiert und beschränkt sich darauf, eine bestimmte Art von Produktfamilie zu erzeugen. Durch die Verwendung der Abstrakten Fabrik wissen Entwickler genau, welche Klasse welche Aufgabe erfüllt. Der Client, der Verwender der Objekte, muss überhaupt keine Details kennen über die Erzeugung der Objekte und die Zusammenhänge zwischen den Klassen einer Objektfamilie. All das wird an die entsprechenden Fabriken delegiert.
+}
+
+\nachteil{Höhere Komplexität}
+\note{
+	Die Einführung der Abstrakten Fabrik kann die Codebasis komplexer machen, da zusätzliche Schnittstellen und Klassen hinzugefügt werden. Dies erhöht die Anzahl der Komponenten und kann das Verständnis und die Wartung des Codes erschweren.
+}
+
+\nachteil{Schwierigere Code-Nachverfolgung}
+\note{
+	Da die konkrete Implementierung der Objekte in den Fabrikklassen versteckt ist, kann es schwieriger sein, den tatsächlichen Code zu finden, der eine bestimmte Funktionalität implementiert. Dies kann die Fehlersuche und das Debugging erschweren.
+}
+
+\nachteil{Hoher Initialaufwand}
+\note{
+	Die Einrichtung einer Abstrakten Fabrik erfordert zu Beginn mehr Planung und Implementierung. Für einfache Anwendungen oder bei kleinen Projekten könnte dieser Mehraufwand nicht gerechtfertigt sein.
+}
+
+\nachteil{Nichteinhaltung des Open-Closed-Prinzip im Hinblick auf Produkte }
+\note{
+	Obwohl das Muster die Erweiterung durch neue Produktfamilien unterstützt, kann die Erweiterung bestehender Produktfamilien schwieriger sein, da jede konkrete Fabrik geändert werden muss, um die neuen Produktvarianten zu berücksichtigen.
+}
+
+\nachteil{Erfordert sorgfältige Verwaltung der Abhängigkeiten}
+\note{
+	Wenn nicht sorgfältig verwaltet, können die Abhängigkeiten zwischen Fabriken und Produkten zu Problemen bei der Modularität und Wiederverwendbarkeit führen. Es ist wichtig, die Beziehungen zwischen verschiedenen Produktfamilien und Fabriken klar zu definieren.
+}
+
+\nachteil{Nicht geeignet bei Varianten}
+\note{
+	Handelt es sich bei den verschiedenen Produktfamilien nur um Varianten, ist die abstrakte Fabrik möglicherweise nicht geeignet. Varianten bedeutet, dass die Klassen keine tatsächlichen Unterschiede in den Funktionen aufweisen, sondern bspw. nur in der Darstellung. Es sind also tatsächlich keine richtigen unterschiedlichen Klassen.
+}

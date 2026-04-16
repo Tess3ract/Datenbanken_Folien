@@ -1,0 +1,414 @@
+\writeSectionFrame{\presentationTitle}{Dependency Injection}
+\begin{frame}[fragile]{Mit DI - Beispiel Strategie-Muster}
+	\begin{exampleblock}{Monster.java}
+		\begin{lstlisting}
+public class Monster {
+	private AttackStrategy attackStrategy;
+	
+	public Monster(AttackStrategy attackStrategy) {
+		this.attackStrategy = attackStrategy;
+	}
+	
+	public void changeAttackStrategy(AttackStrategy attackStrategy) {
+		this.attackStrategy = attackStrategy;
+	}
+	
+	public void attack() {
+		attackStrategy.attack();
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+\note{
+	Im Konstruktor übergeben wir von außen ein konkretes Objekt. Unser
+	Monster weiß nicht mehr, mit welcher Strategie es genau arbeitet. Und
+	ihm ist es egal, wo diese Implementierung herkommt. Wir brauchen auch 
+	für den Strategiewechsel keine unterschiedlichen Methoden mehr. Wenn jetzt
+	neue Strategien entwickelt werden, müssen wir Monster nicht mehr verändern.
+}
+
+
+\begin{frame}[fragile]{Verwendung von DI}
+	\begin{exampleblock}{Main.java}
+		\begin{lstlisting}
+Monster fireMonster = new Monster(new FireAttackStrategy());
+Monster meleeMonster = new Monster(new MeleeAttackStrategy());
+Monster monster = new Monster(new MeleeAttackStrategy());
+
+fireMonster.attack();  
+meleeMonster.attack(); 
+monster.attack();
+System.out.println("Monster findet ein Schwert");
+monster.changeAttackStrategy(new CloseCombatStrategy());
+monster.attack();
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Vorteile von Dependency Injection}
+	\begin{itemize}
+	    \item Monster kennt keine konkreten Strategien mehr $\rightarrow$ lose Kopplung
+	    \item Neue Strategien können hinzugefügt werden, ohne Monster zu ändern
+	    \item Einfache Testbarkeit durch Mock- oder Teststrategien
+	    \item Unterstützt flexible Konfiguration (zur Laufzeit oder über Frameworks)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Wichtige Arten der Dependency Injection}
+	\begin{itemize}
+	    \item \textbf{Constructor Injection:} Abhängigkeit wird im Konstruktor übergeben (wie im Beispiel)
+	    \item \textbf{Setter Injection:} Abhängigkeit wird über Setter-Methoden gesetzt
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Konstruktor-Injection} 
+    \begin{exampleblock}{Vorteile} 
+        \begin{itemize} 
+            \item Fördert Unveränderlichkeit 
+            \item Klare Abhängigkeiten 
+            \item Einfache Testbarkeit 
+            \item Zwingt Bereitstellung von Abhängigkeiten
+        \end{itemize} 
+    \end{exampleblock}
+    \begin{alertblock}{Nachteile}
+        \begin{itemize} 
+            \item Umfangreicher Konstruktor bei vielen Abhängigkeiten 
+            \item Probleme bei zirkulären Abhängigkeiten
+        \end{itemize} 
+    \end{alertblock}
+\end{frame}
+
+\note{ 
+    Konstruktor-Injection fördert unveränderbare Objekte, da Abhängigkeiten 
+    direkt gesetzt werden und nach der Erstellung des Objekts nicht mehr 
+    geändert werden können. Der Konstruktor macht Abhängigkeiten deutlich 
+    sichtbar, was den Code lesbarer und wartbarer macht. Bei Tests ist es 
+    einfacher, Mock-Objekte oder alternative Implementierungen bereitzustellen.
+
+    Ein Nachteil dieser Methode ist, dass Konstruktoren unübersichtlich 
+    werden können, wenn viele Abhängigkeiten existieren. Außerdem können 
+    zirkuläre Abhängigkeiten nicht ohne weiteres aufgelöst werden, was zu 
+    Problemen führen kann. 
+}
+
+\begin{frame}{Setter-Injection} 
+    \begin{exampleblock}{Vorteile} 
+        \begin{itemize} 
+            \item Flexibilität bei Abhängigkeitsänderung 
+            \item Gut für optionale Abhängigkeiten 
+            \item Löst zirkuläre Abhängigkeiten 
+        \end{itemize} 
+    \end{exampleblock}
+    \begin{alertblock}{Nachteile}
+        \begin{itemize} 
+            \item Abhängigkeiten weniger offensichtlich 
+            \item Mutierbarkeit des Objekts 
+            \item Risiko von fehlenden Abhängigkeiten 
+        \end{itemize} 
+    \end{alertblock}       
+\end{frame}
+
+\note{ 
+    Setter-Injection bietet Flexibilität, da Abhängigkeiten nach der 
+    Objekterstellung geändert werden können. Sie eignet sich besonders gut, 
+    wenn einige Abhängigkeiten optional sind oder wenn man mit zirkulären 
+    Abhängigkeiten umgehen muss.
+
+    Der Nachteil ist, dass Abhängigkeiten weniger offensichtlich sind, da sie 
+    nicht sofort im Konstruktor ersichtlich sind. Außerdem bleibt das Objekt 
+    mutierbar, was potenziell zu Fehlern führen kann. Ein weiteres Risiko besteht 
+    darin, dass der Entwickler vergessen könnte, eine notwendige Abhängigkeit zu 
+    setzen. 
+}
+
+\begin{frame}{Testen}
+	\begin{block}{Frage}
+		Wie hilft DI beim Testen?
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Testen ohne DI}
+	\begin{exampleblock}{ExceptionAttackStrategy.java}
+		\begin{lstlisting}
+public class ExceptionAttackStrategy implements AttackStrategy {
+	@Override
+	public void attack() {
+		// Simuliert einen Fehler in der Strategie
+		throw new IllegalStateException("Fehlerhaft");
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Testen ohne DI}
+	\begin{exampleblock}{NotDiMonster.java}
+		\begin{lstlisting}
+public class NotDiMonster {
+	private final AttackStrategy attackStrategy;
+	private int posX;
+	private int posY;
+	
+	public NotDiMonster() {
+		this.attackStrategy = new ExceptionAttackStrategy();
+		posX = 0;
+		posY = 0;
+	}
+	
+	public void moveAndAttack() {
+		posX++;
+		posY++;
+		attackStrategy.attack();
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Testen ohne DI}
+	\begin{exampleblock}{MonsterTest.java}
+		\begin{lstlisting}
+@Test
+void testMoveWithDI() {
+	NotDiMonster monster = new NotDiMonster();
+	monster.moveAndAttack();
+	assertEquals(1, monster.getPosX());
+	assertEquals(1, monster.getPosY());
+}
+		\end{lstlisting}
+	\end{exampleblock}
+	\pause
+	\begin{alertblock}{Test schlägt fehl}
+		Test schlägt fehl, weil AttackStrategy fehlerhaft ist, aber der Fehler
+		ist nicht in der Klasse, die wir eigentlich testen möchten.
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Verwendung von DI}
+	\begin{exampleblock}{Monster.java}
+		\begin{lstlisting}
+public class Monster {
+	private final AttackStrategy attackStrategy;
+	private int posX;
+	private int posY;
+	
+	public Monster(AttackStrategy attackStrategy) {
+		this.attackStrategy = attackStrategy;
+		posX = 0;
+		posY = 0;
+	}
+	
+	public void moveAndAttack() {
+		posX++;
+		posY++;
+		attackStrategy.attack();
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Testen}
+	\begin{alertblock}{Problem}
+		Zum Testen benötige ich eine konkrete Strategie. Aber was ist,
+		wenn die Strategie-Klasse einen Fehler enthält?
+	\end{alertblock}
+	\pause
+	\begin{exampleblock}{Mocking}
+		Wir mocken die Strategie, d.h. wir bauen eine Implementierung, die 
+		auf jeden Fall funktioniert. So kann Monster unabhängig von der 
+		Angriffsstrategie getestet werden.
+	\end{exampleblock}
+	\pause
+	\begin{block}{Hinweis}
+		Wir implementieren Mocking hier ganz einfach. In professionellen
+		Projekte würde man ein Mocking-Framework wie z.B. Mockito verwenden.
+		Hier geht es nur ums Verständnis.
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Verwendung von DI}
+	\begin{exampleblock}{MockedAttackStrategy.java}
+		\begin{lstlisting}
+public class MockedAttackStrategy 
+		implements AttackStrategy {
+
+	@Override
+	public void attack() {
+		System.out.println("...");
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Verwendung von DI}
+	\begin{exampleblock}{MonsterTest.java}
+		\begin{lstlisting}
+@Test
+void testMove() {
+	AttackStrategy strategy = new MockedAttackStrategy();
+	Monster monster = new Monster(strategy);
+	monster.moveAndAttack();
+	assertEquals(1, monster.getPosX());
+	assertEquals(1, monster.getPosY());
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{DI verbessert Testbarkeit}
+	\begin{columns}[T,onlytextwidth]
+	\column{0.48\textwidth}
+		\textbf{Ohne DI}
+		\begin{itemize}
+		    \item Monster erstellt selbst die Strategie
+		    \item Test schlägt fehl, wenn Strategie fehlerhaft ist
+		    \item Test isoliert Monster nicht → Kopplung
+		\end{itemize}
+		
+		\begin{exampleblock}{Beispiel}
+			NotDiMonster → ExceptionAttackStrategy
+		\end{exampleblock}
+		
+		\column{0.48\textwidth}
+		\textbf{Mit DI}
+		\begin{itemize}
+		    \item Monster erhält Strategie von außen
+		    \item Test kann sichere Mock-Strategie verwenden
+		    \item Monster unabhängig von konkreter Strategie testbar
+		\end{itemize}
+		
+		\begin{exampleblock}{Beispiel}
+			Monster → MockedAttackStrategy
+		\end{exampleblock}
+	\end{columns}
+\end{frame}
+\note{
+	Durch Entkopplung von Abhängigkeiten können wir Klassen isoliert testen. 
+	Wir geben Monster einfach eine sichere Strategie, die garantiert keinen 
+	Fehler enthält, und können so die Logik der Monster-Klasse testen, ohne 
+	von der Strategie abhängig zu sein.
+}
+
+\begin{frame}{Weitere Möglichkeiten}
+	\begin{itemize}
+	  \item DI trennt Monster von Strategie
+	  \item Man kann also einbauen:
+	  	\begin{itemize}
+	  	  \item fehlerhafte Strategien
+	  	  \item langsame Strategien
+	  	  \item schnelle Strategien
+	  	  \item komplexe Strategien
+	  	  \item \ldots
+	  	\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Erweiterungen}
+	\begin{itemize}
+	  \item Monster und Angriffsstrategien benötigen weitere Konfiguration
+	  \item eine Fabrik für Strategien
+	  \item eine Fabrik für Monster
+	  \item eine Konfiguration der Fabriken als Singleton
+	  \item natürlich alles über DI
+	  \item Verdrahtung der Objekte an zentraler Stelle
+	  \item möglichst lose Kopplung
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Fabrik für die Angriffsstrategien}
+	\begin{exampleblock}{AttackStrategyFactory.java}
+		\begin{lstlisting}
+public interface AttackStrategyFactory {
+	AttackStrategy createAttackStrategy();
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Fabrik für die Angriffsstrategien}
+	\begin{exampleblock}{AttackStrategyFactory.java}
+		\begin{lstlisting}
+public class FireStrategyFactory implements AttackStrategyFactory {
+	@Override
+	public AttackStrategy createAttackStrategy() {
+		AttackStrategy attackStrategy = new FireAttackStrategy();
+		// Weitere Konfiguration der Strategie
+		return attackStrategy;
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Fabrik für die Angriffsstrategien}
+	\begin{exampleblock}{MonsterFactory.java}
+		\begin{lstlisting}
+public abstract class MonsterFactory {
+	private AttackStrategyFactory attackStrategyFactory;
+	
+	public MonsterFactory(AttackStrategyFactory 
+			attackStrategyFactory) {
+		this.attackStrategyFactory = attackStrategyFactory;
+	}
+	
+	public abstract Monster createMonster();
+	
+	protected AttackStrategyFactory getAttackStrategyFactory() {
+		return attackStrategyFactory;
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Fabrik für die Angriffsstrategien}
+	\begin{exampleblock}{GoblinFactory.java}
+		\begin{lstlisting}
+public class GoblinFactory extends MonsterFactory {
+	public GoblinFactory(AttackStrategyFactory 
+			attackStrategyFactory) {
+		super(attackStrategyFactory);
+	}
+
+	@Override
+	public Monster createMonster() {
+		AttackStrategy strategy = getAttackStrategyFactory().
+			createAttackStrategy();
+		Monster monster = new Goblin(strategy);
+		// Boesen Goblin weiter konfigurieren.
+		return monster;
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Fabrik für die Angriffsstrategien}
+	\begin{exampleblock}{FactoryConfiguration.java}
+		\begin{lstlisting}
+public class FactoryConfiguration {
+	private static FactoryConfiguration instance;
+	private final MonsterFactory evilDwarfFactory;
+	private final AttackStrategyFactory meleeStrategyFactory;
+	
+	private FactoryConfiguration() {
+		this.meleeStrategyFactory = new MeleeStrategyFactory();
+		this.evilDwarfFactory = new 
+			EvilDwarfFactory(meleeStrategyFactory);
+	}
+	
+	public static FactoryConfiguration getInstance(){
+		if (instance == null) {
+			instance = new FactoryConfiguration();
+		}
+		
+		return instance;
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+

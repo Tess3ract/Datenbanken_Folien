@@ -1,0 +1,101 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+
+\realworld{JavaFX}{Event-Listener-Mechanismen}
+\note{
+	In JavaFX wird das Beobachter-Muster für die Bindung von UI-Komponenten verwendet. Das ChangeListener-Interface und die Observable-Eigenschaften in JavaFX ermöglichen eine reaktive Programmierung. Zum Beispiel kann ein TextField automatisch aktualisiert werden, wenn der Text geändert wird.
+}
+
+\realworld{Spiele}{Änderungen im Spielstatus}
+\note{
+	In Spielen oder Spiele-Engines wird das Beobachter-Muster häufig verwendet, um auf Änderungen im Spielstatus zu reagieren. Zum Beispiel könnte ein Spielobjekt (wie ein Spieler oder ein Gegner) Ereignisse wie Kollisionen oder Statusänderungen an andere Teile des Spiels melden.
+}
+
+\realworld{Messaging-Anwendungen wie WhatsApp}{Aktualisierung der Benutzeroberfläche}
+\note{
+	Wenn ein Benutzer eine Nachricht empfängt oder sendet, müssen alle relevanten Benutzeroberflächen (wie Chat-Fenster, Benachrichtigungen) sofort aktualisiert werden. Hier kommt das Beobachter-Muster zum Einsatz, um die Benutzeroberfläche zu aktualisieren, wenn neue Nachrichten empfangen werden.
+}
+
+\realworld{Benachrichtigungssysteme wie Google Cloud Pub/Sub}{Pusblisher und Abonnenten}
+\note{
+	Google Cloud Pub/Sub ist ein Messaging-Dienst, der das Publish-Subscribe-Muster verwendet, um Ereignisse in einem Cloud-basierten System zu verteilen. Publisher senden Nachrichten an ein Thema, und Abonnenten empfangen diese Nachrichten.
+}
+
+\realworld{Echtzeit-Daten-Synchronisation bei Cloud-Speicher-Diensten}{Überwachen von Dateiänderungen}
+\note{
+	Dienste wie Google Drive, Dropbox und OneDrive verwenden das Beobachter-Muster, um Änderungen an Dateien oder Verzeichnissen zu überwachen und diese Änderungen in Echtzeit mit allen synchronisierten Clients zu teilen. Wenn ein Benutzer eine Datei auf einem Gerät ändert, wird die Änderung an den Cloud-Server gesendet, der dann die anderen verbundenen Geräte benachrichtigt, damit sie die Datei aktualisieren.
+}
+
+\realworld{Push-Benachrichtigungen}{Benachrichtigung von Clients}
+\note{
+	Viele Systeme nutzen Push-Benachrichtigungen, um Benutzer über neue Ereignisse oder Updates zu informieren. Dies wird häufig durch das Beobachter-Muster unterstützt, um den Server und die Clients über neue Ereignisse zu synchronisieren.
+}
+
+\realworld{Collaboration Tools}{Synchronisation von Dokumenten in Echtzeit}
+\note{
+	Werkzeuge wie Microsoft Office 365 oder Google Docs nutzen das Beobachter-Muster, um die Synchronisation von Dokumenten in Echtzeit zu ermöglichen. Änderungen, die von einem Benutzer vorgenommen werden, werden sofort an andere Benutzer, die das Dokument ebenfalls geöffnet haben, weitergegeben.
+}
+
+\realworld{IoT-Plattformen}{Verwalten und Überwachen von Sensoren und Geräten}
+\note{
+	IoT-Plattformen wie AWS IoT oder Google Cloud IoT nutzen das Beobachter-Muster, um Sensoren und Geräte zu überwachen und zu verwalten. Änderungen oder neue Daten von Sensoren werden an die Cloud gesendet, die dann die relevanten Systeme oder Benutzer benachrichtigt.
+}
+
+\vorteil{Lose Kopplung}
+\note{
+    Das Beobachter-Muster ermöglicht eine lose Kopplung zwischen dem Subjekt (dem Observable) und den Beobachtern. 
+}
+
+\vorteil{Flexibilität}
+\note{
+    Aus der losen Kopplung folgt, dass Änderungen am Subjekt (z.B. Datenaktualisierungen) an alle interessierten Beobachter weitergegeben werden, ohne dass diese sich direkt kennen oder aufeinander abgestimmt werden müssen.
+}
+
+\vorteil{Erweiterbarkeit}
+\note{
+    Neue Beobachter können hinzugefügt werden, ohne dass das Subjekt verändert werden muss, und umgekehrt. Dies fördert die Erweiterbarkeit und Wartbarkeit des Systems.
+}
+
+\vorteil{Echtzeit-Updates}
+\note{
+    Beobachter werden sofort über Änderungen benachrichtigt, was für Systeme, die Echtzeit-Updates erfordern, von Vorteil ist (z.B. Benutzeroberflächen, Benachrichtigungssysteme).
+}
+
+\vorteil{Vielseitigkeit}
+\note{
+    Das Beobachter-Muster kann in verschiedenen Szenarien verwendet werden, von einfachen GUI-Elementen bis hin zu komplexen verteilten Systemen.
+}
+
+\vorteil{Beziehungen zwischen Objekten können zur Laufzeit etabliert werden}
+\note{
+    Dadurch, dass Subjekte und Beobachter sich überhaupt nicht konkret kennen, können natürlich auch während der Laufzeit Beziehungen etabliert und verändert werden.
+}
+
+\vorteil{Open-Closed-Prinzip}
+\note{
+    Das Open-Closed-Prinzip wird eingehalten, weil neue Observerklassen eingeführt werden können ohne Änderungen am bestehenden Code.
+}
+
+\vorteil{Single-Responsibility-Prinzip}
+\note{
+    Jede Beobachter- und Subjektklasse hat ganz klare Verantwortlichkeiten.
+}
+
+\nachteil{Beobachter werden in zufälliger Reihenfolge benachrichtigt}
+\note{
+    Es kann schwierig sein, die Reihenfolge der Benachrichtigungen zu kontrollieren, insbesondere wenn mehrere Beobachter gleichzeitig aktualisiert werden. Dies kann in Systemen, bei denen die Reihenfolge der Updates wichtig ist, zu Inkonsistenzen führen.
+}
+
+\nachteil{Performance-Probleme bei übermäßige Benachrichtigungen}
+\note{
+    Wenn das Subjekt viele Beobachter hat oder häufige Änderungen aufgetreten, kann es zu Performance-Problemen durch die Vielzahl der Benachrichtigungen kommen, die alle Beobachter erreichen müssen.
+}
+
+\nachteil{Speicherlecks}
+\note{
+    Wenn Beobachter nicht ordnungsgemäß entfernt werden oder wenn es zu Speicherlecks kommt, kann dies zu Problemen führen. 
+}
+
+\nachteil{Komplexität der Verwaltung}
+\note{
+    In sehr komplexen Systemen kann die Verwaltung von Beobachtern und deren Interaktionen komplex werden. Das Nachverfolgen von Änderungen und deren Auswirkungen auf verschiedene Beobachter kann zusätzliche Komplexität hinzufügen.
+}

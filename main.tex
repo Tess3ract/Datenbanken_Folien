@@ -1,0 +1,45 @@
+\documentclass[svgnames]{beamer}
+% print version without \pause
+%\documentclass[handout]{beamer} 
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{presentation}
+\usepackage{pgfpages}
+\usepackage{ifthen}
+\usetheme{htw-theme} 
+\usepackage{tikz-qtree}
+\usepackage{tikz,ifthen,xstring,calc,pgfkeys,pgfopts}
+\usepackage{tikz-uml}
+\tikzset{every umlclass/.append style={font=\small}}
+
+%\setbeameroption{show only notes}
+%\usepackage{fontspec}
+% http://www.texample.net/tikz/examples/diagram-chains/
+\usetikzlibrary{%
+  arrows,%
+  arrows.meta,
+  calc,
+  shapes,
+  arrows,
+  shapes.misc,% wg. rounded rectangle
+  shapes.arrows,%
+  chains,%
+  matrix,%
+  positioning,% wg. " of "
+  scopes,%
+  er,
+  decorations.pathmorphing,% /pgf/decoration/random steps | erste Graphik
+  shadows%
+}
+\usepackage{amsmath}
+\usepackage{relsize}
+ 
+\begin{document}
+\include{configuration}
+\input{tikz-styles.tex}
+
+
+\input{\KURSEINHEIT/main.tex}
+
+\end{document}

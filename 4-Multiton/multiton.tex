@@ -1,0 +1,183 @@
+\writeSectionFrame{\presentationTitle}{Das Multiton-Muster}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Multiton
+ 		\item Englischer Name: Multiton
+ 		\item Gruppe: Erzeugungsmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Multion}
+	\begin{block}{Zweck}
+ 		Definiere einen Pool aus Objekten, die zentral an einer Stelle verwaltet und von dort abgerufen werden können. Ein Objekt, das nicht mehr benötigt wird, wird in den Pool zurückgelegt.
+ 	\end{block}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/multiton1.jpg}
+\note{
+    Das erste Beispiel stellt einen Pool einer Fahrradvermietung dar. Jedes Fahrrad kann nur einmal verliehen werden. Bevor ein anderer Mieter ein Fahrrad bekommen kann, muss eines zurückgegeben werden. 
+}
+
+\begin{frame}[fragile]{Fahrradvermietung}
+	\begin{exampleblock}{Bike}
+ 		\begin{lstlisting}
+public class Bike {
+	private int bikeId;
+	private String tenantName;
+	
+	public Bike(int bikeId) {
+		this.bikeId = bikeId;
+		tenantName = null;
+	}
+	
+	public boolean isRented() {
+		return tenantName == null;
+	}
+	
+	public boolean isNotRented() {
+		return tenantName == null;
+	} 
+    //...
+}
+
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Fahrradvermietung}
+	\begin{exampleblock}{Bike}
+ 		\begin{lstlisting}
+public class BikePool {
+	private List<Bike> bikes;
+	
+	public BikePool(int bikeCount) {
+		for (int i = 0; i < bikeCount; i++) {
+			Bike bike = new Bike(i + 1);
+			bikes.add(bike);
+		}
+	}
+	
+	public Optional<Bike> rentABike(String tenantName) {
+		for (Bike bike: bikes) {
+			if (bike.isNotRented()) {
+				bike.setTenantName(tenantName);
+				return Optional.of(bike);
+			}
+		}
+		return Optional.empty();
+	}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Fahrradvermietung}
+	\begin{exampleblock}{Bike}
+ 		\begin{lstlisting}
+	public void returnBike(Bike bike) {
+		for (Bike bikeInPool: bikes) {
+			if (bikeInPool.equals(bike)) {
+				bikeInPool.setTenantName(null);
+			}
+		}
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/multiton2.jpg}
+\note{
+    Auch ein Raumbuchungssystem kann mit einem Multiton implementiert werden. Der Benutzer kann nur einen Raum buchen und muss diesen wieder zurückgeben, bevor jemand anderes den Raum buchen kann. Das Beispiel ist hier in einer möglichst einfachen Form dargestellt.
+}
+
+\begin{frame}[fragile]{Raumbuchungssystem}
+	\begin{exampleblock}{Room}
+ 		\begin{lstlisting}
+public class Room {
+	private final int id;
+	private final int capacity;
+
+	public Room(int id, int capacity) {
+		this.capacity = capacity;
+		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		return "Room [id=" + id + ", capacity=" + capacity + "]";
+	}
+}
+
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Raumbuchungssystem}
+	\begin{exampleblock}{RoomAdministration}
+ 		\begin{lstlisting}
+    private Map<Integer, Room> availableRooms;
+	private Map<Integer, Room> occupiedRooms;
+	
+	public RoomAdministration() {
+		occupiedRooms = new HashMap<>();
+	}
+	
+	public Optional<Room> occupyRoomWithMinCapacity(
+            int minCapacity) {
+		Optional<Room> optionalWithRoom = availableRooms.values()
+					.stream()
+					.filter(room -> room.getCapacity() >= minCapacity)
+					.findFirst();
+		
+		optionalWithRoom.ifPresent(room -> occupyRoom(room));
+		return optionalWithRoom;
+	}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Raumbuchungssystem}
+	\begin{exampleblock}{RoomAdministration}
+ 		\begin{lstlisting}
+public Optional<Room> occupyRoom() {
+		Optional<Room> optionalWithRoom = availableRooms.values()
+					.stream()
+					.findFirst();
+		
+		optionalWithRoom.ifPresent(room -> occupyRoom(room));
+		return optionalWithRoom;
+	}
+	
+	public Optional<Room> occupyRoom(int roomId) {
+		Optional<Room> optionalWithRoom = availableRooms.values()
+					.stream()
+					.filter(room -> room.getId() == roomId)
+					.findFirst();
+		
+		optionalWithRoom.ifPresent(room -> occupyRoom(room));
+		return optionalWithRoom;
+	}
+	
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Raumbuchungssystem}
+	\begin{exampleblock}{RoomAdministration}
+ 		\begin{lstlisting}
+	private void occupyRoom(Room room) {
+		availableRooms.remove(room.getId());
+		occupiedRooms.put(room.getId(), room);
+	}
+	
+	public void returnRoom(int roomId) {
+		Room room = occupiedRooms.get(roomId);
+		if (room != null) {
+			occupiedRooms.remove(roomId);
+			availableRooms.put(roomId, room);
+		}
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

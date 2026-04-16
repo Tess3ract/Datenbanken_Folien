@@ -1,0 +1,421 @@
+\writeSectionFrame{\presentationTitle}{Die Fabrikmethode}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Fabrikmethode
+ 		\item Englischer Name: Factory Method
+ 		\item Gruppe: Erzeugungsmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fabrikmethode}
+	\begin{block}{Zweck}
+ 		Definiere eine Klassenschnittstelle mit Operationen zum Erzeugen eines Objekts, aber lasse Unterklassen entscheiden, von welcher Klasse das zu erzeugende Objekt ist. Fabrikmethoden ermöglichen es einer Klasse, die Erzeugung von Objekten an Unterklassen zu delegieren.
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+          % Define classes and interfaces
+          \umlclass[type=interface,x=3, y=10]{Produkt}{}{
+          }
+          \umlclass[x=0, y=7]{KonkretesProduktA}{}{
+            + operationA()\\
+            + operationB()
+          }
+          
+          \umlclass[x=4, y=5]{KonkretesProduktB}{}{
+            + operationX()\\
+            + operationY()
+          }
+          
+          \umlinterface[x=10, y=11]{Fabrik}{}
+          
+          \umlclass[x=7, y=8]{KonkreteFabrikA}{
+            + erstelleProdukt(): Produkt
+          }
+          
+          \umlclass[x=10, y=5]{KonkreteFabrikB}{}{
+            + erstelleProdukt(): Produkt
+          }
+          
+          % Draw relationships
+          \umlinherit{KonkretesProduktA}{Produkt}
+          \umlinherit{KonkretesProduktB}{Produkt}
+          
+          \umlinherit{KonkreteFabrikA}{Fabrik}
+          \umlinherit{KonkreteFabrikB}{Fabrik}
+          
+          \umluniassoc{KonkreteFabrikA}{KonkretesProduktA}
+          \umluniassoc{KonkreteFabrikB}{KonkretesProduktB}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Klassendiagramm - Transportunternehmen}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+          % Define classes and interfaces
+          \umlclass[type=interface,x=3, y=10]{Vessel}{}{
+          }
+          \umlclass[x=0, y=7]{Truck}{}{
+          }
+          
+          \umlclass[x=4, y=5]{Ship}{}{
+          }
+          
+          \umlinterface[x=10, y=11]{VesselFactory}{} {
+            +createVessel(): Vessel
+          }
+            
+          
+          \umlclass[x=7, y=8]{TruckFactory}{
+            +createVessel(): Truck
+          }
+          
+          \umlclass[x=10, y=5]{ShipFactory}{}{
+            +createVessel(): Ship
+          }
+          
+          % Draw relationships
+          \umlinherit{Truck}{Vessel}
+          \umlinherit{Ship}{Vessel}
+          
+          \umlinherit{TruckFactory}{VesselFactory}
+          \umlinherit{ShipFactory}{VesselFactory}
+          
+          \umluniassoc{TruckFactory}{Truck}
+          \umluniassoc{ShipFactory}{Ship}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Erzeuger}
+	\begin{exampleblock}{VesselFactory.java}
+ 		\begin{lstlisting}
+public abstract class VesselFactory {
+	private static final double VALUE_OF_ONE_FREIGHT = 100.0;
+	
+	public abstract Vessel createVessel(int size);
+	
+	public double calculateValueOfStorage(Vessel vessel) {
+		int freightCount = vessel.getFreightCount();
+		double value = freightCount * VALUE_OF_ONE_FREIGHT;
+		return value;
+	}
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Erzeuger}
+	\begin{exampleblock}{TruckFactory}
+ 		\begin{lstlisting}
+public class TruckFactory extends VesselFactory {
+	private static final double VALUE_OF_TRUCK = 10000;
+	
+	@Override
+	public Truck createVessel(int size) {
+		return new Truck(size);
+	}
+
+	public double calculateValueOfTruckAndStorage(Truck truck) {
+		final double valueOfStorage = calculateValueOfStorage(truck);
+		final double valueOfTruckAndStorage = valueOfStorage + 
+            VALUE_OF_TRUCK;
+		return valueOfTruckAndStorage;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Produkt}
+	\begin{exampleblock}{Vessel.java}
+ 		\begin{lstlisting}
+public abstract class Vessel {
+	private int size;
+	private List<String> storage;
+	
+	public Vessel(int size) {
+		this.size = size;
+		storage = new ArrayList<>();
+	}
+	
+	public int getFreightCount() {
+		return storage.size();
+	}
+	
+	public void addFreight(String freight) {
+		storage.add(freight);
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame} 
+
+\begin{frame}[fragile]{Produkt}
+	\begin{exampleblock}{Vessel.java}
+ 		\begin{lstlisting}
+	public boolean isFull() {
+		if (storage.size() == size) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	protected void removeFreight(String freight) {
+		storage.remove(freight);
+	}
+	
+	public abstract void startTransport(String target);
+}	    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{KonkretesProdukt}
+	\begin{exampleblock}{Ship.java}
+ 		\begin{lstlisting}
+public class Ship extends Vessel {
+	public Ship(int size) {
+		super(size);
+	}
+
+	@Override
+	public void startTransport(String target) {
+		System.out.println("Schiff transportiert Waren nach " 
+				+ target);
+	}
+	
+	public void throwFreightInWater(String freight) {
+		removeFreight(freight);
+		System.out.println("Die Kuestenwache kommt! Werft " + 
+				freight + " ueber Bord!");
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Aggregat}
+	\begin{exampleblock}{LogisticCompany.java}
+ 		\begin{lstlisting}
+public class LogisticCompany {
+	private TruckFactory truckFactory;
+	private ShipFactory shipFactory;
+	private List<Truck> myTrucks;
+	private List<Ship> myShips;
+	
+	public LogisticCompany() {
+		truckFactory = new TruckFactory();
+		shipFactory = new ShipFactory();
+		myTrucks = new ArrayList<>();
+		myShips = new ArrayList<>();
+	}
+	
+	private void createTrucks() {
+		Truck truck1 = truckFactory.createVessel(10);
+		Truck truck2 = truckFactory.createVessel(100);
+		Truck truck3 = truckFactory.createVessel(15);
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/fabrikmethode1.png}
+\note{
+    Im folgenden Beispiel wird die Fabrikmethode in einem kleinen Labyrinth-Crawler-Spiel gezeigt. Es gibt verschiedene Räume und jeder Raum hat bestimmte Eigenschaften. Das Labyrinth wird zufällig generiert und auch die verschiedenen Raumtypen sollen zufällig verteilt werden.
+}
+
+\begin{frame}{Klassendiagramm -- Dungeon-Crawler}
+    \begin{tikzpicture}[scale=0.6, transform shape]
+          % Define classes and interfaces
+          \umlclass[type=interface,x=3, y=10]{Room}{}{
+          }
+          \umlclass[x=0, y=7]{GoldRoom}{}{
+          }
+          
+          \umlclass[x=3, y=5]{PointsRoom}{}{
+          }
+
+          \umlclass[x=7, y=3]{MagicRoom}{}{
+          }
+          
+          \umlinterface[x=10, y=11]{RoomFactory}{}
+          
+          \umlclass[x=7, y=8]{GoldRoomFactory}{
+          }
+          
+          \umlclass[x=10, y=5]{PointsRoomFactory}{}{
+          }
+
+          \umlclass[x=15, y=5]{MagicRoomFactory}{}{
+          }
+          
+          % Draw relationships
+          \umlinherit{GoldRoom}{Room}
+          \umlinherit{PointsRoom}{Room}
+          \umlinherit{MagicRoom}{Room}
+          
+          \umlinherit{GoldRoomFactory}{RoomFactory}
+          \umlinherit{PointsRoomFactory}{RoomFactory}
+          \umlinherit{MagicRoomFactory}{RoomFactory}
+          
+          \umluniassoc{GoldRoomFactory}{GoldRoom}
+          \umluniassoc{PointsRoomFactory}{PointsRoom}
+          \umluniassoc{MagicRoomFactory}{MagicRoom}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Erzeuger}
+	\begin{exampleblock}{RoomFactory}
+ 		\begin{lstlisting}
+public abstract class RoomFactory {
+	private int roomCount;
+	
+	public RoomFactory() {
+		roomCount = 0;
+	}
+	
+	protected int increaseRoomCount() {
+		roomCount++;
+		return roomCount;
+	}
+	
+	public abstract Room createRoom();
+}
+   
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Erzeuger}
+	\begin{exampleblock}{GoldRoomFactory}
+ 		\begin{lstlisting}
+public class GoldRoomFactory extends RoomFactory {
+	private static final int MAX_GOLD = 1000;
+	private Random random;
+	
+	public GoldRoomFactory() {
+		random = new Random();
+	}
+	
+	@Override
+	public Room createRoom() {
+		int gold = random.nextInt(MAX_GOLD);
+		return new GoldRoom(gold, increaseRoomCount());
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Produkt}
+	\begin{exampleblock}{Vessel}
+ 		\begin{lstlisting}
+public abstract class Room {
+	private static final int MAX_NEXT_ROOMS = 4;
+	private static final int MAX_TRAP_DAMAGE = 10;
+	
+	private List<Room> nextRooms;
+	private int nextRoomsCount;
+	private Random random;
+	private int roomId;
+	private Room prevRoom;
+	private boolean containsTrap;
+	
+	public void connect(Room room) {
+		if (nextRooms.size() <= MAX_NEXT_ROOMS) {
+			nextRooms.add(room);
+			room.setPrevRoom(this);
+		}
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame} 
+
+\begin{frame}[fragile]{Produkt}
+	\begin{exampleblock}{Vessel}
+ 		\begin{lstlisting}
+public void enterNextRoom(int index, Player player) {
+    if (index < nextRooms.size()) {
+        Room nextRoom = nextRooms.get(index);
+        player.setCurrentRoom(nextRoom);
+        if (nextRoom.isContainsTrap()) {
+            int damage = random.nextInt(MAX_TRAP_DAMAGE);
+            player.injure(damage);
+        }
+    }
+}
+
+public void enterPreviousRoom(Player player) {
+    player.setCurrentRoom(prevRoom);
+}
+
+public abstract void searchRoom(Player player);   
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{KonkretesProdukt}
+	\begin{exampleblock}{GoldRoom}
+ 		\begin{lstlisting}
+public class GoldRoom extends Room {
+	private int gold;
+	
+	public GoldRoom(int gold, int roomId) {
+		super(roomId);
+		this.gold = gold;
+	}
+
+	@Override
+	public void searchRoom(Player player) {
+		player.increaseGold(gold);
+		gold = 0;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Aggregat}
+	\begin{exampleblock}{MazeGame}
+ 		\begin{lstlisting}
+public class MazeGame {
+	private List<RoomFactory> roomFactories;
+	private static final int MAX_ROOMS = 20;
+	
+	private Random random;
+	private Room startRoom;
+	private Scanner scanner;
+	
+	public MazeGame() {
+		random = new Random();
+		roomFactories = new ArrayList<>();
+		roomFactories.add(new GoldRoomFactory());
+		roomFactories.add(new MagicRoomFactory());
+		roomFactories.add(new PointsRoomFactory());
+		initializeMaze();
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Aggregat}
+	\begin{exampleblock}{MazeGame}
+ 		\begin{lstlisting}
+private Room createRoom(Room previousRoom) {
+    int roomType = random.nextInt(roomFactories.size());
+    Room room = roomFactories.get(roomType).createRoom();
+    
+    if (room.getRoomId() < MAX_ROOMS) {
+        int nextRoomsCount = room.getNextRoomsCount();
+        
+        for (int i = 0; i < nextRoomsCount; i++) {
+            Room nextRoom = createRoom(room);
+            room.connect(nextRoom);
+        }
+    }
+    
+    return room;
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

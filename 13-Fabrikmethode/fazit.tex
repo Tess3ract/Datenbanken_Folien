@@ -1,0 +1,71 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendbarkeit}
+	\begin{itemize}
+ 		\item Exakte Typen sind nicht bekannt
+ 		\item Leichte Erweiterung
+ 		\item Pooling
+ 	\end{itemize}
+\end{frame}
+
+\note{
+	Die Fabrikmethode kann eingesetzt werden, die exakten Typen, von denen Klassen abhängig sind,
+	noch nicht bekannt sind. Die Fabrikmethode trennt die Erzeugung von Objekten von dem Code,
+	der sie tatsächlich benutzt. Deswegen kann der Erzeugungscode leicht erweitert werden. Die 
+	Fabrikmethode bietet einen einfachen Weg, Benutzern eines Frameworks leichte Erweiterungen
+	zu ermöglichen. Manchmal ist es sehr teuer und aufwändig, neue Objekte zu erzeugen, aber
+	ein Konstruktor tut genau das. Da der aufrufende Code nicht weiß, wann und wie Objekte
+	tatsächlich erzeugt werden, kann die Fabrikmethode verwendet werden, um einen Pool aus
+	existierenden Objekten zu bilden, aus dem sich der Klient bedienen kann. Benötigt er ein
+	Objekt nicht mehr, wird es nicht entfernt, sondern wieder in den Pool gelegt und für andere
+	Klienten freigegeben.
+}
+
+\vorteil{Vermeidet enge Kopplung zwischen Erzeuger und den konkreten Produkten}
+\note{
+    Die Fabrikmethode ermöglicht es, die genaue Klasse, die instanziiert wird, von dem Code zu trennen, der die Objekte verwendet. Der Client-Code muss nur die Schnittstelle kennen und sich nicht um die konkrete Implementierung kümmern. Dies führt zu einer stärkeren Entkopplung und zu einem flexibleren und erweiterbaren Design.
+}
+
+\vorteil{Open-Closed-Prinzip}
+\note{
+    Neue Typen können einfach hinzugefügt werden, indem neue konkrete Klassen und Fabriken erstellt werden, ohne den existierenden Code zu ändern. Dies folgt dem Open/Closed-Prinzip (Software-Entities sollten für Erweiterungen offen, aber für Änderungen geschlossen sein).
+}
+
+\vorteil{Fördert die Konsistenz bei der Objekterstellung}
+\note{
+    Die Verwendung von Fabrikmethoden gewährleistet, dass die Objekte auf konsistente Weise erstellt werden. Dies ist besonders wichtig, wenn die Objekterstellung komplex ist oder zusätzliche Konfigurationsschritte erfordert.
+}
+
+\vorteil{Ermöglicht die Verwendung von Subklassen}
+\note{
+    Die Fabrikmethode kann je nach Bedarf verschiedene Unterklassen zurückgeben. Dies ermöglicht polymorphes Verhalten und unterstützt die Verwendung von Ober- und Unterklassen, ohne dass der Client-Code geändert werden muss.
+}
+
+\vorteil{Single-Responsibility-Prinzip}
+\note{
+    Die Fabrikmethode übernimmt die Verantwortung für die Erstellung von Objekten, sodass die Klassen, die Objekte verwenden, sich nur auf ihre Hauptaufgabe konzentrieren müssen.
+}
+
+\nachteil{Code wird komplizierter}
+\note{
+	Die Einführung von Fabrikmethoden kann die Komplexität des Codes erhöhen. Man muss zusätzliche Klassen und Schnittstellen erstellen, was den Code umfangreicher und möglicherweise schwieriger zu verstehen macht.
+}
+
+\nachteil{Erhöhte Anzahl von Klassen}
+\note{
+	Da jede konkrete Produktklasse in der Regel ihre eigene Fabrikklasse hat, kann dies zu einer größeren Anzahl von Klassen führen. Dies kann die Wartung des Codes erschweren und ihn unübersichtlicher machen.
+}
+
+\nachteil{Schwieriger zu Debuggen}
+\note{
+	Da die Fabrikmethode die direkte Instanziierung verhindert, kann das Debuggen erschwert werden. Es ist nicht immer offensichtlich, welche Klasse instanziiert wird, insbesondere in komplexen Hierarchien.
+}
+
+\nachteil{Erhöhte Abhängigkeiten}
+\note{
+	Während die Fabrikmethode die Kopplung zwischen der Produktklasse und dem Client-Code reduziert, kann sie eine Abhängigkeit zwischen der Fabrikklasse und ihren konkreten Produktklassen einführen. Dies kann die Modularität und Flexibilität des Codes beeinträchtigen, wenn es nicht richtig gehandhabt wird.
+}
+
+\nachteil{Kann zu Überdesign führen}
+\note{
+	In einfachen Anwendungen kann die Verwendung der Fabrikmethode übertrieben sein und als Overhead angesehen werden. Manchmal reicht eine einfache Instanziierung aus, und das Einführen von Fabrikmethoden kann das Design unnötig kompliziert machen.
+}

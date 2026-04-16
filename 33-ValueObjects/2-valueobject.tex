@@ -1,0 +1,76 @@
+\writeSectionFrame{\presentationTitle}{Value Object Pattern}
+\begin{frame}[fragile]{Beispiel Value Object}
+	\begin{exampleblock}{Position.java}
+		\begin{lstlisting}[basicstyle=\tiny]
+public final class Position {
+	private final int x;
+	private final int y;
+
+	public Position(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public Position move(int dx, int dy) {
+		return new Position(x + dx, y + dy);
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel Value Object}
+	\begin{exampleblock}{EmailAddress.java}
+		\begin{lstlisting}[basicstyle=\tiny]
+public class EmailAddress {
+	private final String email;
+
+	public EmailAddress(String email) {
+		super();
+		if (email.isBlank()) {
+			throw new IllegalArgumentException("...");
+		}
+		
+		if (email.contains("@") == false) {
+			throw new IllegalArgumentException("...");
+		}
+		this.email = email;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Verwendung}
+	\begin{exampleblock}{EmailAddress.java}
+		\begin{lstlisting}
+public class Player {
+	private final String name;
+	private final EmailAddress emailAddress;
+	private final Position position;
+
+	public Player(String name, EmailAddress emailAddress, 
+			Position position) {
+		super();
+		this.name = name;
+		this.emailAddress = emailAddress;
+		this.position = position;
+	}
+
+	// Getter
+}
+		\end{lstlisting}
+	\end{exampleblock}
+\end{frame}

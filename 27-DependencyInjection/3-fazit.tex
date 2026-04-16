@@ -1,0 +1,54 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Was wir gelernt haben}
+	\begin{itemize}
+	    \item Dependency Injection entkoppelt Klassen von konkreten Implementierungen
+	    \item Constructor Injection: Abhängigkeiten werden bei Erstellung gesetzt
+	    \item Setter Injection: Abhängigkeiten können nachträglich geändert werden
+	    \item DI ermöglicht flexible Konfiguration und Austausch von Komponenten
+	    \item DI ist die Basis für Testbarkeit und saubere, modulare Architekturen
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Vorteile von Dependency Injection}
+	\begin{itemize}
+	    \item Geringe Kopplung zwischen Komponenten
+	    \item Leicht austauschbare Implementierungen
+	    \item Fördert Testbarkeit (Mocking, Unit Tests)
+	    \item Unterstützt flexible und zentrale Konfiguration (z.B. über Factories oder Frameworks)
+	    \item Erleichtert Wartung und Erweiterung der Software
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Mögliche Nachteile / Herausforderungen}
+	\begin{itemize}
+	    \item Bei vielen Abhängigkeiten kann der Konstruktor unübersichtlich werden
+	    \item Setter Injection kann zu mutierbaren Objekten führen
+	    \item Zirkuläre Abhängigkeiten können Probleme verursachen
+	    \item Erhöhte Komplexität, wenn viele Fabriken und Konfigurationsklassen benötigt werden
+	    \item Lernkurve für Entwickler, insbesondere ohne Framework-Unterstützung
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Typische Anwendungsgebiete}
+\begin{itemize}
+    \item Frameworks wie Spring, Jakarta EE, Koin, Dagger
+    \item Testbare Unit-Tests durch Mocking von Abhängigkeiten
+    \item Flexible Konfiguration von Objekten bei Laufzeit oder Deployment
+    \item Kombination mit anderen Mustern:
+    \begin{itemize}
+        \item \textbf{Strategy}: dynamischer Austausch von Verhalten
+        \item \textbf{Factory}: zentrale Erzeugung und Konfiguration von Objekten
+        \item \textbf{Singleton / Konfiguration}: zentrale Bereitstellung von Abhängigkeiten
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Zusammenfassung}
+	\begin{itemize}
+	    \item Dependency Injection ist ein modernes Architekturpattern, kein klassisches GoF-Muster
+	    \item Kernidee: \textbf{Abhängigkeiten werden von außen bereitgestellt}
+	    \item Fördert lose Kopplung, Testbarkeit und Wiederverwendbarkeit
+	    \item DI lässt sich gut mit Strategy, Factory und Singleton kombinieren
+	    \item Constructor Injection ist bevorzugt, Setter Injection für optionale oder zirkuläre Abhängigkeiten
+	\end{itemize}
+\end{frame}

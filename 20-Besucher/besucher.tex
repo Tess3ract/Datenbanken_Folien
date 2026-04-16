@@ -1,0 +1,372 @@
+\writeSectionFrame{\presentationTitle}{Besucher}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Besucher
+ 		\item Englischer Name: Visitor
+ 		\item Gruppe: Verhaltensmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Besucher}
+	\begin{block}{Zweck}
+ 		Kapsle eine auf den Elementen einer Objektstruktur auszuführende Operation als ein Objekt. Das Besuchermuster ermöglicht es, eine neue Operation zu definieren, ohne die Klasse der von ihr bearbeiteten Elemente zu verändern.
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+	\begin{center}
+ 		\includegraphics[scale=0.3]{\BILDERPFAD/besucher1.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	Besucher hilft dabei, die Klassenhierarchie von ihren Operationen
+	zu trennen. Die Operationen werden in eine zweite Hierarchie 
+	ausgelagert und statt die Operationen direkt auszuführen, wird ein Objekt
+	von der Operation erstellt und dieses wird dann an die fachliche Hierarchie
+	übergeben, die diese Operation dann aufruft.
+}
+
+\begin{frame}{Klassendiagramm Beispiel}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/besucher2.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Besucher}
+	\begin{exampleblock}{Besucher}
+ 		\begin{lstlisting}
+public interface Besucher {
+	void besucheFilm(Film film);
+	void besucheBuch(Buch buch);
+	void besucheSpiel(Spiel spiel);
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Besucher 1}
+	\begin{exampleblock}{PdfBesucher}
+ 		\begin{lstlisting}
+public class PdfBesucher implements Besucher {
+	@Override
+	public void besucheFilm(Film film) {
+		System.out.println("Erzeuge pdf-Datei mit Film");
+	}
+
+	@Override
+	public void besucheBuch(Buch buch) {
+		System.out.println("Erzeuge pdf-Datei mit Buch");
+	}
+
+	@Override
+	public void besucheSpiel(Spiel spiel) {
+		System.out.println("Erzeuge pdf-Datei mit Spiel");
+	}
+}
+ 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Besucher 2}
+	\begin{exampleblock}{BerechneGesamtpreisBesucher}
+ 		\begin{lstlisting}
+public class BerechneGesamtpreisBesucher implements Besucher {
+	private double preis;
+	
+	@Override
+	public void besucheFilm(Film film) {
+		preis = preis + film.getPreis();
+	}
+
+	@Override
+	public void besucheBuch(Buch buch) {
+		preis = preis + buch.getPreis();
+	}
+
+	@Override
+	public void besucheSpiel(Spiel spiel) {
+		preis = preis + spiel.getPreis();
+	}
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Element}
+	\begin{exampleblock}{Artikel}
+ 		\begin{lstlisting}
+public abstract class Artikel {
+	private String titel;
+	private int bestand;
+	private double preis;
+	
+	public abstract void nimmEntgegen(Besucher besucher);
+
+	public void erhoeheStueckzahl(int menge) {
+		bestand = bestand + menge;
+	}
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Element}
+	\begin{exampleblock}{Film}
+ 		\begin{lstlisting}
+public class Film extends Artikel {
+	private final int laenge;
+	private final String regisseur;
+	
+	public Film(String titel, int bestand, double preis, 
+            int laenge, String regisseur) {
+		super(titel, bestand, preis);
+		this.laenge = laenge;
+		this.regisseur = regisseur;
+	}
+	
+	@Override
+	public void nimmEntgegen(Besucher besucher) {
+		besucher.besucheFilm(this);
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Objektstruktur}
+	\begin{exampleblock}{Warenkorb}
+ 		\begin{lstlisting}
+public class Warenkorb {
+	private List<Artikel> artikel;
+	
+	public double berechneGesamtpreis() {
+		BerechneGesamtpreisBesucher besucher = new 
+				BerechneGesamtpreisBesucher();
+		artikel.forEach(einArtikel -> einArtikel.
+            nimmEntgegen(besucher));
+		return besucher.getPreis();
+	}
+	
+	public void druckeAlsPdf() {
+		PdfBesucher pdfBesucher = new PdfBesucher();
+		artikel.forEach(einArtikel -> einArtikel.
+            nimmEntgegen(pdfBesucher));
+	}
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/besucher3.jpg}
+\note{
+    Das nächste Beispiel simuliert ein Dokumentenverwaltungssystem. Wir können verschiedene Arten von Dokumenten speichern, z.B. Word, Excel, PDF. Die Dokumente werden unterschiedlich exportiert und die Gesamtseitenanzahl wird unterschiedlich berechnet.
+}
+
+\begin{frame}[fragile]{Besucher}
+	\begin{exampleblock}{DocumentVisitor}
+ 		\begin{lstlisting}
+public interface DocumentVisitor {
+    void visitPdfDocument(PdfDocument pdf);
+    void visitWordDocument(WordDocument word);
+    void visitExcelDocument(ExcelDocument excel);
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Besucher 1}
+	\begin{exampleblock}{TextExportVisitor}
+ 		\begin{lstlisting}
+public class TextExportVisitor implements DocumentVisitor {
+	private StringBuilder exportContent = new StringBuilder();
+
+	@Override
+	public void visitPdfDocument(PdfDocument pdf) {
+		exportContent.append("...");
+	}
+
+	@Override
+	public void visitWordDocument(WordDocument word) {
+		exportContent.append("...");
+	}
+
+	public String getExportContent() {
+		return exportContent.toString();
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Besucher 2}
+	\begin{exampleblock}{PageCountVisitor}
+ 		\begin{lstlisting}
+public class PageCountVisitor implements DocumentVisitor {
+	private int totalPageCount = 0;
+
+	@Override
+	public void visitPdfDocument(PdfDocument pdf) {
+		totalPageCount += pdf.getNumberOfPages();
+	}
+
+	@Override
+	public void visitWordDocument(WordDocument word) {
+		totalPageCount += (word.getContent().length() / 1000) + 1;
+	}
+
+	public int getTotalPageCount() {
+		return totalPageCount;
+	}
+}    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Element}
+	\begin{exampleblock}{Document}
+ 		\begin{lstlisting}
+public interface Document {
+    void accept(DocumentVisitor visitor);
+}
+    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Element}
+	\begin{exampleblock}{PdfDocument}
+ 		\begin{lstlisting}
+public class PdfDocument implements Document {
+	private int numberOfPages;
+
+	public PdfDocument(int numberOfPages) {
+		this.numberOfPages = numberOfPages;
+	}
+
+	public int getNumberOfPages() {
+		return numberOfPages;
+	}
+
+	@Override
+	public void accept(DocumentVisitor visitor) {
+		visitor.visitPdfDocument(this);
+	}
+}
+
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/besucher4.jpg}
+\note{
+    Als nächstes entwickeln wir ein kleines System zur Anlageberatung. Es soll verschiedene Anlagearten kennen, für die die jährliche Rendite und das Risiko jeweils unterschiedlich berechnet werden.
+}
+
+\begin{frame}[fragile]{Besucher}
+	\begin{exampleblock}{InvestmentVisitor}
+ 		\begin{lstlisting}
+public interface InvestmentVisitor {
+	void visitStock(Stock stock);
+	void visitBond(Bond bond);
+	void visitRealEstate(RealEstate realEstate);
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Besucher 1}
+	\begin{exampleblock}{AnnualReturnVisitor}
+ 		\begin{lstlisting}
+public class AnnualReturnVisitor implements InvestmentVisitor {
+	private double totalAnnualReturn = 0;
+
+	@Override
+	public void visitStock(Stock stock) {
+		totalAnnualReturn += stock.getMarketValue() * 
+            0.05 + stock.getDividends();
+	}
+
+	@Override
+	public void visitBond(Bond bond) {
+		totalAnnualReturn += bond.getFaceValue() * 
+            bond.getInterestRate();
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Besucher 1}
+	\begin{exampleblock}{AnnualReturnVisitor}
+ 		\begin{lstlisting}
+@Override
+public void visitRealEstate(RealEstate realEstate) {
+    totalAnnualReturn += realEstate.getRentalIncome() +
+        realEstate.getPropertyValue() * 0.03;
+}
+
+public double getTotalAnnualReturn() {
+    return totalAnnualReturn;
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Besucher 2}
+	\begin{exampleblock}{RiskAssessmentVisitor}
+ 		\begin{lstlisting}
+public class RiskAssessmentVisitor implements InvestmentVisitor {
+	private double totalRisk = 0;
+
+	@Override
+	public void visitStock(Stock stock) {
+		totalRisk += stock.getMarketValue() * 0.1;
+	}
+
+	@Override
+	public void visitBond(Bond bond) {
+		totalRisk += bond.getFaceValue() * 0.02;
+	}
+
+	@Override
+	public void visitRealEstate(RealEstate realEstate) {
+		totalRisk += realEstate.getPropertyValue() * 0.05;
+	}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Element}
+	\begin{exampleblock}{Investment}
+ 		\begin{lstlisting}
+public interface Investment {
+	void accept(InvestmentVisitor visitor);
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkretes Element}
+	\begin{exampleblock}{RealEstate}
+ 		\begin{lstlisting}
+public class RealEstate implements Investment {
+	private double propertyValue;
+	private double rentalIncome;
+
+	public double getPropertyValue() {
+		return propertyValue;
+	}
+
+	public double getRentalIncome() {
+		return rentalIncome;
+	}
+
+	@Override
+	public void accept(InvestmentVisitor visitor) {
+		visitor.visitRealEstate(this);
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

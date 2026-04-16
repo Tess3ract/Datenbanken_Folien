@@ -1,0 +1,44 @@
+\writeSectionFrame{\presentationTitle}{Übung}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ziel}
+  \begin{itemize}
+    \item Verstehen und Implementieren eines Connection-Pools, der das Multiton-Muster verwendet.
+    \item Anwendung des Multiton-Musters zur Verwaltung einer begrenzten Anzahl von Instanzen.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Aufgabenbeschreibung}
+    \textbf{Pool-Klasse erstellen}
+    \begin{itemize}
+      \item Implementieren Sie eine Klasse \texttt{ConnectionPool}, die Verbindungen verwaltet.
+      \item Die \texttt{ConnectionPool}-Klasse soll folgende Methoden bieten:
+      \begin{itemize}
+        \item \texttt{getConnection(String dbName)}: Gibt eine Verbindung für den angegebenen Datenbanknamen zurück, wenn eine verfügbar ist, oder erstellt eine neue, wenn der Pool noch nicht voll ist.
+        \item \texttt{releaseConnection(String dbName)}: Gibt eine Verbindung für den angegebenen Datenbanknamen zurück, um sie im Pool wieder verfügbar zu machen.
+        \item \texttt{printConnections()}: Zeigt alle Verbindungen im Pool an.
+      \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Aufgabenbeschreibung}
+    \textbf{DatabaseConnection-Klasse erstellen}
+    \begin{itemize}
+     \item \texttt{DatabaseConnection}-Klasse braucht nur ein Attribut für den Datenbanknamen und eine toString()-Methode.
+      \item Die \texttt{DatabaseConnection}-Instanz soll bei der Erstellung in den Pool eingefügt werden und beim Freigeben wieder in den Pool zurückgegeben werden.
+      \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Aufgabenbeschreibung}
+    \textbf{Verwenden des Pools}
+    \begin{itemize}
+      \item Implementieren Sie eine \texttt{main}-Methode oder eine Testklasse, die mehrere Verbindungen anfordert, zurückgibt und die Verwaltung des Pools testet.
+    \end{itemize}
+\end{frame}

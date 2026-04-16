@@ -1,0 +1,550 @@
+\writeSectionFrame{\presentationTitle}{Die abstrakte Fabrik}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Abstrakte Fabrik
+ 		\item Alternativer Name: Kit
+ 		\item Englischer Name: Abtract Factory
+ 		\item Gruppe: Erzeugungsmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Abstrakte Fabrik}
+	\begin{block}{Zweck}
+ 		Biete eine Schnittstelle zum Erzeugen von Familien verwandter oder voneinander abhängiger Objekte, ohne ihre konkrete Klasse zu benennen.
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+    \umlclass[x=0, y=0]{AbstractFactory}{
+        + createProductA(): AbstractProductA\\
+        + createProductB(): AbstractProductB
+    }{}
+
+    % Concrete Factory 1
+    \umlclass[x=-5, y=-4]{ConcreteFactory1}{
+    }{
+        + createProductA(): ConcreteProductA1\\
+        + createProductB(): ConcreteProductB1
+    }
+
+    % Concrete Factory 2
+    \umlclass[x=5, y=-4]{ConcreteFactory2}{
+    }{
+        + createProductA(): ConcreteProductA2\\
+        + createProductB(): ConcreteProductB2
+    }
+
+    % Abstract Product A
+    \umlclass[x=-5, y=-8]{AbstractProductA}{}{}
+
+    % Abstract Product B
+    \umlclass[x=5, y=-8]{AbstractProductB}{}{}
+
+    % Concrete Product A1
+    \umlclass[x=-8, y=-12]{ConcreteProductA1}{}{}
+
+    % Concrete Product B1
+    \umlclass[x=-2, y=-12]{ConcreteProductB1}{}{}
+
+    % Concrete Product A2
+    \umlclass[x=2, y=-12]{ConcreteProductA2}{}{}
+
+    % Concrete Product B2
+    \umlclass[x=8, y=-12]{ConcreteProductB2}{}{}
+
+    % Relations
+    \umlinherit[geometry=|-|]{ConcreteFactory1}{AbstractFactory}
+    \umlinherit[geometry=|-|]{ConcreteFactory2}{AbstractFactory}
+
+    \umlinherit{ConcreteProductA1}{AbstractProductA}
+    \umlinherit{ConcreteProductA2}{AbstractProductA}
+
+    \umlinherit{ConcreteProductB1}{AbstractProductB}
+    \umlinherit{ConcreteProductB2}{AbstractProductB}
+
+    \umluniassoc[geometry=-|]{ConcreteFactory1}{ConcreteProductA1}
+    \umluniassoc[geometry=-|]{ConcreteFactory1}{ConcreteProductB1}
+
+    \umluniassoc[geometry=-|]{ConcreteFactory2}{ConcreteProductA2}
+    \umluniassoc[geometry=-|]{ConcreteFactory2}{ConcreteProductB2}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Klassendiagramm -- Möbelgeschäft}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+    \umlclass[x=0, y=0]{FurnitureFactory}{
+    }{}
+
+    % Concrete Factory 1
+    \umlclass[x=-5, y=-4]{VictorianFurnitureFactory}{
+    }{
+    }
+
+    % Concrete Factory 2
+    \umlclass[x=5, y=-4]{ModernFurnitureFactory}{
+    }{
+    }
+
+    % Abstract Product A
+    \umlclass[x=-5, y=-8]{Chair}{}{}
+
+    % Abstract Product B
+    \umlclass[x=5, y=-8]{Table}{}{}
+
+    % Concrete Product A1
+    \umlclass[x=-8, y=-12]{VictorianChair}{}{}
+
+    % Concrete Product B1
+    \umlclass[x=-2, y=-12]{ModernChair}{}{}
+
+    % Concrete Product A2
+    \umlclass[x=2, y=-12]{VictorianTable}{}{}
+
+    % Concrete Product B2
+    \umlclass[x=8, y=-12]{ModernTable}{}{}
+
+    % Relations
+    \umlinherit[geometry=|-|]{VictorianFurnitureFactory}{FurnitureFactory}
+    \umlinherit[geometry=|-|]{ModernFurnitureFactory}{FurnitureFactory}
+
+    \umlinherit{VictorianChair}{Chair}
+    \umlinherit{ModernChair}{Chair}
+
+    \umlinherit{VictorianTable}{Table}
+    \umlinherit{ModernTable}{Table}
+
+    \umluniassoc{VictorianFurnitureFactory}{VictorianChair}
+    \umluniassoc{VictorianFurnitureFactory}{VictorianTable}
+
+    \umluniassoc{ModernFurnitureFactory}{ModernChair}
+    \umluniassoc{ModernFurnitureFactory}{ModernTable}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Abstraktes Produkt A}
+	\begin{exampleblock}{Chair}
+ 		\begin{lstlisting}
+public interface Chair extends Furniture {
+
+	boolean isSittingOnPossible();
+
+	int getLegsCount();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Abstraktes Produkt B}
+	\begin{exampleblock}{Table}
+ 		\begin{lstlisting}
+public interface Table extends Furniture {
+	/**
+	 * Gibt an, um wie viel Grad die Tischplatte gebogen ist.
+	 * @return 
+	 */
+	double getTableTopCurveDegree();
+	/**
+	 * Die Anzahl der Beine des Tischs.
+	 * @return
+	 */
+	int getLegsCount();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Abstrakte Fabrik}
+	\begin{exampleblock}{FurnitureFactory}
+ 		\begin{lstlisting}
+public abstract class FurnitureFactory {
+	public abstract Chair createChair();
+	public abstract Table createTable();
+	public abstract CoffeeTable createCoffeeTable();
+	
+	public List<Furniture> createAll() {
+		List<Furniture> furnitures = new ArrayList<>();
+		furnitures.add(createChair());
+		furnitures.add(createTable());
+		furnitures.add(createCoffeeTable());
+		
+		return furnitures;
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Fabrik 1}
+	\begin{exampleblock}{VictorianFurnitureFactory}
+ 		\begin{lstlisting}
+public class VictorianFurnitureFactory extends FurnitureFactory {
+	@Override
+	public Chair createChair() {
+		return new VictorianChair();
+	}
+
+	@Override
+	public Table createTable() {
+		return new VictorianTable();
+	}
+
+	@Override
+	public CoffeeTable createCoffeeTable() {
+		return new VictorianCoffeeTable();
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Fabrik 2}
+	\begin{exampleblock}{ModernFurnitureFactory}
+ 		\begin{lstlisting}
+public class ModernFurnitureFactory extends FurnitureFactory {
+	@Override
+	public Chair createChair() {
+		return new ModernChair();
+	}
+
+	@Override
+	public Table createTable() {
+		return new ModernTable();
+	}
+	
+
+	@Override
+	public CoffeeTable createCoffeeTable() {
+		return new ModernCoffeeTable();
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Klient}
+	\begin{exampleblock}{FurnitureShop}
+ 		\begin{lstlisting}
+public class FurnitureShop {
+	private FurnitureFactory furnitureFactory;
+	
+	public FurnitureShop(FurnitureFactory furnitureFactory) {
+		this.furnitureFactory = furnitureFactory;
+	}
+	
+	public Chair createChair() {
+		return furnitureFactory.createChair();
+	}
+	
+	public CoffeeTable createCoffeeTable() {
+		return furnitureFactory.createCoffeeTable();
+	}
+	
+	public Table createTable() {
+		return furnitureFactory.createTable();
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/abstrakteFabrik1.jpg}
+\note{
+    Die abstrakte Fabrik ist bspw. interessant bei Fenstersystemen, d.h. wir schreiben ein Programm, das auf verschiedenen Betriebssystemen laufen soll wie bspw. mit JavaFX. Dabei soll bestimmt werden, auf welchem Betriebssystem das Programm läuft, und dann sollen die entsprechenden Komponenten verwendet werden. Dabei soll sich das Programm selbst für die Erzeugung und Verwaltung der Komponenten nicht interessieren, sondern es soll diese Komponenten einfach anfordern.
+}
+
+\begin{frame}{Klassendiagramm -- Fenstersystem}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+    \umlclass[x=0, y=0]{GUIFactory}{
+    }{}
+
+    % Concrete Factory 1
+    \umlclass[x=-5, y=-4]{WindowsFactory}{
+    }{
+    }
+
+    % Concrete Factory 2
+    \umlclass[x=5, y=-4]{LinuxFactory}{
+    }{
+    }
+
+    % Abstract Product A
+    \umlclass[x=-5, y=-8]{Button}{}{}
+
+    % Abstract Product B
+    \umlclass[x=5, y=-8]{Checkbox}{}{}
+
+    % Concrete Product A1
+    \umlclass[x=-8, y=-12]{WindowsButton}{}{}
+
+    % Concrete Product B1
+    \umlclass[x=-2, y=-12]{LinuxButton}{}{}
+
+    % Concrete Product A2
+    \umlclass[x=2, y=-12]{LinuxCheckbox}{}{}
+
+    % Concrete Product B2
+    \umlclass[x=8, y=-12]{WindowsCheckbox}{}{}
+
+    % Relations
+    \umlinherit[geometry=|-|]{WindowsFactory}{GUIFactory}
+    \umlinherit[geometry=|-|]{LinuxFactory}{GUIFactory}
+
+    \umlinherit{WindowsButton}{Button}
+    \umlinherit{LinuxButton}{Button}
+
+    \umlinherit{WindowsCheckbox}{Checkbox}
+    \umlinherit{LinuxCheckbox}{Checkbox}
+
+    \umluniassoc{WindowsFactory}{WindowsButton}
+    \umluniassoc{WindowsFactory}{WindowsCheckbox}
+
+    \umluniassoc{LinuxFactory}{LinuxButton}
+    \umluniassoc{LinuxFactory}{LinuxCheckbox}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Abstraktes Produkt A}
+	\begin{exampleblock}{Button}
+ 		\begin{lstlisting}
+public interface Button {
+    void paint();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Abstraktes Produkt B}
+	\begin{exampleblock}{Checkbox}
+ 		\begin{lstlisting}
+public interface Checkbox {
+    void paint();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Abstrakte Fabrik}
+	\begin{exampleblock}{GUIFactory}
+ 		\begin{lstlisting}
+public interface GUIFactory {
+    Button createButton();
+    Checkbox createCheckbox();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Fabrik 1}
+	\begin{exampleblock}{WindowsFactory}
+ 		\begin{lstlisting}
+public class WindowsFactory implements GUIFactory {
+    @Override
+    public Button createButton() {
+        return new WindowsButton();
+    }
+
+    @Override
+    public Checkbox createCheckbox() {
+        return new WindowsCheckbox();
+    }
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Fabrik 2}
+	\begin{exampleblock}{LinuxFactory}
+ 		\begin{lstlisting}
+public class LinuxFactory implements GUIFactory {
+    @Override
+    public Button createButton() {
+        return new LinuxButton();
+    }
+
+    @Override
+    public Checkbox createCheckbox() {
+        return new LinuxCheckbox();
+    }
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Client}
+	\begin{exampleblock}{WindowSystemClient}
+ 		\begin{lstlisting}
+public class WindowSystemClient {
+    private Button button;
+    private Checkbox checkbox;
+
+    public WindowSystemClient(GUIFactory factory) {
+        button = factory.createButton();
+        checkbox = factory.createCheckbox();
+    }
+
+    public void render() {
+        button.paint();
+        checkbox.paint();
+    }
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/abstrakteFabrik2.jpg}
+\note{
+    Das nächste Beispiel ist ein kleines Strategiespiel so ähnlich wie Age of Empires. Es gibt die Einheiten Soldat, Bogenschütze und Kavalerie und die Völker Römer und Griechen. Wir möchten erst einmal einen Prototypen von dem Spiel implementieren, den wir später so einfach wie möglich um weitere Völker erweitern können möchten. Die verschiedenen Völker haben hier tatsächlich unterschiedliche Eigenschaften.
+}
+
+\begin{frame}{Klassendiagramm -- Strategiespiel}
+    \begin{tikzpicture}[scale=0.5, transform shape]
+    \umlclass[x=0, y=0]{UnitFactory}{
+    }{}
+
+    % Concrete Factory 1
+    \umlclass[x=-5, y=-4]{RomanFactory}{
+    }{
+    }
+
+    % Concrete Factory 2
+    \umlclass[x=5, y=-4]{GreekFactory}{
+    }{
+    }
+
+    % Abstract Product A
+    \umlclass[x=-5, y=-8]{Soldier}{}{}
+
+    % Abstract Product B
+    \umlclass[x=5, y=-8]{Archer}{}{}
+
+    \umlclass[x=0, y=-4]{Cavalry}{}{}
+
+    % Concrete Product A1
+    \umlclass[x=-8, y=-12]{RomanArcher}{}{}
+
+    \umlclass[x=-2, y=-7]{RomanCavalry}{}{}
+
+    % Concrete Product B1
+    \umlclass[x=-2, y=-12]{RomanSoldier}{}{}
+
+    % Concrete Product A2
+    \umlclass[x=2, y=-12]{GreekArcher}{}{}
+
+    % Concrete Product B2
+    \umlclass[x=8, y=-12]{GreekSoldier}{}{}
+
+    \umlclass[x=2, y=-7]{GreekCavalry}{}{}
+
+    % Relations
+    \umlinherit[geometry=|-|]{GreekFactory}{UnitFactory}
+    \umlinherit[geometry=|-|]{RomanFactory}{UnitFactory}
+
+    \umlinherit{RomanArcher}{Archer}
+    \umlinherit{GreekArcher}{Archer}
+
+    \umlinherit{RomanSoldier}{Soldier}
+    \umlinherit{GreekSoldier}{Soldier}
+
+    \umlinherit{RomanCavalry}{Cavalry}
+    \umlinherit{GreekCavalry}{Cavalry}
+
+    \umluniassoc{GreekFactory}{GreekSoldier}
+    \umluniassoc{GreekFactory}{GreekArcher}
+    \umluniassoc{GreekFactory}{GreekCavalry}
+
+    \umluniassoc{RomanFactory}{RomanSoldier}
+    \umluniassoc{RomanFactory}{RomanArcher}
+    \umluniassoc{RomanFactory}{RomanCavalry}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Abstraktes Produkt A}
+	\begin{exampleblock}{Soldier}
+ 		\begin{lstlisting}
+public interface Soldier extends Unit {
+    void attack(Unit enemy);
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Abstraktes Produkt B}
+	\begin{exampleblock}{Archer}
+ 		\begin{lstlisting}
+public interface Archer extends Unit {
+    void shoot(Unit enemy);
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Basisinterface für Produkte}
+	\begin{exampleblock}{Unit}
+ 		\begin{lstlisting}
+public interface Unit {
+    void takeDamage(int damage);
+    int getHealth();
+    String getDescription();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Abstrakte Fabrik}
+	\begin{exampleblock}{\javapackage{UnitFactory}}
+ 		\begin{lstlisting}
+public interface UnitFactory {
+    Soldier createSoldier();
+    Archer createArcher();
+    Cavalry createCavalry();
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Fabrik 1}
+	\begin{exampleblock}{RomanFactory}
+ 		\begin{lstlisting}
+public class RomanFactory implements UnitFactory {
+    @Override
+    public Soldier createSoldier() {
+        return new RomanSoldier();
+    }
+
+    @Override
+    public Archer createArcher() {
+        return new RomanArcher();
+    }
+
+    @Override
+    public Cavalry createCavalry() {
+        return new RomanCavalry();
+    }
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkrete Fabrik 2}
+	\begin{exampleblock}{\javapackage{GreekFactory}}
+ 		\begin{lstlisting}
+public class GreekFactory implements UnitFactory {
+    @Override
+    public Soldier createSoldier() {
+        return new GreekSoldier();
+    }
+
+    @Override
+    public Archer createArcher() {
+        return new GreekArcher();
+    }
+
+    @Override
+    public Cavalry createCavalry() {
+        return new GreekCavalry();
+    }
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

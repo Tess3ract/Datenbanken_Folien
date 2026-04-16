@@ -1,0 +1,577 @@
+\writeSectionFrame{\presentationTitle}{Model-View-Controller}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Model-View-Controller
+ 		\item Abkürzung: MVC
+ 		\item Englischer Name: Model-View-Controller
+ 		\item Weiterentwicklungen: Model2, MVP, MVVM
+ 		\item Art: Architekturmuster für Benutzeroberflächen
+ 		\item Im Grunde eine Familie von Mustern
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Grundlegende Idee}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/mvc1.png}
+ 	\end{center}
+\end{frame}
+
+\note{
+	MVC unterteilt eine interaktive Anwendung in drei Bereiche: Verarbeitung, Ausgabe und Eingabe.	
+}
+
+\begin{frame}{Model}
+	\begin{itemize}
+ 		\item Funktionaler Kern der Anwendung
+ 		\item Meldet abhängige Ansichten und Controller an
+ 		\item Benachrichtigt abhängige Komponenten bei Änderungen
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{View}
+	\begin{itemize}
+ 		\item Stellt die Informationen für den Anwender dar
+ 		\item Erzeugt und initialisiert ihre Controller
+ 		\item Implementiert die Aktualisierungsprozedur
+ 		\item Erfragt die Daten beim Modell
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Controller}
+	\begin{itemize}
+ 		\item Erkennt Benutzereingaben als Ereignisse
+ 		\item Übersetzt Ereignisse in Dienstanforderungen an das Modell oder 
+ 		Darstellungsanforderungen an die Ansicht
+ 		\item Implementiert die Aktualisierungsprozedur wenn notwendig
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Aufbau}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/mvc2.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}{Beispiel}
+	\begin{itemize}
+ 		\item Einfaches Counter-MVC mit austauschbarem Modell und austauschbarer View
+ 		\item Models:
+ 			\begin{itemize}
+ 			  \item Model 1 erhöht einen Zähler um eins
+ 			  \item Model 2 verdoppelt den Zähler.
+ 			\end{itemize}
+ 		\item Views: Beide Views zeigen etwas andere Terminal-Steuerelemente und Texte an.
+ 		\item Controller: Kennt die Views und Models und koordiniert den Ablauf
+ 		\item Dialog ermöglicht es, das Programm mit View und Model zu konfigurieren
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Model-Interface}
+	\begin{exampleblock}{CounterModel.java}
+ 		\begin{lstlisting}
+public interface CounterModel {
+	int getCount();
+	void increment();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Model-Implementierung}
+	\begin{exampleblock}{IncrementCounterModel.java}
+ 		\begin{lstlisting}
+public class IncrementCounterModel implements CounterModel {
+    private int count = 0;
+    private CounterChangeListener onChange;
+
+    @Override
+    public int getCount() {
+        return count;
+    }
+
+    @Override
+    public void increment() {
+        count++;
+        if (onChange != null) { 
+        	onChange.onCountChanged(count);
+        }
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{View-Interface}
+	\begin{exampleblock}{CounterView.java}
+ 		\begin{lstlisting}
+public interface CounterView {
+	void display(int count);
+	void showMenu();
+	boolean checkQuit(String input);
+	boolean checkIncrement(String input);
+	void printQuit();
+	String readUserInput();
+	void printGreeting();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{View-Interface}
+	\begin{exampleblock}{CounterView1.java}
+ 		\begin{lstlisting}
+public class CounterView1 implements CounterView {
+	@Override
+	public void printGreeting() {
+		System.out.println("Willkommen zu View1");
+	}
+	
+	@Override
+	public boolean checkIncrement(String input) {
+		if (input.equals(INCREMENT)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public String readUserInput() {
+		String input = scanner.nextLine();
+		return input;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{View-Interface}
+	\begin{exampleblock}{CounterController.java}
+ 		\begin{lstlisting}
+public class CounterController {
+    private CounterModel model;
+    private CounterView view;
+
+    public CounterController(CounterModel model,
+    		 CounterView view) {
+        this.model = model;
+        this.view = view;
+        model.setChangeListener(
+        	newCount -> view.display(newCount)); 
+    }
+    
+    public void setModel(CounterModel model) {
+		this.model = model;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{View-Interface}
+	\begin{exampleblock}{CounterController.java}
+ 		\begin{lstlisting}
+public class CounterController {
+    public void run() {
+        view.printGreeting();
+        view.display(model.getCount());
+
+        String input = "";
+        while (view.checkQuit(input) == false) {
+            view.showMenu();
+            input = view.readUserInput();
+            if (view.checkIncrement(input)) {
+                model.increment();
+            } 
+        }
+        
+        view.printQuit();
+    }
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+%\begin{frame}{Ablauf einer Datenänderung}
+%	\begin{center}
+% 		\includegraphics[scale=0.25]{\BILDERPFAD/mvc6.png}
+% 	\end{center}
+%\end{frame}
+
+\begin{frame}{Kombination mit Beobachtermuster}
+	\begin{center}
+ 		\includegraphics[scale=0.3]{\BILDERPFAD/mvc7.png}
+ 	\end{center}
+\end{frame}
+\note{
+	Das Beobachter-Muster ist der zentrale Mechanismus für die 
+	Kommunikation zwischen Model und View in MVC. Es kann in verscheidenen
+	Varianten implementiert werden. 
+}
+
+\begin{frame}{Model-View-Presenter oder Model-View-ViewModel}
+	\begin{itemize}
+	  \item Model hält eine Liste von Beobachtern
+	  \item Es bietet Methoden an, um Beobachter hinzuzufügen und ggf. zu entfernen.
+	  \item Wenn sich sein Zustand ändert, benachrichtigt es alle registrierten Beobachter
+	  \item Jede View, die am Zustand des Models interessiert ist, implementiert die Schnittstelle des Beobachters
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{View-Interface}
+	\begin{exampleblock}{CounterChangeListener.java}
+ 		\begin{lstlisting}
+@FunctionalInterface
+public interface CounterChangeListener {
+	void onCountChanged(int newCount);
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{View-Interface}
+	\begin{exampleblock}{DoubleCounterModel.java}
+ 		\begin{lstlisting}
+public class DoubleCounterModel implements CounterModel {
+    private int count = 1;
+    private CounterChangeListener onChange;
+
+    // ...
+	
+	@Override
+	public void setChangeListener(CounterChangeListener listener) {
+		this.onChange = listener;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Controller}
+	\begin{exampleblock}{CounterController.java}
+ 		\begin{lstlisting}
+public class CounterController {
+    private CounterModel model;
+    private CounterView view;
+
+    public CounterController(CounterModel model, 
+    		CounterView view) {
+        model.setChangeListener(
+        	newCount -> view.display(newCount)); 
+    }
+    
+    public void setView(CounterView view) {
+		this.view = view;
+		model.setChangeListener(
+			newCount -> view.display(newCount)); 
+	}
+    // ...
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+\note{
+	Der Controller stellt die Verbindung zwischen View und Model her. Er 
+	registriert sich \glqq im Geiste{\grqq} als der Beobachter für das Model 
+	und delegiert die Aktualisierung dann an die View. Die View ist der 
+	Endempfänger der Aktualisierung.
+}
+
+\begin{frame}{Passive View oder Supervising Controller}
+	\begin{itemize}
+	  \item Der Controller kann isoliert getestet werden
+	  \item View muss nichts über das Model wissen, außer welche Daten sie anzeigen soll
+	  \item View hat keine Abhängigkeit zum Model.
+	  \item In Varianten auch als 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Kombination mit Kompositummuster}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/mvc8.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}{Kombination mit Strategiemuster}
+	\begin{center}
+ 		\includegraphics[scale=0.25]{\BILDERPFAD/mvc9.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}{Kombination mit anderen Mustern}
+	\begin{center}
+ 		\includegraphics[scale=0.2]{\BILDERPFAD/mvc10.png}
+ 	\end{center}
+\end{frame}
+
+\begin{frame}{MVC als Musterfamilie}
+	\begin{itemize}
+	  \item MVC hat sich im Laufe der Zeit weiterentwickelt
+	  \item Es gibt verschiedene Varianten für verschiedene Zwecke
+	  \item Kernprinzip ist gleich: Trennung der Verantwortlichenkeiten zwischen Model, View und Controller 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Der Rest der Familie}
+	\begin{itemize}
+	  \item Klassisches Smalltalk-MVC
+	  \item Document/View
+	  \item Model-View-Presenter (MVP)
+	  \item Model-View-ViewModel (MVVM)
+	  \item Model2
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Klassisches Smalltalk-MVC}
+	\begin{itemize}
+	  \item Entwickelt in den 70ern/80ern für Smalltalk
+	  \item Relevant für historisches Verständnis
+	\end{itemize}
+	\pause
+	\begin{block}{Model}
+		\begin{itemize}
+		  \item Enthält die Anwendungslogik und Daten 
+		  \item Ist völlig unabhängig von View und Controller
+		  \item Benachrichtigt Beobachter über Änderungen
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Klassisches Smalltalk-MVC}
+	\begin{block}{View}
+		\begin{itemize}
+		  \item Zeigt den Zustand des Models an
+		  \item Registriert sich selbst als Beobachter beim Model
+		  \item Holt sich Daten direkt vom Model
+		  \item Sendet Benutzereingaben als Events an den Controller. 
+		\end{itemize}
+	\end{block}
+	\pause
+	\begin{block}{Controller}
+		\begin{itemize}
+		  \item Empfängt Benutzereingaben von der View
+		  \item Interpretiert diese Events und aktualisiert das Model oder die View
+		  \item Reagiert auch auf Änderungen im Model, indem er die View anweist, sich zu aktualisieren 
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Klassisches Smalltalk-MVC}
+	\begin{exampleblock}{Vorteile}
+		\begin{itemize}
+		  \item Klare Trennung der Verantwortlichkeiten
+		  \item Hohe Wiederverwendbarkeit von Model und View.
+		\end{itemize}
+	\end{exampleblock}
+	\pause
+	\begin{alertblock}{Nachteile}
+		\begin{itemize}
+		  \item Starke Kopplung zwischen View und Controller (oft ein 1:1-Paar)
+		  \item Die View muss das Model kennen, um sich zu aktualisieren
+		  \item Der Controller muss oft wissen, wie die View die Events erzeugt
+		  \item Für komplexe GUIs schwierig 
+		\end{itemize}
+	\end{alertblock}
+\end{frame}
+
+% -------------------
+
+\begin{frame}{Document/View}
+	Häufig in Frameworks wie Microsoft Foundation Classes (MFC) oder Java AWT/Swing
+	\pause
+	\begin{block}{Model / Document}
+		Enthält die Daten
+	\end{block}
+	\begin{block}{View}
+		\begin{itemize}
+		  \item Eine oder mehrere Views zeigen Teile des Dokuments an
+		  \item Sie sind meist direkt für die Verarbeitung von Benutzereingaben verantwortlich
+		  \item Controller-Logik ist oft in der View
+		\end{itemize}
+	\end{block}	
+\end{frame}
+
+\begin{frame}{Document/View}
+	\begin{exampleblock}{Vorteile}
+		Einfacher für Anwendungen, die ein zentrales \glqq Dokument{\grqq} bearbeiten
+	\end{exampleblock}
+	\pause
+	\begin{alertblock}{Nachteile}
+		\begin{itemize}
+		  \item Die Trennung von View und Controller ist oft schwach oder existiert nicht
+		  \item Wiederverwendbarkeit der View ist erschwert
+		  \item Der \glqq Controller{\grqq} ist oft nur Event-Listener in der View.
+		\end{itemize}
+	\end{alertblock}
+\end{frame}
+
+% ----------------
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{itemize}
+	  \item Entstanden wegen Testens von GUIs
+	  \item Trennung sollte verbessert werden
+	  \item Besonders populär in Windows Forms, ASP.NET Web Forms, Android-Entwicklung.
+	\end{itemize}
+	\pause
+	\begin{block}{Model}
+		Wie im klassischen MVC
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{block}{View}
+		\begin{itemize}
+		  \item Eine passive View (Dumb View)
+		  \item Zeigt Daten an, die ihr der Presenter gibt
+		  \item Sammelt Benutzereingaben und leitet sie sofort an den Presenter weiter
+		  \item Hat keine Logik, keine Kenntnis vom Model. 
+		  \item Definiert eine Schnittstelle (Interface), über die der Presenter mit ihr kommuniziert. 
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{block}{Presenter}
+		\begin{itemize}
+		  \item Agiert als der Controller und die Logik für die View
+		  \item Empfängt Eingaben von der View
+		  \item Aktualisiert das Model und aktualisiert dann die View direkt über ihre Schnittstelle
+		  \item Hat volle Kontrolle über die View 
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{exampleblock}{Vorteile}
+		\begin{itemize}
+		  \item Extrem hohe Testbarkeit (Presenter ist testbar ohne GUI)
+		  \item View ist komplett entkoppelt vom Model
+		  \item View ist sehr gut wiederverwendbar.
+		\end{itemize}
+	\end{exampleblock}
+	\pause
+	\begin{alertblock}{Nachteile}
+		 Presenter kann sehr dick werden (Fat Presenter), da er viel UI-Logik 
+		 enthält.
+	\end{alertblock}
+\end{frame}
+
+% ----------------
+\begin{frame}{Model-View-ViewModel (MVVM)}
+	\begin{itemize}
+	  \item Entwickelt von Microsoft für WPF und Silverlight 
+	  \item Später übernommen von anderen Frameworks
+	\end{itemize}
+	\pause
+	\begin{block}{Model}
+		Wie im klassischen MVC
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{block}{View}
+		\begin{itemize}
+		  \item Bindet (Data Binding) direkt an Eigenschaften und Befehle des ViewModels
+		  \item Hat wenig bis keine Logik
+		  \item Muss das ViewModel kennen, aber das ViewModel kennt die View nicht direkt 
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{block}{ViewModel}
+		\begin{itemize}
+		  \item Abstraktion der View
+		  \item Enthält die Daten und Befehle, die die View benötigt, in einem für die View geeigneten Format
+		  \item Konvertiert Model-Daten für die View und View-Eingaben für das Model
+		  \item Bindet an das Model und aktualisiert sich bei dessen Änderungen
+		  \item Implementiert oft das Observer-Pattern, um Änderungen an die View zu melden
+		  \item Hat keine direkte Referenz zur View, Kommunikation erfolgt über Data Binding. 
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{exampleblock}{Vorteile}
+		\begin{itemize}
+		  \item Sehr hohe Testbarkeit (ViewModel ist testbar ohne GUI)
+		  \item View und ViewModel sind stark entkoppelt
+		  \item Ermöglicht die Arbeit von UI-Designern und Entwicklern parallel.
+		\end{itemize} 
+	\end{exampleblock}
+	\pause
+	\begin{alertblock}{Nachteile}
+		\begin{itemize}
+		  \item Data Binding kann komplex werden
+		  \item Performance-Probleme bei sehr vielen Bindings
+		  \item Hoher Initialaufwand für das Setup.
+		\end{itemize}
+	\end{alertblock}
+\end{frame}
+
+%-----------------
+
+\begin{frame}{Model2}
+	\begin{itemize}
+	  \item Ursprung Ende der 1990er, Anfang der 2000er Jahre
+	  \item Geprägt durch Java EE (insbesondere JavaServer Pages - JSP und Servlets),
+	  \item Reaktion auf die Probleme von Model 1-Architekturen, bei denen JSPs direkt die Geschäftslogik und Datenbankzugriffe enthielten
+	  \item Im Wesentlichen eine serverseitige Adaption des MVC-Musters für das Request-Response-Paradigma des Webs
+	  \item eine spezielle Form von MVC, die die Besonderheiten des Web (stateless HTTP, Request/Response-Zyklus) berücksichtigt
+	  \item Es betont eine passive View (ähnlich MVP) und einen aktiven Controller, der die gesamte Flusskontrolle übernimmt.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{block}{Model}
+		\begin{itemize}
+		  \item Repräsentiert die Geschäftslogik, Daten und den Anwendungszustand
+		  \item Ist völlig unabhängig von der Web-spezifischen Präsentation.
+		\end{itemize}
+	\end{block}
+	\pause
+	\begin{block}{View}
+		\begin{itemize}
+		  \item Verantwortlich für die Generierung der Ausgabeseite (HTML, XML, JSON etc.), die an den Browser gesendet wird
+		  \item Ist passiv und hat keine Geschäftslogik.
+		  \item Empfängt die Daten, die es anzeigen soll, vom Controller 
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{block}{Controller}
+		\begin{itemize}
+		  \item Herzstück des Model 2
+		  \item Der einzige Endpunkt, der HTTP-Anfragen vom Client empfängt
+		  \item Keine Präsentationslogik und keine Datenzugriffslogik
+		  \item Aufgaben:
+		  	\begin{itemize}
+			  \item Analyse der eingehenden HTTP-Anfrage
+			  \item Delegation an das Model zur Ausführung der Geschäftslogik.
+			  \item Empfängt die Ergebnisse vom Model.
+			  \item Wählt die entsprechende View zur Darstellung aus
+			  \item Bereitet die Daten für die View vo
+			  \item Leitet die Anfrage an die ausgewählte View weiter 
+			\end{itemize}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Model-View-Presenter (MVP)}
+	\begin{exampleblock}{Vorteile}
+		\begin{itemize}
+		  \item Sehr hohe Testbarkeit (ViewModel ist testbar ohne GUI)
+		  \item View und ViewModel sind stark entkoppelt
+		  \item Ermöglicht die Arbeit von UI-Designern und Entwicklern parallel.
+		\end{itemize} 
+	\end{exampleblock}
+	\pause
+	\begin{alertblock}{Nachteile}
+		\begin{itemize}
+		  \item Data Binding kann komplex werden
+		  \item Performance-Probleme bei sehr vielen Bindings
+		  \item Hoher Initialaufwand für das Setup.
+		\end{itemize}
+	\end{alertblock}
+\end{frame}

@@ -1,0 +1,112 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendungsfälle}
+	\begin{itemize}
+ 		\item Es gibt sehr viele Objekte
+ 		\item Speicher soll eingespart werden
+ 		\item Objekte sind sehr ähnlich
+ 		\item Intrinsische Zustände sind klein
+ 		\item Extrinische Zustände sind groß und können gemeinsam genutzt werden
+ 		\item Aufgabe kann mit wenigen Instanzen erledigt werden
+ 	\end{itemize}
+\end{frame}
+
+\realworld{String Pool in Java}{Wiederholte Verwendungen desselben Literals verweisen auf dieselbe Instanz}
+\note{
+    Der String Pool in Java speichert eine einzelne Kopie jedes String-Literals, sodass wiederholte Verwendungen desselben Literals auf dieselbe Instanz verweisen. Dies reduziert den Speicherbedarf erheblich. 
+}
+
+\realworld{JavaFX}{Interne Datenstrukturen für grafische Elemente}
+\note{
+    JavaFX verwendet das Fliegengewicht-Muster bei der Handhabung von Node-Objekten und der Rendering-Pipeline. In vielen Fällen teilt sich JavaFX interne Datenstrukturen, die von mehreren grafischen Elementen verwendet werden, um Speicherplatz zu sparen und die Render-Effizienz zu steigern. CSS-Stildefinitionen werden in einem internen Cache gespeichert und als Fliegengewichte behandelt, sodass sie wiederverwendet werden können, anstatt für jede Komponente separate Kopien zu erstellen. Wenn mehrere Textknoten dieselben Schriftarteinstellungen verwenden, wird dieselbe Instanz der Font-Klasse wiederverwendet. 
+}
+
+\realworld{Textverarbeitung und Rendering-Engines}{Verwaltung von Zeichen-Objekten}
+\note{
+    Textverarbeitungs- und Rendering-Engines verwenden häufig das Fliegengewicht-Muster, um Zeichenobjekte zu verwalten. Anstatt für jedes Zeichen im Dokument ein eigenes Objekt zu erstellen, werden oft Fliegengewicht-Instanzen verwendet, die dieselbe Darstellung für mehrere Vorkommen desselben Zeichens teilen. Das spart Speicherplatz und verbessert die Leistung.
+}
+
+\realworld{Hibernate und andere ORM-Frameworks}{Caching-Strategien}
+\note{
+    ORM-Frameworks wie Hibernate verwenden das Fliegengewicht-Muster, um Caching-Strategien zu implementieren. Zum Beispiel wird das Muster verwendet, um Instanzen von häufig verwendeten Entitäten zwischen Datenbankzugriffen zu teilen und wiederzuverwenden. Dadurch werden die Datenbankabfragen reduziert und die Anwendungsleistung verbessert.
+}
+
+\realworld{Google Web Toolkit (GWT)}{Ähnliche UI-Komponenten teilen sich dabei interne Repräsentationen}
+\note{
+    GWT verwendet das Fliegengewicht-Muster für die Darstellung von Widgets und UI-Komponenten im Browser. Ähnliche UI-Komponenten teilen sich dabei interne Repräsentationen, um Speicherplatz zu sparen und die Benutzeroberfläche effizient zu rendern.
+}
+
+\realworld{Eclipse}{Darstellung von Syntaxhervorhebung}
+\note{
+    In der Eclipse IDE und der darunterliegenden Plattform wird das Fliegengewicht-Muster in verschiedenen Bereichen verwendet, zum Beispiel für die Darstellung von Syntaxhervorhebung und anderen Elementen der Benutzeroberfläche, bei denen wiederholte Strukturen vorkommen.
+}
+
+\realworld{Spiele-Engines}{Verwaltung von Ressourcen}
+\note{
+    In der Spieleentwicklung wird das Fliegengewicht-Muster häufig verwendet, um Ressourcen wie Sprites oder geometrische Daten zu verwalten. Zum Beispiel kann ein Spiel mehrere Instanzen desselben Charakters oder Objekts auf dem Bildschirm haben, aber anstatt für jede Instanz separate Daten zu speichern, verwendet das Spiel eine geteilte Datenstruktur, um Speicherplatz zu sparen.
+}
+
+\begin{frame}{Assassin's Creed IV Blag Flag}
+	\begin{center}
+        \includegraphics[scale=0.2]{\BILDERPFAD/fazit1.jpg}
+ 	\end{center}
+\end{frame}
+\note{
+    Assassin's Creed IV Blag Flag wird das Fliegengewicht-Muster mehrmals verwendet, um das Meer realistisch aussehen zu lassen und das Spiel trotzdem ausführbar zu lassen. Statt für jede Welle ein eigenes Objekt zu erstellen, werden vorgefertigte Wellenmuster verwendet, die je nach Bedarf instanziiert und transformiert werden. Diese Wellenmuster können in verschiedenen Größen, Formen und Positionen mehrfach verwendet werden, ohne dass zusätzliche Speicherressourcen benötigt werden. Die Gischt und der Schaum auf den Wellen, die durch Wind und Bewegung der Schiffe entstehen, nutzen ebenfalls das Fliegengewicht-Muster. Anstatt für jede Schaumkrone ein separates Partikel zu erzeugen, werden vorgefertigte Schaumtexturen wiederverwendet und dynamisch an die aktuelle Wellensituation angepasst. Durch den Einsatz von Fliegengewicht kann das Meer möglichst realistisch und variantenreich dargestellt werden und trotzdem wird der Speicherbedarf optimiert. 
+}
+
+\vorteil{Speicher wird gespart}
+\note{
+    Der Hauptvorteil des Fliegengewicht-Musters ist die drastische Reduzierung des Speicherverbrauchs. Indem identische oder ähnliche Objekte gemeinsam genutzt werden, wird der Bedarf an redundanter Speicherzuweisung minimiert. Dies ist besonders nützlich in Szenarien, in denen eine große Anzahl kleiner Objekte erzeugt wird, wie zum Beispiel bei der Darstellung von Text oder grafischen Elementen.
+}
+
+\vorteil{Verbesserte Leistung}
+\note{
+    Da weniger Objekte und kleinere Objekte im Speicher gehalten werden müssen, wird der Garbage Collector weniger belastet, was die allgemeine Leistung der Anwendung verbessern kann. Zudem wird die Effizienz des Cache-Speichers verbessert, da weniger Objekte zu Cache-Misses führen.
+}
+
+\vorteil{Einheitliches Objektverhalten}
+\note{
+    Da mehrere Objekte dieselbe Instanz teilen, wird sichergestellt, dass sie sich identisch verhalten. Änderungen an einem Fliegengewicht-Objekt werden sofort von allen abhängigen Objekten erkannt, was Konsistenz in der Anwendung gewährleistet.
+}
+
+\vorteil{Einfachere Verwaltung gemeinsamer Zustände}
+\note{
+    Gemeinsam genutzte Zustände (extrinsische Zustände) werden zentral verwaltet, was die Implementierung von Änderungen vereinfacht und Fehlerquellen reduziert. Diese Struktur ermöglicht es, Änderungen an einem zentralen Ort vorzunehmen, die sich auf alle Verwendungen auswirken.
+}
+
+\nachteil{Komplexes Design}
+\note{
+    Die Einführung des Fliegengewicht-Musters erhöht die Komplexität des Codes. Es erfordert die sorgfältige Trennung von intrinsischen (unveränderlichen, geteilten) und extrinsischen (variablen, kontextabhängigen) Zuständen. Diese Trennung kann den Code schwerer verständlich und wartbar machen.
+}
+
+\nachteil{Einschränkungen bei der Objektveränderung}
+\note{
+    Da Fliegengewicht-Objekte geteilt werden, ist es schwieriger, ihren Zustand zu ändern, ohne andere Bereiche der Anwendung zu beeinflussen. Dies kann zu unerwartetem Verhalten führen, wenn nicht sorgfältig mit der Zustandsverwaltung umgegangen wird.
+}
+
+\nachteil{Verwaltung des extrinsischen Zustands}
+\note{
+    Der extrinsische Zustand muss vom Client verwaltet werden, was zusätzlichen Verwaltungsaufwand und potenzielle Fehlerquellen mit sich bringt. Es kann notwendig sein, zusätzliche Datenstrukturen zu erstellen, um diesen Zustand effizient zu verwalten.
+}
+
+\nachteil{Man arbeitet mit Referenzen}
+\note{
+    Fliegengewicht erhält seine Stärke durch den Einsatz von Referenzen bzw. Pointern. Das muss dem Entwickler auch unbedingt klar sein. Wer Referenzen oder Pointer nicht verstanden hat oder sich dessen nicht bewusst ist, kann sehr schnell sehr üble Fehler einbauen. Aus diesem Grund sollte intrinsische Zustand unveränderlich sein, denn fehlerhafte Änderungen haben Auswirkungen auf alle anderen Objekte. 
+}
+
+\nachteil{Probleme beim Multithreading}
+\note{
+    Wenn mehrere Threads gleichzeitig auf ein Fliegengewicht-Objekt zugreifen und es ändern, kann es zu Race Conditions kommen. Da das Fliegengewicht-Muster auf die Wiederverwendung von Objekten setzt, besteht die Gefahr, dass ein Thread den Zustand eines Objekts verändert, während ein anderer Thread dasselbe Objekt liest oder darauf basiert. Ohne ordnungsgemäße Synchronisation können dadurch unvorhersehbare Fehler oder inkonsistente Zustände entstehen. Auch deswegen sollte der intrinsische Zustand unveränderlich sein. 
+}
+
+\begin{frame}{Fragen zur Entscheidung}
+	\begin{itemize}
+ 		\item Gibt es eine vernünftige Schätzung bzgl. der Objektmenge?
+ 		\item Wie hoch ist die typische und die maximale Anzahl zu erzeugender Objekte?
+ 		\item Wie teuer ist die Objekterzeugung?
+ 		\item Wie groß werden Objekte und wie viel Speicher brauchen sie? 
+ 		\item Wie viel Speicher steht zur Verfügung?
+ 		\item Gibt es Laufzeitbeschränkungen (z.B. größermäßig beschränkter Heap)? 
+ 		\item Lassen sich intrinsischer und extrinsischer Zustand gut trennen?
+ 	\end{itemize}
+\end{frame}

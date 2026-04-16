@@ -1,0 +1,74 @@
+\writeSectionFrame{\presentationTitle}{Fazit}
+\begin{frame}{Anwendungsfälle}
+	\begin{itemize}
+ 		\item Rückgängig machen
+ 		\item Wiederherstellungspunkte
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Optimierungen}
+	\begin{itemize}
+ 		\item Nur einen Teil des Zustandes speichern
+ 		\item Inkrementelles Speichern
+ 	\end{itemize}
+\end{frame}
+
+\realworld{Text-Editoren / IDEs}{Zurücksetzen und Wiederherstellen von Dokumenten oder Code}
+\note{
+    Viele Texteditoren und integrierte Entwicklungsumgebungen (IDEs) nutzen das Memento-Pattern, um Änderungen an Dokumenten oder Code zurückzusetzen oder wiederherzustellen. Jede Bearbeitung oder Änderung wird als Memento gespeichert, sodass der Benutzer zu einem früheren Zustand zurückkehren kann.
+}
+
+\realworld{Grafik- und Designsoftware}{Historie von Bearbeitungen und Änderungen}
+\note{
+    Grafiksoftware wie Adobe Photoshop oder Illustrator verwendet ähnliche Konzepte, um die Historie von Bearbeitungen und Änderungen zu verwalten. Benutzer können zu vorherigen Versionen von Designs oder Bildern zurückkehren.
+}
+
+\realworld{Spiele}{Speichern des Spielfortschritts}
+\note{
+    In vielen Spielen wird das Memento-Pattern verwendet, um den Zustand des Spiels (z.B. Spielfortschritt, Level, Punkte) zu speichern. Dies ermöglicht es den Spielern, ihren Fortschritt zu speichern und später fortzusetzen oder auf frühere Zustände zurückzukehren.
+}
+
+\realworld{Transaktionen und Persistenz}{Speichern des Zustandes von Daten vor und nach einer Transaktion}
+\note{
+    Bei der Implementierung von Transaktionssystemen kann das Memento-Pattern verwendet werden, um den Zustand von Daten vor und nach einer Transaktion zu speichern. Dies hilft, die Datenbank in einen konsistenten Zustand zurückzuversetzen, wenn eine Transaktion fehlschlägt.
+}
+
+\vorteil{Kapselung des Zustands}
+\note{
+    Der Zustand eines Objekts kann gespeichert und wiederhergestellt werden, ohne dass die interne Struktur des Objekts offengelegt werden muss. Dies bewahrt die Kapselung und Integrität des Objekts.
+}
+
+\vorteil{Ermöglicht Rückgängig- und Wiederherstellungsoperationen}
+\note{
+    Es ermöglicht das Implementieren von Undo- und Redo-Funktionalitäten, was besonders in Anwendungen wie Texteditoren und Grafiksoftware nützlich ist.
+}
+
+\vorteil{Verlaufsverwaltung}
+\note{
+    Es erleichtert das Verwalten von Zustandsverläufen und die Rückkehr zu früheren Zuständen, was für Anwendungen wie Spiele und Formulardatenmanagement von Vorteil ist.
+}
+
+\vorteil{Trennung von Verantwortlichkeiten}
+\note{
+    Die Implementierung des Memento-Patterns kann relativ einfach sein und bietet eine klare Struktur zur Verwaltung von Zuständen.
+}
+
+\nachteil{Erhöhter Speicherbedarf}
+\note{
+    Die Speicherung vieler Mementos kann zu erhöhtem Speicherverbrauch führen, insbesondere wenn der Zustand eines Objekts groß oder komplex ist.
+}
+
+\nachteil{Komplexität der Verwaltung}
+\note{
+    Die Verwaltung der gespeicherten Mementos (z.B. bei Undo/Redo) kann komplex werden, besonders wenn eine große Anzahl von Zuständen gespeichert wird.
+}
+
+\nachteil{Kopieraufwand}
+\note{
+    Das Erstellen von Mementos kann zusätzliche Kosten verursachen, insbesondere wenn das Objekt viele Daten enthält oder komplexe Strukturen hat, die tief kopiert werden müssen.
+}
+
+\nachteil{Wartungsaufwand}
+\note{
+    Wenn sich die interne Struktur der Klasse ändert, müssen auch die Mementos und die Klasse, die sie verwaltet, möglicherweise aktualisiert werden. Dies kann zusätzlichen Wartungsaufwand verursachen.
+}

@@ -1,0 +1,56 @@
+\IntroVorlesung
+\writeSectionFrame{\presentationTitle}{}
+
+\begin{frame}{Vorgehensweise}
+    \begin{itemize}
+        \item Neues Thema mit vielen Beispielen
+        \item Übungsblatt für Zuhause
+        \item Besprechung und Vertiefung 
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{center}
+    \begin{tikzpicture}[
+    >=Triangle,
+    every node/.style={
+        draw=Orange,
+        fill=LightBlue,
+        rounded corners,
+        align=center,
+        minimum width=2.6cm,
+        minimum height=1cm
+    }
+]
+
+\node (a) at (0,2) {Neues Thema};
+\node (b) at (2.8,-1) {Übungsblatt};
+\node (c) at (-2.8,-1) {Besprechung ÜB};
+
+\draw[->, thick, Blue] (a) to[bend left=30] (b);
+\draw[->, thick, Blue] (b) to[bend left=30] (c);
+\draw[->, thick, Blue] (c) to[bend left=30] (a);
+
+\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}{Agenda}
+\begin{columns}[c]
+
+\column{0.40\textwidth}
+\centering
+\includegraphics<1->[width=\linewidth]{\BILDERPFAD/Database_Stock_Image.jpg}
+
+\column{0.6\textwidth}
+\begin{itemize}
+    \item<2-> Datenbankentwurf
+    \item<3-> Relationales Modell \& Algebra
+    \item<4-> Structured Query Language (SQL)
+    \item<5-> Relationale Entwurfstheorie
+    \item<6-> Datenintegrität
+    \item<7-> Transaktionsverwaltung
+    \item<8-> Datenbanktuning
+\end{itemize}
+
+\end{columns}
+\end{frame}

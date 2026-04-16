@@ -1,0 +1,492 @@
+\IntroVorlesung
+\writeSectionFrame{\presentationTitle}{}
+
+% Generelle Phasen des Datenbankentwurfs
+\begin{frame}{Phasen des Datenbankentwurfs}
+    \begin{enumerate}    
+        \item<1-> Anforderungsanalyse: Informale Beschreibung 
+        \item<2-> Konzeptueller Entwurf: Entity-Relationship-Model 
+        \item<3-> Implementationsentwurf:
+              \begin{itemize}    
+                  \item Relationales Schema
+                  \item Normalisierung
+              \end{itemize}
+        \item<4-> Physischer Entwurf:
+              \begin{itemize}    
+                  \item Indexstrukturen
+                  \item Technische Einstellung optimieren
+              \end{itemize}
+    \end{enumerate}
+    \begin{center}    
+        \begin{tikzpicture}    
+            % first image
+            \onslide<1->{    
+                    \node[anchor=east] at ([xshift=-0.1cm]0,0) {    
+                        \includegraphics[height=1.1cm]{\BILDERPFAD/check-list.png}
+                    };
+                }
+            
+            % first arrow
+            \onslide<2->{    
+                    \draw[    
+                        draw=Blue,
+                        line width=2mm,
+                            -{Triangle[length=3mm,width=3mm]}
+                    ] (0,0) -- (0.7cm,0);
+                }
+            
+            % second image
+            \onslide<2->{    
+                    \node[anchor=west] at (0.7cm,0){    
+                        \includegraphics[height=1.7cm]{\BILDERPFAD/ERM_Example.png}
+                    };
+                }
+            
+            % second arrow
+            \onslide<3->{    
+                    \draw[    
+                        draw=Blue,
+                        line width=2mm,
+                            -{Triangle[length=3mm,width=3mm]}
+                    ] (3.3cm,0) -- (4.0cm,0);
+                }
+            
+            % third image
+            \onslide<3->{    
+                    \node[anchor=west] at (4.1cm,0){    
+                        \includegraphics[height=1.4cm]{\BILDERPFAD/Relationales_Schema_Example.png}
+                    };
+                }
+            
+            % third arrow
+            \onslide<4->{    
+                    \draw[    
+                        draw=Blue,
+                        line width=2mm,
+                            -{Triangle[length=3mm,width=3mm]}
+                    ] (7.3cm,0) -- (8.0cm,0);
+                }
+            
+            % fourth image
+            \onslide<4->{    
+                    \node[anchor=west] at (8.1cm,0){    
+                        \includegraphics[height=1.0cm]{\BILDERPFAD/parameter_tuning.png}
+                    };
+                }
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% Entity-Relationship-Modell
+\begin{frame}{Entity-Relationship-Modell}
+    
+    \begin{tikzpicture}[    
+            scale=0.68,
+            transform shape,
+            entity/.style={    
+                    draw,
+                    rectangle,
+                    minimum width=2.4cm,
+                    minimum height=0.9cm,
+                    align=center,
+                    font=\scriptsize
+                },
+            relation/.style={    
+                    draw,
+                    diamond,
+                    aspect=2,
+                    minimum width=2.1cm,
+                    minimum height=0.9cm,
+                    align=center,
+                    font=\scriptsize
+                },
+            attribute/.style={    
+                    draw,
+                    ellipse,
+                    minimum width=1.6cm,
+                    minimum height=0.7cm,
+                    align=center,
+                    font=\scriptsize
+                },
+            line/.style={draw, -}
+        ]
+        
+        % Entitäten
+        \node[entity] (studenten) at (0,4) {Studenten};
+        \node[entity] (vorlesungen) at (8,4) {Vorlesungen};
+        \node[entity] (assistenten) at (0,-2) {Assistenten};
+        \node[entity] (professoren) at (8,-2) {Professoren};
+        
+        % Beziehungen
+        \node[relation] (hoeren) at (4,4) {hören};
+        \node[relation] (pruefen) at (4,2) {prüfen};
+        \node[relation] (lesen) at (8,1.5) {lesen};
+        \node[relation] (arbeitenfuer) at (4,-2) {arbeiten für};
+        
+        % Attribute Studenten
+        \node[attribute] (smatr) at (-2.1,5.2) {\underline{MatrNr}};
+        \node[attribute] (svorname) at (-2.6,4.3) {Vorname};
+        \node[attribute] (sname) at (-2.6,3.3) {Name};
+        \node[attribute] (ssemester) at (-2.1,2.2) {Semester};
+        
+        % Attribute Vorlesungen
+        \node[attribute] (vnr) at (10.0,5.2) {\underline{VorlNr}};
+        \node[attribute] (vsws) at (10.2,4.3) {SWS};
+        \node[attribute] (vtitel) at (10.0,3.3) {Titel};
+        
+        % Attribute Assistenten
+        \node[attribute] (apers) at (-2.2,-0.9) {\underline{PersNr}};
+        \node[attribute] (avorname) at (-3.0,-1.8) {Vorname};
+        \node[attribute] (aname) at (-3.0,-2.7) {Name};
+        \node[attribute] (ataetigkeit) at (-2.3,-3.8) {Tätigkeit};
+        
+        % Attribute Professoren
+        \node[attribute] (ppers) at (6.6,-3.8) {\underline{PersNr}};
+        \node[attribute] (pvorname) at (8.2,-4.2) {Vorname};
+        \node[attribute] (pfach) at (10.1,-3.9) {Fach};
+        \node[attribute] (pname) at (11.2,-2.5) {Name};
+        
+        % Attribut Beziehung prüfen
+        \node[attribute] (note) at (4,0.5) {Note};
+        
+        % Kanten Beziehungen
+        \draw[line] (studenten) -- (hoeren);
+        \draw[line] (hoeren) -- (vorlesungen);
+        
+        \draw[line] (studenten) -- (pruefen);
+        \draw[line] (pruefen) -- (vorlesungen);
+        \draw[line] (pruefen) -- (professoren);
+        
+        \draw[line] (vorlesungen) -- (lesen);
+        \draw[line] (lesen) -- (professoren);
+        
+        \draw[line] (assistenten) -- (arbeitenfuer);
+        \draw[line] (arbeitenfuer) -- (professoren);
+        
+        % Kanten Attribute
+        \draw[line] (studenten) -- (smatr);
+        \draw[line] (studenten) -- (svorname);
+        \draw[line] (studenten) -- (sname);
+        \draw[line] (studenten) -- (ssemester);
+        
+        \draw[line] (vorlesungen) -- (vnr);
+        \draw[line] (vorlesungen) -- (vsws);
+        \draw[line] (vorlesungen) -- (vtitel);
+        
+        \draw[line] (assistenten) -- (apers);
+        \draw[line] (assistenten) -- (avorname);
+        \draw[line] (assistenten) -- (aname);
+        \draw[line] (assistenten) -- (ataetigkeit);
+        
+        \draw[line] (professoren) -- (ppers);
+        \draw[line] (professoren) -- (pvorname);
+        \draw[line] (professoren) -- (pname);
+        \draw[line] (professoren) -- (pfach);
+        
+        \draw[line] (pruefen) -- (note);
+        
+    \end{tikzpicture}
+    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Entity-Typen
+\begin{frame}{Entity-Typen}
+    \begin{columns}[c]
+        \column{0.55\textwidth}
+        \begin{itemize}    
+            \item<2-> Entitäten: Gegenstände, die wir in DB speichern wollen.
+            \item<3-> Entity-Typen: Fassen Entitäten zusammen.
+            \item<4-> Attribute: beschreibende Werte der Entitäten
+            \item<5-> Schlüssel: Attribut(e), die die Entität eindeutig bestimmen.
+            \item<6-> immer plural
+        \end{itemize}
+        
+        \column{0.45\textwidth}
+        \centering
+        \only<1->{    
+                \begin{tikzpicture}[    
+                        entity/.style={    
+                                draw,
+                                rectangle,
+                                minimum width=2.4cm,
+                                minimum height=0.9cm,
+                                align=center,
+                                font=\scriptsize
+                            },
+                        attribute/.style={    
+                                draw,
+                                ellipse,
+                                minimum width=1.6cm,
+                                minimum height=0.7cm,
+                                align=center,
+                                font=\scriptsize
+                            },
+                        line/.style={draw, -}
+                    ]
+                    
+                    % Entität
+                    \node[entity] (vorlesungen) at (0,0) {Vorlesungen};
+                    
+                    % Attribute
+                    \node[attribute] (vnr) at (0,1.8) {\underline{VorlNr}};
+                    \node[attribute] (vsws) at (2.8,0) {SWS};
+                    \node[attribute] (vtitel) at (0,-1.8) {Titel};
+                    
+                    % Kanten
+                    \draw[line] (vorlesungen) -- (vnr);
+                    \draw[line] (vorlesungen) -- (vsws);
+                    \draw[line] (vorlesungen) -- (vtitel);
+                    
+                \end{tikzpicture}
+            }
+        
+    \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Entität vs Entity-Typ
+
+\begin{frame}{Entität vs Entity-Typ}
+    
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beziehungstypen
+
+\begin{frame}{Beziehungstypen}
+    
+    \begin{itemize}    
+        \item<2-> Beziehungstypen beschreiben Zusammenhänge zwischen Entity-Typen
+        \item<3-> Beispiel: Professoren \textbf{lesen} Vorlesungen
+        \item<4-> Mathematisch:\\
+              $\text{lesen} \subseteq \text{Professoren} \times \text{Vorlesungen}$
+        \item<5-> Allgemein für $n$ Entitäten:\\
+              $\text{R} \subseteq E_1 \times E_2 \times \cdots E_n$
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \centering
+    \only<1->{    
+            \begin{tikzpicture}    
+                
+                % Entitäten
+                \node[entity] (prof) at (0,0) {Professoren};
+                \node[entity] (vl) at (6,0) {Vorlesungen};
+                
+                % Beziehung
+                \node[relation] (lesen) at (3,0) {lesen};
+                
+                % Attribute Professoren
+                \node[attribute] (persnr) at (0,1.3) {\underline{PersNr}};
+                \node[attribute] (pname) at (0,-1.3) {Name};
+                
+                % Attribute Vorlesungen
+                \node[attribute] (vorlnr) at (6,1.3) {\underline{VorlNr}};
+                \node[attribute] (raum) at (6,-1.3) {Raum};
+                
+                % Kanten
+                \draw (prof) -- (lesen);
+                \draw (lesen) -- (vl);
+                
+                \draw (prof) -- (persnr);
+                \draw (prof) -- (pname);
+                
+                \draw (vl) -- (vorlnr);
+                \draw (vl) -- (raum);
+                
+            \end{tikzpicture}
+        }
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Kardinalitäten: 1:1
+\begin{frame}{Kardinalitäten: 1 zu 1}
+    \centering
+    \begin{tikzpicture}    
+        
+        % Entitäten
+        \node[entity] (prof) at (0,0) {$E_1$};
+        \node[entity] (vl) at (6,0) {$E_2$};
+        
+        % Beziehung
+        \node[relation] (lesen) at (3,0) {$R$};
+        
+        % Kardinalitäten
+        \node at (1.3,0.2) {\small 1};
+        \node at (4.7,0.2) {\small 1};
+        
+        % Kanten
+        \draw (prof) -- (lesen);
+        \draw (lesen) -- (vl);
+        
+    \end{tikzpicture}
+    \vspace{0.5cm}
+    \begin{itemize}    
+        \item Jeder Entität aus $E_1$ ist höchstens ein $E_2$ zugeordnet.
+        \item Jeder Entität aus $E_2$ ist höchstens ein $E_1$ zugeordnet.
+    \end{itemize}
+    \vspace{0.5cm}
+    \centering
+    \begin{tikzpicture}    
+        
+        % Entitäten
+        \node[entity] (prof) at (0,0) {Person};
+        \node[entity] (vl) at (6,0) {Reisepass};
+        
+        % Beziehung
+        \node[relation] (lesen) at (3,0) {besitzt};
+        
+        % Kardinalitäten
+        \node at (1.3,0.2) {\small 1};
+        \node at (4.7,0.2) {\small 1};
+        
+        % Kanten
+        \draw (prof) -- (lesen);
+        \draw (lesen) -- (vl);
+    \end{tikzpicture}
+    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Kardinalitäten: 1:N
+\begin{frame}{Kardinalitäten: 1 zu $N$}
+    
+    \centering
+    
+    \begin{tikzpicture}    
+        
+        % Entitäten
+        \node[entity] (prof) at (0,0) {$E_1$};
+        \node[entity] (vl) at (6,0) {$E_2$};
+        
+        % Beziehung
+        \node[relation] ($R$) at (3,0) {$R$};
+        
+        % Kardinalitäten
+        \node at (1.3,0.2) {\small1};
+        \node at (4.7,0.2) {\small$N$};
+        
+        % Kanten
+        \draw (prof) -- (lesen);
+        \draw (lesen) -- (vl);
+        
+    \end{tikzpicture}
+    \vspace{0.5cm}
+    \begin{itemize}    
+        \item Jeder Entität aus $E_1$ sind beliebig viele $E_2$ zugeordnet.
+        \item Jeder Entität aus $E_2$ ist höchstens ein $E_1$ zugeordnet.
+    \end{itemize}
+    
+    
+    
+    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Kardinalitäten: N:M
+\begin{frame}{Kardinalitäten: $N$ zu $M$}
+    
+    \centering
+    \begin{tikzpicture}    
+        
+        % Entitäten
+        \node[entity] (prof) at (0,0) {$E_1$};
+        \node[entity] (vl) at (6,0) {$E_2$};
+        
+        % Beziehung
+        \node[relation] ($R$) at (3,0) {$R$};
+        
+        % Kardinalitäten
+        \node at (1.3,0.2) {\small$M$};
+        \node at (4.7,0.2) {\small$N$};
+        
+        % Kanten
+        \draw (prof) -- (lesen);
+        \draw (lesen) -- (vl);
+        
+    \end{tikzpicture}
+    
+    \vspace{0.5cm}
+    
+    \begin{itemize}    
+        \item Jeder Entität aus $E_1$ sind beliebig viele $E_2$ zugeordnet.
+        \item Jeder Entität aus $E_2$ sind beliebig viele $E_1$ zugeordnet.
+    \end{itemize}
+    
+    
+    
+    
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beispiel Kardinalitäten
+\begin{frame}{Beispiel Kardinalitäten}
+    \includegraphics[width=\linewidth]{\BILDERPFAD/ERD_Uni.png}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beispiel Kardinalitäten
+\begin{frame}{Beispiel Kardinalitäten}
+    \includegraphics[width=\linewidth]{\BILDERPFAD/ERD_Uni_Kardinalitäten.png}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% (min,max) Notation
+\begin{frame}{(min,max) Notation}
+    
+    \vspace{1cm}
+    \centering
+    \begin{tikzpicture}    
+        
+        % Entitäten
+        \node[entity] (prof) at (0,0) {Professoren};
+        \node[entity] (vl) at (6,0) {Vorlesung};
+        
+        % Beziehung
+        \node[relation] (lesen) at (3,0) {lesen};
+        
+        % Kardinalitäten
+        \node at (1.3,0.2) {\small$1$};
+        \node at (4.7,0.2) {\small$N$};
+        
+        % Kanten
+        \draw (prof) -- (lesen);
+        \draw (lesen) -- (vl);
+        
+    \end{tikzpicture}
+    
+    \begin{tikzpicture}    
+        
+        % Entitäten
+        \node[entity] (prof) at (0,0) {Professoren};
+        \node[entity] (vl) at (6,0) {Vorlesung};
+        
+        % Beziehung
+        \node[relation] (lesen) at (3,0) {lesen};
+        
+        % Kardinalitäten
+        \node at (1.3,0.2) {\small$1$};
+        \node at (4.7,0.2) {\small$N$};
+        
+        \node at (1.5,-0.2) {(0,*)};
+        \node at (4.5,-0.2) {(1,1)};
+        
+        % Kanten
+        \draw (prof) -- (lesen);
+        \draw (lesen) -- (vl);
+        
+    \end{tikzpicture}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beispiel (min,max) Notation
+\begin{frame}{(min,max) Notation}
+    \includegraphics[width=\linewidth]{\BILDERPFAD/ERD_Uni_Kardinalitäten.png}
+\end{frame}
+

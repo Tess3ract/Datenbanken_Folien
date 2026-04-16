@@ -1,0 +1,594 @@
+\writeSectionFrame{\presentationTitle}{SOLID-Prinzipien}
+\frameWithImageOnly{\BILDERPFAD/solid1.jpg}
+\note{
+	Die SOLID-Prinzipien beschreiben gute objektorientierte Praktiken. Entwurfsmuster zielen darauf ab, dass diese Prinzipien eingehalten werden. 
+}
+
+\begin{frame}{SOLID}
+	\begin{itemize}
+	    \item S - Single Responsibility
+        \item O - Open-Closed
+        \item L - Liskov-Substitutionsprinzip
+        \item I - Interface Seggregation
+        \item D - Dependency Injection
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Uncle Bob}
+	\begin{center}
+		\myImageWithSource{0.35}{\BILDERPFAD/solid2.png}{https://commons.wikimedia.org/wiki/File:Robert\_Cecil\_Martin.png}
+	\end{center}
+\end{frame}
+
+\note{
+ 	Die Geschichte der SOLID-Prinzipien startet 1995, als Robert Martin, auch bekannt als Uncle Bob, über sie zu schreiben begann. Uncle Bobs bekanntestes Buch dürfte	\gquote{Clean Code} sein. OOP ist ein mächtiges Programmier-Paradigma, aber es ist 	nicht der magische Weg zu hoher Softwarequalität. Die fünf SOLID-Prinzipien konzentrieren sich auf die Verwaltung der Abhängigkeiten zwischen Objekten und schlechte Abhängigkeitsverwaltung ist oft der Grund für instabile und schlecht wartbare Programme.
+}
+
+\frameWithImageOnly{\BILDERPFAD/solid3.jpg}
+\note{
+	Das erste Prinzip ist das Single-Responsibility-Prinzip. Es besagt, dass jede
+	Klasse eine einzige Verantwortlichkeit haben soll. Dabei soll besser test- und
+	wartbarer Code herauskommen. Eine Gottklasse, die alles macht, ist weder gut
+	testbar noch wartbar. Große Klassen sollten in kleinere aufgeteilt werden, wenn
+	dieses Prinzip verletzt wird. 
+}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des SRP}
+	\begin{alertblock}{Klassische Gottklasse}
+        \begin{lstlisting}
+public class OrderManager {
+    public void processOrder(Order order) {
+        System.out.println("...");
+        sendNotification(order);
+        saveToDatabase(order);
+    }
+
+    private void sendNotification(Order order) {
+        System.out.println("Sende Benachrichtigung ...");
+    }
+
+    private void saveToDatabase(Order order) {
+        System.out.println("Speichere Bestellung ...");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Die Klasse übernimmt mehrere Verantwortlichkeiten:
+    \begin{itemize}
+        \item Verarbeiten der Bestellung
+        \item Versenden von Benachrichtigungen
+        \item Speichern der Daten
+    \end{itemize}
+    Die gesamte Logik ist in einer Klasse gebündelt, was Unit-Tests erschwert, da die Klasse für jede Aufgabe separat getestet werden müsste. Wenn sich die Logik für Benachrichtigungen oder Datenbankoperationen ändert, muss die gesamte Klasse angepasst werden.
+}
+
+\begin{frame}[fragile]{Lösung}
+	\begin{exampleblock}{Aufteilung der Klassen}
+        \begin{lstlisting}
+public class OrderProcessor {
+    private NotificationService notificationService;
+    private OrderRepository orderRepository;
+
+    public OrderProcessor(
+            NotificationService  notificationService, 
+            OrderRepository orderRepository) {
+        this.notificationService = notificationService;
+        this.orderRepository = orderRepository;
+    }
+
+    public void processOrder(Order order) {
+        System.out.println("Verarbeite Bestellung ... ");
+        notificationService.sendNotification(order);
+        orderRepository.save(order);
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Lösung}
+	\begin{exampleblock}{Aufteilung der Klassen}
+        \begin{lstlisting}
+public class NotificationService {
+    public void sendNotification(Order order) {
+        System.out.println("Sende Benachrichtigung ... ");
+    }
+}
+
+public class OrderRepository {
+    public void save(Order order) {
+        System.out.println("Speichere Bestellung ... ");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/solid4.png}
+\note{
+	Das nächste ist das Open-Closed-Prinzip. Es besagt, dass die Klassen offen sein sollen für Erweiterungen, aber geschlossen für Änderungen. Das heißt, man soll das Verhalten einer Klasse verändern können, ohne ihren Code verändern zu müssen. Dabei können Vererbung, Überschreiben von Methoden und Aggregation bzw. Komposition zum Einsatz kommen. Verwendet werden sollten abstrakte Basisklassen. Getter und Setter für private Attribute soll es nur geben,
+	wenn sie benötigt werden. Abhängigkeiten sollten über Konstruktoren verabreicht werden, wenn eine set-Methode nicht unbedingt erforderlich ist.  
+}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des OCP}
+	\begin{alertblock}{Rabattberechnung}
+        \begin{lstlisting}
+public class DiscountCalculator {
+    public double calculateDiscount(Product product) {
+        if (product.getType() == ProductType.ELECTRONICS) {
+            return product.getPrice() * 0.10; 
+        } else if (product.getType() == ProductType.CLOTHING) {
+            return product.getPrice() * 0.20; 
+        }
+        return 0;
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Stellen wir uns vor, wir haben eine Klasse, die Rabatte für verschiedene Produkte berechnet. Hier wird das OCP verletzt, weil jede neue Art von Rabatt (z.B. Rabatt auf Saisonartikel) Änderungen an der bestehenden Klasse erfordert.
+}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des OCP}
+	\begin{alertblock}{Hinzufügen eines neuen Produkttyps}
+        \begin{lstlisting}
+public double calculateDiscount(Product product) {
+    if (product.getType() == ProductType.ELECTRONICS) {
+        return product.getPrice() * 0.10;
+    } else if (product.getType() == ProductType.CLOTHING) {
+        return product.getPrice() * 0.20;
+    } else if (product.getType() == ProductType.FURNITURE) {
+        return product.getPrice() * 0.15; 
+    }
+    return 0;
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Wenn wir jetzt einen neuen Produkttyp hinzufügen, z.B. FURNITURE, müssen wir den Code in DiscountCalculator ändern.
+}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des OCP}
+	\begin{exampleblock}{Refaktorisierung}
+        \begin{lstlisting}
+public interface DiscountPolicy {
+    double applyDiscount(Product product);
+}
+
+public class ElectronicsDiscountPolicy implements 
+        DiscountPolicy {
+    @Override
+    public double applyDiscount(Product product) {
+        return product.getPrice() * 0.10;
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des OCP}
+	\begin{exampleblock}{Refaktorisierung}
+        \begin{lstlisting}
+public class ClothingDiscountPolicy implements 
+        DiscountPolicy {
+    @Override
+    public double applyDiscount(Product product) {
+        return product.getPrice() * 0.20; 
+    }
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Wenn jetzt eine neue Produktgruppe eingefügt werden soll, muss einfach nur eine neue Implementierung des Interface erstellt werden. Änderungen an bestehenden Klassen sind nicht notwendig. 
+}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des OCP}
+	\begin{exampleblock}{Verwendung}
+        \begin{lstlisting}
+public class DiscountCalculator {
+    private Map<ProductType, DiscountPolicy> policies;
+
+    public DiscountCalculator() {
+        policies.put(ProductType.ELECTRONICS, 
+                new ElectronicsDiscountPolicy());
+        policies.put(ProductType.CLOTHING, 
+                new ClothingDiscountPolicy());
+    }
+
+    public double calculateDiscount(Product product) {
+        DiscountPolicy policy = policies.get(product.getType());
+        if (policy != null) {
+            return policy.applyDiscount(product);
+        }
+        return 0; 
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Vorteile der OCP-gerechten Lösung:
+
+    Erweiterbarkeit: Neue Rabattarten können durch das Hinzufügen neuer DiscountPolicy-Implementierungen erweitert werden, ohne den bestehenden DiscountCalculator-Code zu ändern.
+
+    Wartbarkeit: Änderungen an bestehenden Rabatten oder das Hinzufügen neuer Rabatte betreffen nur die entsprechenden DiscountPolicy-Klassen und nicht den DiscountCalculator.
+}
+
+\frameWithImageOnly{\BILDERPFAD/solid5.png}
+\note{
+	Das L steht für das Liskov-Substitutions-Prinzip. Definiert wurde es von Barbara Liskov und besagt,
+	dass die Objekte in einem Programm durch Instanzen ihrer Unterklassen ersetzbar sein müssen ohne, dass die Korrektheit des Programm gefährdet wird. Verletzungen widersprechen oft dem Ist-ein-Test. Beispiel: Ein Quadrat erbt von Rechteck. Aber IST ein Quadrat ein Rechteck?
+	Nein, hier wird das Liskov-Prinzip verletzt.  
+}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des LSP}
+	\begin{alertblock}{Falsche Klassenhierarchie}
+        \begin{lstlisting}
+public class Bird {
+    public void fly() {
+        System.out.println("Ich kann fliegen");
+    }
+}
+
+public class Penguin extends Bird {
+    @Override
+    public void fly() {
+        // Pinguine koennen nicht fliegen, daher ist 
+        // diese Methode nicht korrekt
+        throw new UnsupportedOperationException
+            ("Ich kann nicht fliegen");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des LSP}
+	\begin{alertblock}{Unerwartetes Verhalten}
+        \begin{lstlisting}
+public class Main {
+    public static void makeBirdFly(Bird bird) {
+        bird.fly();
+    }
+
+    public static void main(String[] args) {
+        Bird myBird = new Bird();
+        makeBirdFly(myBird); // Funktioniert wie erwartet
+
+        Bird myPenguin = new Penguin();
+        makeBirdFly(myPenguin); // Fuehrt zu einer Ausnahme
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    In diesem Beispiel können wir makeBirdFly aufrufen und erwarten, dass die Methode fly funktioniert. Wenn jedoch ein Penguin übergeben wird, tritt eine Ausnahme auf, weil Pinguine nicht fliegen können. Dies zeigt, dass Penguin nicht das Verhalten von Bird korrekt implementiert und das Liskov-Substitutions-Prinzip verletzt.
+}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des LSP}
+	\begin{exampleblock}{Lösung}
+        \begin{lstlisting}
+public interface Flyable {
+    void fly();
+}
+
+public class Sparrow implements Flyable {
+    @Override
+    public void fly() {
+        System.out.println("Ich kann fliegen");
+    }
+}
+
+public class Penguin {
+    // Kein Flyable-Interface
+    public void swim() {
+        System.out.println("Ich kann schwimmen");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Um das Liskov-Substitutions-Prinzip korrekt zu befolgen, sollten wir unsere Klassen so gestalten, dass sie die Semantik der Basisklasse korrekt erfüllen. In diesem Fall könnten wir die Vererbung vermeiden und eine andere Struktur verwenden, um das Verhalten von fliegenden und nicht-fliegenden Vögeln zu modellieren.
+}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des LSP}
+	\begin{alertblock}{Delegation als Alternative}
+        \begin{lstlisting}
+public class Vector {
+    // Irgendeine Datenstruktur
+
+    public void add(Element element, int index) { }
+    public void remove(int index) { }
+}
+        
+public class Stack extends Vector {
+    public void push (Element element) {
+        super.add(element, size());
+    }
+
+    public void pop (Element element) {
+        super.remove(size() - 1);
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Hier wird das LSP auch gebrochen. Man muss fragen: Kann überall, wo ein Vector benutzt wird, auch ein Stack eingesetzt werden? Das ist nicht der Fall, denn der Stack erbt Methoden, die er nicht besitzen darf.
+}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des LSP}
+	\begin{exampleblock}{Delegation als Alternative}
+        \begin{lstlisting}
+public class Vector {
+    // Irgendeine Datenstruktur
+
+    public void add(Element element, int index) { }
+    public void remove(int index) { }
+}
+        
+public class Stack  {
+    private Vector vector;
+
+    public void push (Element element) {
+        vector.add(element, vector.size());
+    }
+
+    public void pop (Element element) {
+        vector.remove(vector.size() - 1);
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    In diesem Fall wird das Problem mit Delegation gelöst, d.h. der Stack hält sich einen Vector für die Datenhaltung und versteckt den Vector vor der Außenwelt. Nach außen werden nur die Methoden des Stacks angeboten. Somit ist die interne Datenverwaltung vollständig gekapselt, was sowohl die Lesbarkeit und die Änderbarkeit als auch die Fehlersicherheit erhöht. Im Zweifel ist Delegation der Vererbung vorzuziehen.
+}
+
+\frameWithImageOnly{\BILDERPFAD/solid6.jpg}
+\note{
+	Du willst, dass ich das Kabel einstecke? Aber wo? 
+ 
+    Ein Client sollte nie gezwungen werden, eine Schnittstelle zu implementieren, die er nicht verwendet, oder Clients sollten nicht gezwungen werden, von Methoden abzuhängen, die sie nicht verwenden.
+	
+	Darauf bezieht sich das Interface-Segregation-Prinzip. Interfaces sollten feinkörnig sein. Ein Modul, das eine Schnittstelle benutzt, soll auch nur die Schnittstellen 
+	implementieren, die es wirklich braucht, und nur die Schnittstellen anbieten, die ein Client auch 
+	benötigt. Client-spezifische Interfaces sind oft
+	besser als ein großes und generelles Interface. Wenn ein Client nur die Methoden sieht, der er 
+	auch benötigt und keine für ihn unnötigen Methoden, werden Abhängigkeiten zwischen Komponenten
+	minimiert. Das bedeutet, dass nicht jede Methode in das Interface gehört.  
+}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des ISP}
+	\begin{alertblock}{Interface zu groß}
+        \begin{lstlisting}
+public interface Animal {
+    void eat();
+    void walk();
+    void fly();
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    Stellen wir uns eine Situation vor, in der wir verschiedene Tiere haben (z. B. Hunde und Vögel), die unterschiedliche Fähigkeiten besitzen. Wir haben ein allgemeines Animal-Interface
+}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des ISP}
+	\begin{alertblock}{Interface zu groß}
+        \begin{lstlisting}
+public class Bird implements Animal {
+    @Override
+    public void eat() {
+        System.out.println("Vogel frisst");
+    }
+
+    @Override
+    public void walk() {
+        System.out.println("Vogel laeuft");
+    }
+
+    @Override
+    public void fly() {
+        System.out.println("Vogel fliegt");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des ISP}
+	\begin{alertblock}{Interface zu groß}
+        \begin{lstlisting}
+public class Dog implements Animal {
+    @Override
+    public void eat() {
+        System.out.println("Hund frisst");
+    }
+
+    @Override
+    public void walk() {
+        System.out.println("Hund laeuft");
+    }
+
+    @Override
+    public void fly() {
+        throw new UnsupportedOperationException
+            ("Hunde koennen nicht fliegen");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des ISP}
+	\begin{exampleblock}{Interfaces aufteilen}
+        \begin{lstlisting}
+public interface Eater {
+    void eat();
+}
+
+public interface Walker {
+    void walk();
+}
+
+public interface Flyer {
+    void fly();
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des ISP}
+	\begin{exampleblock}{Interfaces aufteilen}
+        \begin{lstlisting}
+public class Dog implements Eater, Walker {
+    @Override
+    public void eat() {
+        System.out.println("Hund frisst");
+    }
+
+    @Override
+    public void walk() {
+        System.out.println("Hund laeuft");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des ISP}
+	\begin{exampleblock}{Interfaces aufteilen}
+        \begin{lstlisting}
+public class Bird implements Eater, Walker, Flyer {
+    @Override
+    public void eat() {
+        System.out.println("Vogel frisst");
+    }
+
+    @Override
+    public void walk() {
+        System.out.println("Vogel laeuft");
+    }
+
+    @Override
+    public void fly() {
+        System.out.println("Vogel fliegt");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/solid7.png}
+\note{
+	Als nächstes sprechen wir über das Dependency-Inversion-Prinzip oder das Prinzip der Umkehrung der Abhängigkeiten. Module höherer Ebenen sollen nicht
+	von Modulen niedriger Ebenen abhängen. Beide sollen von Abstraktionen abhängen. Abstraktionen sollen nicht abhängig sein von Implementierungsdetails, während die Details von den Abstraktionen abhängen sollen. Je niedriger die Ebene eines Moduls ist, umso spezieller sind die
+	in ihm definierten Vorgänge. Sie werden von allgemeineren Modulen auf höheren Ebenen verwendet. Sonst führen Änderungen in Modulen niedriger Ebene automatisch zu Änderungen in Modulen höherer Ebene. Dies führt zu einer höheren Kopplung der Module. Es soll nur noch Abhängigkeiten zu Interfaces geben, nicht mehr zu Implementierungen. Eine konkrete Technik, um dieses Prinzip umzusetzen, ist Dependency Injection wie bspw. in Spring genutzt wird.
+}
+
+\begin{frame}[fragile]{Beispiel für Verletzung des DIP}
+	\begin{alertblock}{Falsche Abhängigkeit}
+        \begin{lstlisting}
+public class CreditCardPaymentProcessor {
+    public void processPayment(double amount) {
+        System.out.println("Zahlung mit Kreditkarte");
+    }
+}
+
+public class OrderService {
+    private CreditCardPaymentProcessor paymentProcessor;
+
+    public OrderService() {
+        this.paymentProcessor = new CreditCardPaymentProcessor();
+    }
+
+    public void processOrder(double amount) {
+        paymentProcessor.processPayment(amount);
+        System.out.println("Bestellung durchgefuehrt");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{alertblock}
+\end{frame}
+\note{
+    In diesem Beispiel wird das DIP verletzt, weil die OrderService-Klasse direkt von der konkreten CreditCardPaymentProcessor-Klasse abhängt. Änderungen am Zahlungssystem würden dazu führen, dass die OrderService-Klasse auch geändert werden muss. Wenn wir die Zahlungsart ändern wollen, müssen wir die OrderService-Klasse anpassen, was die Kopplung zwischen den Klassen erhöht. Die OrderService-Klasse ist abhängig von der konkreten Implementierung CreditCardPaymentProcessor, was das Prinzip verletzt.
+}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des DIP}
+	\begin{exampleblock}{Korrekte Abhängigkeit}
+        \begin{lstlisting}
+public interface PaymentProcessor {
+    void processPayment(double amount);
+}
+
+public class CreditCardPaymentProcessor 
+        implements PaymentProcessor {
+    @Override
+    public void processPayment(double amount) {
+        System.out.println("Zahlung mit Kreditkarte");
+    }
+}
+
+public class PayPalPaymentProcessor implements PaymentProcessor {
+    @Override
+    public void processPayment(double amount) {
+        System.out.println("Zahlung mit PayPal");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des DIP}
+	\begin{exampleblock}{Korrekte Abhängigkeit}
+        \begin{lstlisting}
+public class OrderService {
+    private PaymentProcessor paymentProcessor;
+
+    public OrderService(PaymentProcessor paymentProcessor) {
+        this.paymentProcessor = paymentProcessor;
+    }
+
+    public void processOrder(double amount) {
+        paymentProcessor.processPayment(amount);
+        System.out.println("Order processed.");
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Um das DIP einzuhalten, führen wir eine Abstraktion (z. B. ein Interface) für den Zahlungsvorgang ein, sodass die OrderService-Klasse nicht mehr direkt von einer spezifischen Implementierung abhängt. Wir könnten dann unterschiedliche Zahlungsmethoden einführen, ohne die OrderService-Klasse ändern zu müssen.
+}
+
+\begin{frame}[fragile]{Beispiel für Einhaltung des DIP}
+	\begin{exampleblock}{Korrekte Abhängigkeit}
+        \begin{lstlisting}
+public class Main {
+    public static void main(String[] args) {
+        PaymentProcessor paymentProcessor = 
+                new CreditCardPaymentProcessor();
+        OrderService orderService = 
+                new OrderService(paymentProcessor);
+        orderService.processOrder(100.0);
+
+        PaymentProcessor paypalProcessor = 
+            new PayPalPaymentProcessor();
+        OrderService anotherOrderService = 
+            new OrderService(paypalProcessor);
+        anotherOrderService.processOrder(150.0);
+    }
+}
+        \end{lstlisting} 		
+ 	\end{exampleblock}
+\end{frame}
+\note{
+    Die OrderService-Klasse hängt nur von der Abstraktion PaymentProcessor ab, nicht von den konkreten Implementierungen. Das ermöglicht es, verschiedene Implementierungen von PaymentProcessor (z. B. Kreditkarten-, PayPal- oder andere Zahlungsprozessoren) einfach zu integrieren, ohne die OrderService-Klasse ändern zu müssen. Änderungen an der Art der Zahlungsabwicklung erfordern nur Änderungen an den Implementierungen der PaymentProcessor-Schnittstelle, nicht an der OrderService-Klasse.
+}

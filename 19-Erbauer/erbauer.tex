@@ -1,0 +1,384 @@
+\writeSectionFrame{\presentationTitle}{Erbauer}
+\begin{frame}{Steckbrief}
+	\begin{itemize}
+ 		\item Deutscher Name: Erbauer
+ 		\item Englischer Name: Builder
+ 		\item Gruppe: Erzeugungsmuster
+ 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Erbauer}
+	\begin{block}{Zweck}
+ 		Trenne die Konstruktion eines komplexen Objekts von seiner Repräsentation, so dass deselbe Konstruktionsprozess unterschiedliche Repräsentationen erzeugen kann.
+ 	\end{block}
+\end{frame}
+
+\begin{frame}{Allgemeines Klassendiagramm}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=17,y=-3]{Product}{
+            +attribute1: Type\\+attribute2: Type}{}
+        
+        % Klasse Builder
+        \umlclass[x=12,y=0]{Builder}{}{
+            +setAttribute1(attr1: Type) : Builder\\
+            +setAttribute2(attr2: Type) : Builder\\+build() : Product}{}
+
+        \umlclass[x=12,y=-3]{ConcreteBuilder}{}{}
+        
+        % Klasse Director
+        \umlclass[x=5,y=0]{Director}{
+            +construct(builder: Builder)\\
+            -builder: Builder}{}
+    
+        % Beziehungen
+        \umlinherit{ConcreteBuilder}{Builder}
+        \umlaggreg{Director}{Builder}
+        \umluniassoc{ConcreteBuilder}{Product}
+    \end{tikzpicture}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/erbauer1.jpg}
+
+\begin{frame}{Klassendiagramm Beispiel Häuserbau}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=17,y=-4]{House}{
+        }{}
+        
+        % Klasse Builder
+        \umlclass[x=12,y=0]{Builder}{}{
+            +addSwimmingPool()\\
+            +addGarden() \\
+            +addRoom()\\
+            +setWallThickness(thickness: int)\\
+            +buildHouse(): House
+            }{}
+
+        \umlclass[x=12,y=-4]{HouseBuilder}{}{}
+        
+        % Klasse Director
+        \umlclass[x=5,y=0]{Director}{
+        }{}
+    
+        % Beziehungen
+        \umlinherit{HouseBuilder}{Builder}
+        \umluniassoc{Director}{Builder}
+        \umluniassoc{HouseBuilder}{House}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Erbauer}
+	\begin{exampleblock}{Builder.java}
+ 		\begin{lstlisting}
+public interface Builder {
+	void addSwimmingPool();
+	void addGarden();
+	void addGarage();
+	void addRoom();
+	void setWallThickness(int wallThickness);
+	void setHouseType(HouseType houseType);
+	House buildHouse();
+	void newHouse();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Erbauer}
+	\begin{exampleblock}{HouseBuilder.java}
+        \begin{lstlisting}
+public class HouseBuilder implements Builder {
+	private int wallThickness;
+	private boolean swimmingPool;
+	private boolean garden;
+	private int garageCount;
+	private int roomCount;
+	private HouseType houseType;
+	
+	@Override
+	public void newHouse() {
+		wallThickness = 0;
+		swimmingPool = false;
+		garden = false;
+		garageCount = 0;
+		roomCount = 0;
+	}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Erbauer}
+	\begin{exampleblock}{HouseBuilder.java}
+ 		\begin{lstlisting}
+@Override
+public void addSwimmingPool() {
+    swimmingPool = true;
+}
+
+@Override
+public void addGarden() {
+    garden = true;
+}
+
+@Override
+public void addGarage() {
+    garageCount++;
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Direktor}
+	\begin{exampleblock}{HouseDirector.java}
+ 		\begin{lstlisting}
+public class HouseDirector {
+	public void constructSingleFamilyHouse(Builder builder) {
+		builder.newHouse();
+		builder.addGarage();
+		for (int i = 0; i < 4; i++) {
+			builder.addRoom();
+		}
+		
+		builder.addSwimmingPool();
+		builder.addGarden();
+		builder.setHouseType(HouseType.SINGLE_FAMILY_HOUSE);
+		builder.setWallThickness(2);
+	} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/erbauer2.jpg}
+\note{
+    Im nächsten Beispiel simulieren wir einen Programm, mit dem der Benutzer sich einen PC zusammenstellen und dann bestellen kann. 
+}
+
+\begin{frame}{Klassendiagramm Beispiel Computerbau}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=6,y=-4]{Computer}{
+        }{}
+        
+        % Klasse Builder
+        \umlclass[x=12,y=0]{ComputerBuilder}{}{
+	       +setProcessor(processor: String)\\
+          +setRam(ram: int)\\
+	       +setHardDrive(hardDrive: int)\\
+          +setGraphicsCard(graphicsCard: String )\\
+            }{}
+
+        \umlclass[x=12,y=-4]{ComputerBuilderImpl}{}{}
+        
+        % Klasse Director
+        \umlclass[x=3,y=0]{ComputerDirector}{
+        }{}
+    
+        % Beziehungen
+        \umlinherit{ComputerBuilderImpl}{ComputerBuilder}
+        \umluniassoc{ComputerDirector}{ComputerBuilder}
+        \umluniassoc{HouseBuilder}{Computer}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Erbauer}
+	\begin{exampleblock}{Builder.java}
+ 		\begin{lstlisting}
+public interface ComputerBuilder {
+	void setProcessor(String processor);
+	void setRam(int ram);
+	void setHardDrive(int hardDrive);
+	void setGraphicsCard(String graphicsCard);
+	Computer build();
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Direktor}
+	\begin{exampleblock}{ComputerDirector.java}
+ 		\begin{lstlisting}
+public class ComputerDirector {
+    private ComputerBuilder builder;
+
+    public Computer constructGamingComputer() {
+    	builder.setProcessor("Intel Core i9");
+    	builder.setRam(32);
+    	builder.setHardDrive(1024);
+    	builder.setGraphicsCard("NVIDIA GeForce RTX 4090");
+        return builder.build();
+    }
+
+    public Computer constructOfficeComputer() {
+    	builder.setProcessor("Intel Core i5");
+    	builder.setRam(8);
+    	builder.setHardDrive(256);
+        builder.setGraphicsCard("Integrated");
+        return builder.build();
+    }
+}    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\frameWithImageOnly{\BILDERPFAD/erbauer3.jpg}
+\note{
+	Wir erweitern unseren Häusererbauer um ein weiteres Erbauermuster - und zwar sollen die	Daten der Häuser in Dateien gespeichert werden: in csv- und xml-Dateien.
+}
+
+\begin{frame}{Klassendiagramm Beispiel Häuserbau mit Dateien}
+    \begin{tikzpicture}[scale=0.7, transform shape]
+        \umlclass[x=17,y=-4]{File}{
+        }{}
+
+        \umlclass[x=14,y=-6]{XmlFile}{
+        }{}
+
+        \umlclass[x=14,y=-2]{CsvFile}{
+        }{}
+        
+        % Klasse Builder
+        \umlclass[x=10,y=0]{FileBuilder}{}{
+        }{}
+
+        \umlclass[x=10,y=-4]{XmlFileBuilder}{}{}
+
+        \umlclass[x=14,y=-4]{CsvFileBuilder}{}{}
+        
+        % Klasse Director
+        \umlclass[x=5,y=0]{FileDirector}{
+        }{}
+    
+        % Beziehungen
+        \umlinherit{XmlFileBuilder}{FileBuilder}
+        \umlinherit{CsvFileBuilder}{FileBuilder}
+
+        \umlinherit{XmlFile}{File}
+        \umlinherit{CsvFile}{File}
+        
+        \umluniassoc{FileDirector}{FileBuilder}
+        \umluniassoc{CsvFileBuilder}{CsvFile}
+        \umluniassoc{XmlFileBuilder}{XmlFile}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Erbauer}
+	\begin{exampleblock}{FileBuilder.java}
+ 		\begin{lstlisting}
+public abstract class FileBuilder {
+	protected File file;
+	
+	public abstract void appendData(House house);
+
+	public File getFile() {
+		return file;
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Erbauer}
+	\begin{exampleblock}{XmlFileBuilder.java}
+        \begin{lstlisting}
+public class XmlFileBuilder extends FileBuilder {
+	@Override
+	public void appendData(House house) {
+		file.addLine("<house houseType=\"" + house.getHouseType() 
+            + "\">\n");
+		file.addLine("<roomCount>" + house.getRoomCount() 
+            + "</roomCount>\n");
+		file.addLine("<garageCount>" + house.getGarageCount() 
+            + "</garageCount>\n");
+		file.addLine("<garden>" + house.hasGarden() + "</garden>\n");
+		file.addLine("<swimmingpool>" + house.hasSwimmingPool() 
+            + "</swimmingpool>\n");
+		file.addLine("<garden>" + house.hasGarden() + "</garden>\n");
+		file.addLine("</house>");
+	}
+}            
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Konkreter Erbauer}
+	\begin{exampleblock}{CsvFileBuilder.java}
+ 		\begin{lstlisting}
+public class CsvFileBuilder extends FileBuilder {
+	private static final String SEPARATOR = ";";
+	
+	public CsvFileBuilder() {
+		file = new CsvFile();
+		file.addLine("");
+	}
+	
+	@Override
+	public void appendData(House house) {
+		file.addLine(house.getHouseType() + SEPARATOR +
+				house.getRoomCount() + SEPARATOR + 
+				house.getGarageCount() + SEPARATOR +
+				house.getWallThickness() + SEPARATOR +
+				house.hasGarden() + SEPARATOR +
+				house.hasSwimmingPool() + "\n");
+				
+	}
+}
+        \end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Direktor}
+	\begin{exampleblock}{FileDirector.java}
+ 		\begin{lstlisting}
+public class FileDirector {
+	public void createFile(List<House> houses, 
+			FileBuilder fileBuilder) {
+		for (House house: houses) {
+			fileBuilder.appendData(house);
+		}
+	}
+}
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Buildermuster 1 zum Bauen von Häusern}
+	\begin{exampleblock}{FileWriterClient.java}
+ 		\begin{lstlisting}
+private static List<House> createHouseList() {
+    final List<House> houses = new ArrayList<>();
+    Director director = new Director();
+    HouseBuilder houseBuilder = new HouseBuilder();
+
+    director.constructSkyscraper(houseBuilder);
+    House mySkyscraper = houseBuilder.buildHouse();
+    houses.add(mySkyscraper);
+    
+    director.constructAppartmentHouse(houseBuilder);
+    House myAppartmentHouse = houseBuilder.buildHouse();
+    houses.add(myAppartmentHouse);
+    
+    director.constructSingleFamilyHouse(houseBuilder);
+    House mySingleFamilyHouse = houseBuilder.buildHouse();
+    houses.add(mySingleFamilyHouse);
+    
+    return houses;
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Buildermuster 2 zum Schreiben der Dateien}
+	\begin{exampleblock}{FileWriterClient.java}
+ 		\begin{lstlisting}
+public static void main(String[] args) {
+    FileDirector fileDirector = new FileDirector();
+    FileBuilder xmlFileBuilder = new XmlFileBuilder();
+    FileBuilder csvFileBuilder = new CsvFileBuilder();
+    
+    List<House> houses = createHouseList();
+    fileDirector.createFile(houses, xmlFileBuilder);
+    fileDirector.createFile(houses, csvFileBuilder);
+    System.out.println(csvFileBuilder.getFile().getContent());
+    System.out.println(xmlFileBuilder.getFile().getContent());
+} 		    
+ 		\end{lstlisting}
+ 	\end{exampleblock}
+\end{frame}

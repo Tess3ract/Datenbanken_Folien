@@ -1,0 +1,175 @@
+%% beamerthemehtw-theme.sty
+%% Minimal science-style theme with simple outer layout and clean block styling
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemehtw-theme}[2026/04/10 Simple science beamer theme]
+
+\RequirePackage{etoolbox}
+\RequirePackage{graphicx}
+
+\mode<presentation>
+
+%% Define Colors
+\definecolor{Blue}{RGB}{0,61,124}
+\definecolor{LightBlue}{RGB}{230,240,250}
+\definecolor{Orange}{RGB}{238,127,0}
+\definecolor{LightOrange}{RGB}{255,243,229}
+\definecolor{Gray}{RGB}{90,90,90}
+\definecolor{LightGray}{RGB}{230,230,230}
+
+%% Options
+
+\newif\ifbeamer@showslidenumber
+\beamer@showslidenumbertrue
+
+
+\DeclareOptionBeamer{noslidenumbering}{%
+  \beamer@showslidenumberfalse
+}
+\ProcessOptionsBeamer
+%% Command to set left footer content
+
+
+%% Basic colors
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{structure}{fg=Blue}
+\setbeamercolor{frametitle}{fg=Blue,bg=LightGray}
+\setbeamercolor{framesubtitle}{fg=Gray,bg=white}
+\setbeamercolor{title}{fg=Blue,bg=white}
+\setbeamercolor{subtitle}{fg=Gray,bg=white}
+\setbeamercolor{author}{fg=black,bg=white}
+\setbeamercolor{institute}{fg=Gray,bg=white}
+\setbeamercolor{date}{fg=Gray,bg=white}
+\setbeamercolor{footline}{fg=Gray,bg=white}
+\setbeamercolor{page number in head/foot}{fg=Blue,bg=LightGray}
+\setbeamercolor{simple footline}{fg=Gray,bg=LightGray}
+%% Blocks
+\setbeamercolor{block title}{fg=white,bg=Blue}
+\setbeamercolor{block body}{fg=black,bg=LightBlue}
+\setbeamercolor{block title alerted}{fg=white,bg=Orange}
+\setbeamercolor{block body alerted}{fg=black,bg=LightOrange}
+\setbeamercolor{block title example}{fg=white,bg=Gray}
+\setbeamercolor{block body example}{fg=black,bg=LightGray}
+
+%% Itemize / enumerate
+\setbeamercolor{itemize item}{fg=Orange}
+\setbeamercolor{itemize subitem}{fg=Blue}
+\setbeamercolor{itemize subsubitem}{fg=Gray}
+\setbeamercolor{enumerate item}{fg=Orange}
+\setbeamercolor{enumerate subitem}{fg=Blue}
+\setbeamercolor{section in toc}{fg=Blue}
+
+%% Fonts
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamerfont{framesubtitle}{size=\normalsize}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamerfont{footline}{size=\small}
+\setbeamerfont{page number in head/foot}{size=\small}
+
+%% Clean navigation
+\setbeamertemplate{navigation symbols}{}
+
+%% Bullet style
+\setbeamertemplate{items}[circle]
+
+%% Simple title page
+%% Title page with HTW color accents
+\setbeamertemplate{title page}{%
+  \begin{center}
+
+    % Top blue bar
+    \begin{beamercolorbox}[wd=\paperwidth,ht=0.6ex]{}
+        \color{Blue}\rule{\paperwidth}{0.6ex}
+    \end{beamercolorbox}
+
+    \vspace{1cm}
+
+    % Logo
+    \includegraphics[width=0.23\paperwidth]{theme/htwlogo.png}
+
+    \vspace{1cm}
+
+    % Title
+    {\usebeamerfont{title}
+     \usebeamercolor[fg]{title}
+     \inserttitle\par}
+
+    \vspace{0.4em}
+
+    % Orange accent line
+    {\color{Orange}\rule{0.5\paperwidth}{0.6pt}}
+
+    \vspace{0.6em}
+
+    % Subtitle
+    {\usebeamerfont{subtitle}
+     \usebeamercolor[fg]{subtitle}
+     \insertsubtitle\par}
+
+    \vspace{1.4cm}
+
+    % Author block
+    {\usebeamerfont{author}\insertauthor\par}
+
+    \vspace{0.2em}
+
+    {\usebeamerfont{institute}\insertinstitute\par}
+
+    \vspace{0.2em}
+
+    {\usebeamerfont{date}\insertdate\par}
+
+    \vspace{1cm}
+
+    % Bottom orange bar (visual anchor)
+    \begin{beamercolorbox}[wd=\paperwidth,ht=0.4ex]{}
+        \color{Orange}\rule{\paperwidth}{0.4ex}
+    \end{beamercolorbox}
+
+  \end{center}
+}
+
+%% Outer theme style
+\setbeamertemplate{footline}{%
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[
+            wd=\paperwidth,
+            ht=3ex,
+            dp=1.8ex,
+            leftskip=0.03\paperwidth,
+            rightskip=0.03\paperwidth
+        ]{simple footline}%
+            \raisebox{-0.5ex}{\includegraphics[height=2.5ex]{theme/htwlogo.png}}%
+            \hfill
+            \ifbeamer@showslidenumber
+              \usebeamerfont{page number in head/foot}\insertframenumber
+            \fi
+        \end{beamercolorbox}%
+    }%
+}
+
+\setbeamertemplate{headline}{}
+\setbeamertemplate{frametitle}{
+	\nointerlineskip%
+    \begin{beamercolorbox}[
+        wd=\paperwidth,
+        sep=0.6ex,
+        leftskip=0.07\paperwidth,
+        rightskip=0.07\paperwidth
+    ]{frametitle}
+        \usebeamerfont{frametitle}%
+        \insertframetitle\strut
+    \end{beamercolorbox}%
+	\nointerlineskip%
+	\begin{beamercolorbox}[wd=\paperwidth,ht=0.4pt,dp=0pt]{}
+        \color{Blue}\rule{\paperwidth}{0.4pt}%
+    \end{beamercolorbox}%
+}
+
+%% Block template
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\mode<all>

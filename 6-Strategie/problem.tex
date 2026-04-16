@@ -1,0 +1,60 @@
+\writeSectionFrame{\presentationTitle}{Das Problem}
+\frameWithImageOnly{\BILDERPFAD/problem1.jpg}
+\note{
+    Wir haben den Auftrag erhalten ein Programm zu schreiben, das Reisekosten für die Mitarbeiter berechnen kann. In der ersten Iteration soll der Benutzer selbst das Fahrzeug auswählen. In der zweiten Iteration soll das Reisemittel anhand der Entfernung automatisch ausgewählt werden.
+}
+
+\begin{frame}{Reisemöglichkeiten}
+	\begin{itemize}
+        \item Fahrrad
+        \item Auto
+ 		\item Zug
+ 		\item Flugzeug
+ 		\item Schiff
+ 	\end{itemize}
+\end{frame}
+\note{
+    Das Problem ist, dass es viele verschiedene Reisemöglichkeiten gibt. Und der Kunde möchte gerne bereit sein, falls neue Transportmittel entwickelt werden. Außerdem müsste das Programm auf lange Sicht um weitere Tarife einzelner Transportmittel erweiterbar sein usw. Wir brauchen also eine lose Kopplung zur Reisekostenberechnung für ein bestimmtes Transportmittel.
+}
+
+\frameWithImageOnly{\BILDERPFAD/problem2.jpg}
+\note{
+    Nun kommen weitere Fahrzeuge hinzu. So möchte unser Kunde seinen Mitarbeitern jetzt E-Scooter anbieten, um schnell zu verschiedenen Standorten in derselben Stadt fahren zu können. Doch auch E-Scooter verursachen Kosten und müssen deswegen in die Software aufgenommen werden können. Das gleiche gilt für andere Transportmittel, die vielleicht heute noch gar nicht bekannt sind. Und diese Erweiterungen sollen ohne Änderungen des bestehenden Codes geschehen. 
+}
+
+\begin{frame}[fragile]{Mögliche Lösung ohne Strategie}
+	\begin{alertblock}{TransportService}
+        \begin{lstlisting}
+public class TransportService {
+    public double calculateCost(String transportMode, double distance) {
+        switch (transportMode) {
+            case "Car":
+                return distance * 0.6; fuer Auto
+            case "Bike":
+                return distance * 0.1; 
+            case "Bus":
+                return distance * 0.3; 
+            default:
+                throw new IllegalArgumentException("Unbekannte Transportart");
+        }
+    }
+}
+        \end{lstlisting}
+ 	\end{alertblock}
+\end{frame}
+\note{
+    In diesem Beispiel haben wir eine Klasse TransportService, die die Berechnung der Reisekosten für verschiedene Transportmittel übernimmt. Das Problem bei dieser Implementierung ist, dass alle Berechnungslogiken direkt in einer einzigen Klasse zusammengefasst sind, was zu einer schlechten Wartbarkeit und Erweiterbarkeit führt.
+
+    Wenn ein neues Transportmittel hinzugefügt werden soll, muss die calculateCost-Methode angepasst werden. Jedes neue Transportmittel erfordert eine neue case-Anweisung im switch-Statement.
+
+    Änderungen an der Berechnungsmethode für ein bestimmtes Transportmittel erfordern das Ändern des gesamten switch-Statements.
+}
+
+\begin{frame}{Ähnliche Probleme}
+	\begin{itemize}
+        \item Sortieralgorithmen
+        \item Datenspeicherung
+ 		\item Zahlungsverfahren
+ 		\item Rabattberechnungsverfahren
+ 	\end{itemize}
+\end{frame}
